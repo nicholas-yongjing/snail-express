@@ -1,0 +1,30 @@
+* {
+    font-family: "Ubuntu", sans-serif;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.level {
+    font-size: 20px;
+    margin-top: 5px;
+}
