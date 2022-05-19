@@ -1,6 +1,27 @@
 * {
     font-family: "Ubuntu", sans-serif;
     font-size: 20px;
+    background-color: lightcyan;
+}
+
+.page {
+    display: flex;
+    flex-direction: row;
+}
+
+.right {
+    margin-left: auto;
+    margin-right: 40px;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: 800px;
+    flex-wrap: wrap;
+    border: 5px solid grey;
+    margin: 10px;
 }
 
 .profile {
@@ -30,11 +51,8 @@
     margin-top: 5px;
 }
 
-.badge {
-    display: inline;
-}
-
 .list {
+    display: flex;
     list-style: none;
 }
 
