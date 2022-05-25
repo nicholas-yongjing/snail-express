@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snail Express</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/login.css">
 </head>
 
 <body>
@@ -22,10 +23,16 @@
     <div class="body">
         <div class="content">Snail Express</div>
         <form class="login-form">
-            <div class="input-text">Email: <input type="email" name="E-mail" id="email"></div>
-            <div class="input-text">Password: <input type="password" name="password" id="password"></div>
-            <div class="button"><input type="button" value="Log in"></div>
-            <div class="button"><input type="button" value="Create account"></div>
+            <div class="email">
+                <label for="email">Email:</label>
+                <input type="email" name="email" , id="email">
+            </div>
+            <div class="password">
+                <label for="password">Password:</label>
+                <input type="password" name="password" , id="password">
+            </div>
+            <input type="button" value="Log in">
+            <input type="button" value="Create account">
         </form>
     </div>
     <div class="footer">Done by Team Snail for Orbital AY21/22</div>
