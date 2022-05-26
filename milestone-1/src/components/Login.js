@@ -19,7 +19,7 @@ export default function Login() {
           setError('');
           setLoading(true);
           await login(emailRef.current.value, passwordRef.current.value);
-          navigate("/");
+          navigate("/dashboard");
       } catch {
             setError('Failed to sign in');
       }
@@ -54,6 +54,9 @@ export default function Login() {
       <br></br>
       <div className="text-center">
           New to our website? Create an account <Link to="/signup">here</Link>
+      </div>
+      <div className="text-center">
+          Back to <Link to="/">home</Link>
       </div>
     </>
   );

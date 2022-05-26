@@ -13,27 +13,31 @@ export default function UpdateProfile() {
   const [loading, setLoading] = useState(false);
 
   function handleSubmit(event) {
-      event.preventDefault();
-      if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-        return setError('Passwords do not match');
-      }
+    event.preventDefault();
+    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      return setError("Passwords do not match");
+    }
 
-      const promises = []
-      setLoading(true);
-      setError('');
-      if (emailRef.current.value !== currentUser.email) {
-        promises.push(updateEmail(emailRef.current.value));
-      }
+    const promises = [];
+    setLoading(true);
+    setError("");
+    if (emailRef.current.value !== currentUser.email) {
+      promises.push(updateEmail(emailRef.current.value));
+    }
 
-      if (passwordRef.current.value) {
-        promises.push(updatePassword(passwordRef.current.value));
-      }
+    if (passwordRef.current.value) {
+      promises.push(updatePassword(passwordRef.current.value));
+    }
 
-      promises.all(promises).then(() => {
-        navigate('/');
-      }).catch(() => {
-        setError("Failed to update profile")
-      }).finally(() => {
+    Promise
+      .all(promises)
+      .then(() => {
+        navigate("/dashboard", {replace: true});
+      })
+      .catch(() => {
+        setError("Failed to update profile");
+      })
+      .finally(() => {
         setLoading(false);
         setError();
       });
@@ -46,7 +50,7 @@ export default function UpdateProfile() {
           <h2 className="text-center mb-4">Update profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
+            <Form.Group id="email" className="mb-2">
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 type="email"
@@ -55,7 +59,7 @@ export default function UpdateProfile() {
                 defaultValue={currentUser.email}
               />
             </Form.Group>
-            <Form.Group id="password">
+            <Form.Group id="password" className="mb-2">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
@@ -73,14 +77,14 @@ export default function UpdateProfile() {
             </Form.Group>
             <br></br>
             <Button disabled={loading} className="w-100" type="submit">
-              Sign Up
+              Update profile
             </Button>
           </Form>
         </Card.Body>
       </Card>
       <br></br>
       <div className="text-center">
-        <Link to="/">Cancel</Link>
+        <Link to="/dashboard">Cancel</Link>
       </div>
     </>
   );
