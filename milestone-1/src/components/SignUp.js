@@ -1,17 +1,18 @@
 import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
+import { Link } from 'react-router-dom';
 
 function SignUp() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { signUp, currentUser } = useAuth();
+  const { signup } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
-      e.preventDefault();
+  async function handleSubmit(event) {
+      event.preventDefault();
 
       if (passwordRef.current.value !== passwordConfirmRef.current.value) {
         return setError('Passwords do not match');
@@ -20,7 +21,7 @@ function SignUp() {
       try {
           setError('');
           setLoading(true);
-          signUp(emailRef.current.value, passwordRef.current.value);
+          await signup(emailRef.current.value, passwordRef.current.value);
       } catch {
             setError('Failed to create an account');
       }
@@ -32,7 +33,6 @@ function SignUp() {
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Sign Up</h2>
-          {currentUser && currentUser.email}
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group id="email">
@@ -56,7 +56,7 @@ function SignUp() {
       </Card>
       <br></br>
       <div className="text-center">
-        Already have an account? Proceed to <a href="./Login">login</a>
+        Already have an account? Proceed to <Link to="/Login">login</Link>
       </div>
     </>
   );

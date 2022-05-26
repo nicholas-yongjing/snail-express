@@ -1,15 +1,39 @@
-import React, { useRef } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+import React, { useRef, useState } from "react";
+import { Form, Button, Card, Alert } from "react-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
-function Login() {
+export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
+  const { login } = useAuth();
+
+  const { signUp, currentUser } = useAuth();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  async function handleSubmit(event) {
+      event.preventDefault();
+
+      try {
+          setError('');
+          setLoading(true);
+          await login(emailRef.current.value, passwordRef.current.value);
+          navigate("/");
+      } catch {
+            setError('Failed to sign in');
+      }
+      setLoading(false);
+  }
+
   return (
     <>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Login</h2>
-          <Form>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleSubmit}>
             <Form.Group id="email">
               <Form.Label>Email address</Form.Label>
               <Form.Control type="email" ref={emailRef} required />
@@ -19,14 +43,20 @@ function Login() {
               <Form.Control type="password" ref={passwordRef} required />
             </Form.Group>
             <br></br>
-            <Button className="w-100" type="submit">Login</Button>
+            <Button disabled={loading} className="w-100" type="submit">
+              Enter
+            </Button>
           </Form>
+          <div className="w-100 text-center mt-3">
+            <Link to="/forgot-password">Forgot password?</Link>
+          </div>
         </Card.Body>
       </Card>
       <br></br>
-      <div>Protect your account. Don't give your password to anyone.</div>
+      <div className="text-center">
+          New to our website? Create an account <Link to="/signup">here</Link>
+      </div>
     </>
   );
-} 
+}
 
-export default Login;
