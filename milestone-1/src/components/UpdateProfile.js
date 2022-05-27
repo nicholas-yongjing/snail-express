@@ -32,7 +32,7 @@ export default function UpdateProfile() {
     Promise
       .all(promises)
       .then(() => {
-        navigate("/dashboard", {replace: true});
+        navigate("/dashboard");
       })
       .catch(() => {
         setError("Failed to update profile");

@@ -1,7 +1,7 @@
 import { useAuth } from "../contexts/AuthContext";
 import React, { useState } from "react";
 import { Card, Button, Alert } from "react-bootstrap";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import NavigationBar from "./NavigationBar";
 
 export default function Dashboard() {
@@ -10,19 +10,20 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    setError('');
+    setError("");
     try {
       await logout();
-      navigate("/login", {replace: true});
+      navigate("/login", { replace: true });
     } catch {
-      setError('Failed to log out')
+      setError("Failed to log out");
     }
   }
 
   return (
     <>
-      <NavigationBar />
+      <NavigationBar></NavigationBar>
       <div className="fs-1">
+        {currentUser.email}
         DASHBOARD BIG BIG
       </div>
     </>

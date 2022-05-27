@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LandingPage() {
+  const { currentUser } = useAuth();
 
   return (
     <>
@@ -55,6 +57,7 @@ export default function LandingPage() {
         </div>
       </nav>
       <div className="fs-1">
+        {currentUser ? currentUser.email : "ur mom"}
         HOME PAGE BIG BIG
       </div>
     </>

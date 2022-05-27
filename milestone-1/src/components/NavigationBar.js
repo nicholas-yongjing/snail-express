@@ -1,6 +1,21 @@
-import React from "react";
+import React, {useState} from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function NavigationBar() {
+  const [error, setError] = useState("");
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    setError("");
+    try {
+      await logout();
+      navigate("/login", { replace: true });
+    } catch {
+      setError("Failed to log out");
+    }
+  }
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -43,6 +58,7 @@ export default function NavigationBar() {
                 href="/"
                 className="btn bg-secondary text-white"
                 role="button"
+                onClick={handleLogout}
               >
                 Log out
               </a>
