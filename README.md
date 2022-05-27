@@ -63,7 +63,7 @@ Students are also unable to answer questions posed by other students. The interf
         - Lecturer account
     - Both users can create account and log in to ensure their progress and contributions are saved on the web. 
 
-- Forum
+- [Forum](/images/ss_forums.png):
     - Both students and lecturers can:
         - Create discussion threads
         - Post in discussion threads
@@ -73,7 +73,7 @@ Students are also unable to answer questions posed by other students. The interf
     - Lecturers can:
         - Mark a post or reply as endorsed answer
 
-- Quiz
+- [Quiz](/images/ss_quiz.png):
     - lecturers can:
         - Hold real-time quiz during lecture
         - See students' participation and answer
@@ -82,7 +82,7 @@ Students are also unable to answer questions posed by other students. The interf
     - Quiz types:
         - Multiple Choice Questions (MCQ): Given a question, students choose 1 correct answer out of several choices
 
-- Lecture Feedback:
+- [Lecture Feedback](/images/ss_feedback.png):
     - Students can provide feedback to the lecturer:
         - Too Fast: Indicate that the lecturer is going too fast
         - Too Slow: Indicate that the lecturer is going too sloe
@@ -91,6 +91,7 @@ Students are also unable to answer questions posed by other students. The interf
 
 ### Current Progress
 
+- 
 
 ### Additional Features
 
@@ -106,7 +107,6 @@ Students are also unable to answer questions posed by other students. The interf
     - Quiz types:
         - Multiple Response Questions (MRQ): Given a question, students choose several correct answers out of several choices
         - Open Ended Questions: Given a question, students type in their answer in text form.
-
 
 ## Plan
 
@@ -129,5 +129,7 @@ Final touches: allowing lecturers to fully customise the rank titles of students
 ## Tech Stack
 
 Database: Firebase
+
 Frontend: HTML/CSS/Javascript
+
 Backend: Javascript (ReactJS)
