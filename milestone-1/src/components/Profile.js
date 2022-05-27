@@ -1,8 +1,7 @@
 import React from "react";
-import { Card, Alert, Button } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import logo from "../images/profile.jpg";
 
 export default function Profile() {
   const { currentUser } = useAuth();
@@ -13,7 +12,7 @@ export default function Profile() {
           {/* <img src={logo} className="img-responsive" alt="Website logo" height="150px" /> */}
           <h2 className="text-center mb-4">Profile</h2>
           <div>
-            <strong>Name:</strong> Snail Ting
+            <strong>Name:</strong> Insert name here after linking database
           </div>
           <div>
             <strong>Email:</strong> {currentUser.email}

@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { Alert } from "react-bootstrap";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
   onAuthStateChanged,
+  updateEmail,
+  updatePassword,
 } from "firebase/auth";
 import { auth } from "../firebase";
 
 const AuthContext = createContext();
-// const auth = getAuth();
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -35,12 +37,12 @@ export function AuthProvider({ children }) {
     return sendPasswordResetEmail(auth, email);
   }
 
-  function updateEmail(email) {
-    return currentUser.updateEmail(email);
+  function updateUserEmail(email) {
+    return updateEmail(currentUser, email);
   }
 
-  function updatePassword(password) {
-    return currentUser.updatePassword(password);
+  function updateUserPassword(password) {
+    return updatePassword(currentUser, password);
   }
 
   useEffect(() => {
@@ -57,8 +59,8 @@ export function AuthProvider({ children }) {
     login,
     logout,
     resetPassword,
-    updateEmail,
-    updatePassword,
+    updateUserEmail,
+    updateUserPassword,
   };
 
   return (

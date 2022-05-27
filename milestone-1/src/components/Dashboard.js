@@ -22,10 +22,11 @@ export default function Dashboard() {
   return (
     <>
       <NavigationBar></NavigationBar>
-      <div className="fs-1">
-        {currentUser.email}
-        DASHBOARD BIG BIG
+      <div className="fs-2">
+        Welcome back! <strong>{currentUser.email}</strong>
       </div>
+      <br></br>
+      <div className="fs-2">You are currently on the dashboard page.</div>
     </>
   );
 }
