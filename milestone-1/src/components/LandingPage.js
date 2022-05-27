@@ -13,6 +13,7 @@ export default function LandingPage() {
   } else {
     return (
       <>
+      <div className="containe">
         <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
           <div className="container-fluid">
             <a className="navbar-brand" href="/">
@@ -52,6 +53,7 @@ export default function LandingPage() {
                 >
                   Login
                 </a>
+                <span> </span>
                 <a
                   href="/signup"
                   className="btn btn-secondary text-white"
@@ -63,13 +65,19 @@ export default function LandingPage() {
             </nav>
           </div>
         </nav>
+        <div className="d-flex flex-column">
+          <h1 className="d-flex justify-content-center text-primary">Snail Express</h1>
+          <div className="d-flex justify-content-center text-secondary">Post your train of thought</div>
+          <br></br>
           <div className="fs-2">
             {/* {currentUser ? currentUser.email : "ur mom"} */}
-            Looking for an interactive classroom application for online
+            Looking foran interactive classroom application for online
             learning? Try <strong>snail-express!</strong>
           </div>
           <br></br>
           <div className="fs-2">You are currently on our landing page.</div>
+        </div>
+      </div>
       </>
     );
   }
