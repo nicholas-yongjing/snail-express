@@ -4,6 +4,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { Card } from "react-bootstrap";
 import Dashboard from "./Dashboard";
 
+//import '../test-style.css';
+
 export default function LandingPage() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
@@ -12,8 +14,31 @@ export default function LandingPage() {
     navigate("/dashboard");
   } else {
     return (
+      /*<>
+        <div class="header">
+          <div class="header-left">
+            <div>Snail Express</div>
+          </div>
+          <ul class="header-links">
+            <li><a href="pages/about.html">about us</a></li>
+          </ul>
+        </div>
+        <div class="content">
+          <h1 className="d-flex justify-content-center text-primary">Snail Express</h1>
+          <div className="d-flex justify-content-center text-secondary">Post your train of thought</div>
+          <br></br>
+          <div className="fs-2">
+            Looking for an interactive classroom application for online
+            learning? Try <strong>snail-express!</strong>
+          </div>
+          <br></br>
+          <div className="fs-2">You are currently on our landing page.</div>
+        </div>
+        <div class="footer">Done by Team Snail for Orbital AY21/22</div>
+
+      </>*/
       <>
-      <div className="containe">
+      <div className="container">
         <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
           <div className="container-fluid">
             <a className="navbar-brand" href="/">
@@ -70,7 +95,6 @@ export default function LandingPage() {
           <div className="d-flex justify-content-center text-secondary">Post your train of thought</div>
           <br></br>
           <div className="fs-2">
-            {/* {currentUser ? currentUser.email : "ur mom"} */}
             Looking foran interactive classroom application for online
             learning? Try <strong>snail-express!</strong>
           </div>
