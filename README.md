@@ -91,7 +91,9 @@ Students are also unable to answer questions posed by other students. The interf
 
 ### Current Progress
 
-- 
+- Account creation
+- Log in and log out system
+- View profile 
 
 ### Additional Features
 
@@ -130,6 +132,11 @@ Final touches: allowing lecturers to fully customise the rank titles of students
 
 Database: Firebase
 
-Frontend: HTML/CSS/Javascript
+Frontend: HTML/CSS/Javascript (Bootstrap, ReactJS)
 
-Backend: Javascript (ReactJS)
+Backend: Firebase (Backend-as-a-Service)
+
+## Technical Proof of Concept
+
+## Project Log
+https://docs.google.com/spreadsheets/d/1FVq-X5LiwxegWNH8CFDZG4TTdpNZskBeQjSvQOi2WE4/edit?usp=sharing
