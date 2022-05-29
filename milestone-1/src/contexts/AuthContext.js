@@ -38,11 +38,15 @@ export function AuthProvider({ children }) {
   }
 
   function updateUserEmail(email) {
-    return updateEmail(currentUser, email);
+    return updateEmail(currentUser, email).then(() => {
+      console.log("Successfully updated email");
+    });
   }
 
   function updateUserPassword(password) {
-    return updatePassword(currentUser, password);
+    return updatePassword(currentUser, password).then(() => {
+      console.log("Successfully updated password");
+    });;
   }
 
   useEffect(() => {

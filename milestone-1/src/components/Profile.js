@@ -18,10 +18,10 @@ export default function Profile() {
             <strong>Email:</strong> {currentUser.email}
           </div>
           <div>
-            <strong>Enrolled course:</strong> CS2030Snail
+            <strong>Enrolled course:</strong> CP2106  
           </div>
           <div>
-            <strong>Role:</strong> Snail
+            <strong>Role:</strong> Student
           </div>
           <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
             Update profile

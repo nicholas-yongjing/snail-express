@@ -91,11 +91,11 @@ export default function LandingPage() {
           </div>
         </nav>
         <div className="d-flex flex-column">
-          <h1 className="d-flex justify-content-center text-primary">Snail Express</h1>
+          <h1 className="d-flex justify-content-center text-primary">snail-express</h1>
           <div className="d-flex justify-content-center text-secondary">Post your train of thought</div>
           <br></br>
           <div className="fs-2">
-            Looking foran interactive classroom application for online
+            Looking for an interactive classroom application for online
             learning? Try <strong>snail-express!</strong>
           </div>
           <br></br>
