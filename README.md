@@ -130,13 +130,23 @@ Final touches: allowing lecturers to fully customise the rank titles of students
 
 ## Tech Stack
 
-Database: Firebase
+Database: Firebase Realtime Database
 
 Frontend: HTML/CSS/Javascript (Bootstrap, ReactJS)
 
 Backend: Firebase (Backend-as-a-Service)
 
-## Technical Proof of Concept
+## Github Repository
+https://github.com/gohyongjing/snail-express
 
 ## Project Log
 https://docs.google.com/spreadsheets/d/1FVq-X5LiwxegWNH8CFDZG4TTdpNZskBeQjSvQOi2WE4/edit?usp=sharing
+
+## Project Poster
+https://drive.google.com/file/d/1FNZ5tc_ZzDNdcdMH6RDpL5Udgjm-6KCq/view?usp=sharing
+
+## Project Video
+https://drive.google.com/file/d/1MeOF-cnqC1AzoXoX8e65BPDw3wjIi8M0/view?usp=sharing
+
+## Technical Proof of Concept
+https://drive.google.com/file/d/1K_oX5cx4eZyCk_Dpc7ExWVLJ8bfCAiAD/view?usp=sharing
