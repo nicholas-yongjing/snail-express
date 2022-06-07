@@ -1,5 +1,5 @@
 {
-  "name": "milestone-1",
+  "name": "snail-express",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,7 +9,6 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
-    "bootstrap": "^5.1.3",
     "firebase": "^9.8.1",
     "jquery": "^3.6.0",
     "react": "^18.1.0",
