@@ -27,8 +27,8 @@ export default function NavigationBar() {
           <Link to="/">Pricing</Link>
         </div>
         <div className="nav-bar-right">
-          <button><Link to="/login">Log in</Link></button>
-          <button><Link to="/signup">Sign Up</Link></button>
+          <button onClick={() => {navigate('/login')}}>Log in</button>
+          <button onClick={() => {navigate('/signup')}}>Sign Up</button>
         </div>
       </nav>
     );

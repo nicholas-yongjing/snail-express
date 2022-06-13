@@ -42,7 +42,7 @@ export default function Login() {
             <label htmlFor='password'>Password: </label>
             <input type='password' id='password' ref={passwordRef} required></input>
           </div>
-          <button disabled={loading} type="submit">
+          <button className="generic-button" disabled={loading} type="submit">
             Log in
           </button>
         </form>

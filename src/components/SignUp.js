@@ -51,7 +51,7 @@ export default function SignUp() {
               <label htmlFor='confirm-password'>Confirm Password: </label>
               <input type='password' id='confirm-password' ref={passwordConfirmRef} required></input>
             </div>
-            <button disabled={loading} type="submit">
+            <button className="generic-button" disabled={loading} type="submit">
               Sign Up
             </button>
           </form>
