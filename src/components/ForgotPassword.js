@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
-import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+
+import NavigationBar from "./NavigationBar";
 
 export default function ForgotPassword() {
   const emailRef = useRef();
@@ -27,27 +28,25 @@ export default function ForgotPassword() {
   }
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Password reset</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {message && <Alert variant="success">{message}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
-            <br></br>
-            <Button disabled={loading} className="w-100" type="submit">
-              Reset password
-            </Button>
-          </Form>
-          <div className="w-100 text-center mt-3">
-            <Link to="/login">Return to login</Link>
+    <div>
+      <NavigationBar />
+      <div className="password-reset">
+        <h1>Password Reset</h1>
+        {error && <div className="password-reset-failed">{error}</div>}
+        {message && <div className="password-reset-message">{message}</div>}
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor='email'>Email Address: </label>
+            <input type='email' id='email' ref={emailRef} required></input>
           </div>
-        </Card.Body>
-      </Card>
-    </>
+          <button disabled={loading} type="submit">
+            Reset Password
+          </button>
+        </form>
+        <div className="password-reset-footer">
+          <Link to="/login">Return to login</Link>
+        </div>
+      </div>
+    </div>
   );
 }

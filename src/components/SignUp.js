@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 import NavigationBar from "./NavigationBar";
 
@@ -57,10 +56,10 @@ export default function SignUp() {
             </button>
           </form>
           <div className="sign-up-footer">
-            <div className="text-center">
+            <div>
               Already have an account? Proceed to <Link to="/Login">login</Link>
             </div>
-            <div className="text-center">
+            <div>
               Back to <Link to="/">home</Link>
             </div>
           </div>

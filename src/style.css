@@ -67,11 +67,12 @@ body {
     width: 50vw;
 }
 
-/** Log in and sign up Page **/
+/** Log in, Sign up, Password Reset Page **/
 
 .log-in,
-.sign-up {
-    height: 100vh;
+.sign-up,
+.password-reset {
+    height: 90vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
@@ -81,7 +82,8 @@ body {
 }
 
 .sign-up > form, 
-.log-in > form {
+.log-in > form,
+.password-reset > form {
     font-size: 32px;
     display: flex;
     flex-direction: column;
@@ -89,19 +91,22 @@ body {
 }
 
 .sign-up > form > div,
-.log-in > form > div {
+.log-in > form > div,
+.password-reset > form > div {
     display: flex;
     justify-content: space-between;
     gap: 10px;
 }
 
 .sign-up > form input,
-.log-in > form input {
+.log-in > form input,
+.password-reset > form input {
     font-size: 32px;
 }
 
 .sign-up > form > button,
-.log-in > form > button {
+.log-in > form > button,
+.password-reset > form > button {
     width: 200px;
     font-size: 30px;
     border: 2px solid azure;
@@ -112,13 +117,19 @@ body {
     align-self: center;
 }
 
+.password-reset > form > button {
+    width: 400px;
+}
+
 .sign-up > form > button:hover,
-.log-in > form > button:hover {
+.log-in > form > button:hover,
+.password-reset > form > button:hover {
     background-color:mediumblue;
 }
 
 .sign-up > .sign-up-footer,
-.log-in > .log-in-footer {
+.log-in > .log-in-footer,
+.password-reset > .password-reset-footer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -126,7 +137,13 @@ body {
 }
 
 .sign-up-failed,
-.log-in-failed {
+.log-in-failed,
+.password-reset-failed {
     color: red;
+    font-weight: 600;
+}
+
+.password-reset-message {
+    color: green;
     font-weight: 600;
 }
