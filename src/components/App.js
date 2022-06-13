@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "../contexts/AuthContext";
 
 import LandingPage from "./LandingPage";
@@ -15,7 +15,7 @@ import '../style.css';
 
 export default function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <AuthProvider>
         <Routes>
           <Route path="/" element={<LandingPage />}> </Route>
@@ -27,6 +27,6 @@ export default function App() {
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>}></Route>
         </Routes>
       </AuthProvider>
-    </Router>
+    </BrowserRouter>
   );
 }

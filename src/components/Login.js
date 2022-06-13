@@ -32,7 +32,7 @@ export default function Login() {
       <NavigationBar />
       <div className="log-in">
         <h1>Log in</h1>
-        {error && <div className="login-failed">{error}</div>}
+        {error && <div className="log-in-failed">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor='email'>Email Address: </label>
