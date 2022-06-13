@@ -1,0 +1,67 @@
+body {
+    margin: 0px;
+}
+
+/** Navigation Bar **/
+.nav-bar {
+    font-size: 30px;
+    background-color:grey;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-bar-left,
+.nav-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-bar-left > .logo {
+    font-size: 42px;
+}
+
+.nav-bar-right > * {
+    border-radius: 5px;
+}
+
+.nav-bar-left a,
+.nav-bar-right a {
+    padding: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+.nav-bar-left a:hover,
+.nav-bar-right a:hover {
+    color: azure;
+}
+
+.nav-bar-right a {
+    border: 2px solid azure;
+    background-color: lightgreen;
+}
+
+.nav-bar-right a:hover {
+    border: 2px solid lightgreen;
+    background-color: green;
+}
+/** Landing Page **/
+
+.landing-page {
+    font-size: 30px;
+    margin: 0px;
+    background-color:aliceblue;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.landing-page > * {
+    text-align: center;
+    width: 50vw;
+}
