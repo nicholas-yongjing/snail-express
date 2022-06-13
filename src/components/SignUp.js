@@ -35,7 +35,7 @@ export default function SignUp() {
     <>
       <div>
         <NavigationBar />
-        <div className="sign-up">
+        <div className="content sign-up">
           <h1>Sign up</h1>
           {error && <div className="sign-up-failed">{error}</div>}
           <form onSubmit={handleSubmit}>

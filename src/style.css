@@ -1,7 +1,19 @@
+/** General Content **/
+
 body {
     margin: 0px;
     background-color:aliceblue;
     font-size: 30px;
+}
+
+.content {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
 }
 
 /** Navigation Bar **/
@@ -11,6 +23,10 @@ body {
     padding: 10px;
     display: flex;
     justify-content: space-between;
+}
+
+.nav-bar a {
+    text-decoration: none;
 }
 
 .nav-bar-left,
@@ -24,43 +40,56 @@ body {
     font-size: 42px;
 }
 
-.nav-bar-right > * {
-    border-radius: 5px;
-}
-
-.nav-bar-left a,
-.nav-bar-right a {
-    padding: 10px;
+.nav-bar-left > a,
+.nav-bar-right > a {
+    padding: 5px;
     color: black;
-    text-decoration: none;
 }
 
-.nav-bar-left a:hover,
-.nav-bar-right a:hover {
+.nav-bar-left > a:hover,
+.nav-bar-right > a:hover {
     color: azure;
 }
 
-.nav-bar-right a {
+.nav-bar-right >  {
+    border-radius: 5px;
+}
+
+.nav-bar-right > button {
+    font-size: 24px;
+    padding: 5px;
+    cursor: pointer;
     border: 2px solid azure;
+    border-radius: 5px;
     background-color: lightgreen;
 }
 
-.nav-bar-right a:hover {
+.nav-bar-right > button:hover {
     border: 2px solid lightgreen;
     background-color: green;
 }
 
-/** Landing Page **/
-
-.landing-page {
-    margin: 0px;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.nav-bar-right > button > a{
+    color: green
 }
+
+.nav-bar-right > button > a:hover{
+    color: white
+}
+
+.nav-bar-right > button.log-out {
+
+    border: 2px solid darkred;
+    background-color: pink;
+    color: black;
+}
+
+.nav-bar-right button.log-out:hover {
+    color: azure;
+    background-color: darkred;
+}
+
+/** Landing Page **/
 
 .landing-page > * {
     text-align: center;
@@ -68,18 +97,6 @@ body {
 }
 
 /** Log in, Sign up, Password Reset Page **/
-
-.log-in,
-.sign-up,
-.password-reset {
-    height: 90vh;
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-}
 
 .sign-up > form, 
 .log-in > form,
@@ -146,4 +163,13 @@ body {
 .password-reset-message {
     color: green;
     font-weight: 600;
+}
+
+/** Dashboard Page **/
+
+.dashboard {
+    border: 2px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

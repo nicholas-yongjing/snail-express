@@ -14,7 +14,7 @@ export default function LandingPage() {
     return (
       <div>
         <NavigationBar />
-        <div className="landing-page">
+        <div className="content landing-page">
           <h1>snail-express</h1>
           <h2>Post your train of thought</h2>
           <div>

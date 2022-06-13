@@ -30,7 +30,7 @@ export default function Login() {
   return (
     <div>
       <NavigationBar />
-      <div className="log-in">
+      <div className="content log-in">
         <h1>Log in</h1>
         {error && <div className="log-in-failed">{error}</div>}
         <form onSubmit={handleSubmit}>

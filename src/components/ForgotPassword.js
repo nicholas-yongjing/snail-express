@@ -30,7 +30,7 @@ export default function ForgotPassword() {
   return (
     <div>
       <NavigationBar />
-      <div className="password-reset">
+      <div className="content password-reset">
         <h1>Password Reset</h1>
         {error && <div className="password-reset-failed">{error}</div>}
         {message && <div className="password-reset-message">{message}</div>}
