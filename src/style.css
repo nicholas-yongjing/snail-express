@@ -32,6 +32,19 @@ body {
     background-color: mediumblue;
 }
 
+.sign-up-failed,
+.log-in-failed,
+.password-reset-failed,
+.profile-update-failed {
+    color: red;
+    font-weight: 600;
+}
+
+.password-reset-message {
+    color: green;
+    font-weight: 600;
+}
+
 /** Navigation Bar **/
 .nav-bar {
     font-size: 30px;
@@ -108,11 +121,12 @@ body {
     width: 50vw;
 }
 
-/** Log in, Sign up, Password Reset Page **/
+/** Log in, Sign up, Password reset, Profile update Page **/
 
 .sign-up > form, 
 .log-in > form,
-.password-reset > form {
+.password-reset > form,
+.profile-update > form {
     font-size: 32px;
     display: flex;
     flex-direction: column;
@@ -121,7 +135,8 @@ body {
 
 .sign-up > form > div,
 .log-in > form > div,
-.password-reset > form > div {
+.password-reset > form > div,
+.profile-update > form > div {
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -129,33 +144,25 @@ body {
 
 .sign-up > form input,
 .log-in > form input,
-.password-reset > form input {
+.password-reset > form input,
+.profile-update > form input {
+    width: 50vw;
     font-size: 32px;
 }
 
-.password-reset > form > button {
+.password-reset > form > button,
+.profile-update > form > button {
     width: 400px;
 }
 
 .sign-up > .sign-up-footer,
 .log-in > .log-in-footer,
-.password-reset > .password-reset-footer {
+.password-reset > .password-reset-footer,
+.profile-update > .profile-update-footer {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5px;
-}
-
-.sign-up-failed,
-.log-in-failed,
-.password-reset-failed {
-    color: red;
-    font-weight: 600;
-}
-
-.password-reset-message {
-    color: green;
-    font-weight: 600;
 }
 
 /** Profile Page **/

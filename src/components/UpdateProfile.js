@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+
+import { useAuth } from "../contexts/AuthContext";
+import NavigationBar from "./NavigationBar";
 
 export default function UpdateProfile() {
   const emailRef = useRef();
@@ -44,48 +46,50 @@ export default function UpdateProfile() {
   }
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Update profile</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email" className="mb-2">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                ref={emailRef}
-                required
-                defaultValue={currentUser.email}
-              />
-            </Form.Group>
-            <Form.Group id="password" className="mb-2">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                ref={passwordRef}
-                placeholder="Leave blank to keep the same"
-              />
-            </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                ref={passwordConfirmRef}
-                placeholder="Leave blank to keep the same"
-              />
-            </Form.Group>
-            <br></br>
-            <Button disabled={loading} className="w-100" type="submit">
-              Update profile
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-      <br></br>
-      <div className="text-center">
-        <Link to="/dashboard">Cancel</Link>
+    <div>
+      <NavigationBar />
+      <div className="content profile-update">
+        <h1>Profile Update</h1>
+        {error && <div className="profile-update-failed">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor='email'>Email Address: </label>
+            <input
+              type='email'
+              id='email'
+              ref={emailRef}
+              defaultValue={currentUser.email}
+              required>
+            </input>
+          </div>
+          <div>
+            <label htmlFor='password'>Password: </label>
+            <input
+              type='password'
+              id='password'
+              ref={passwordRef}
+              placeholder="Leave blank to keep the same"
+              required>
+            </input>
+          </div>
+          <div>
+            <label htmlFor='confirm-password'>Confirm Password: </label>
+            <input
+              type='password'
+              id='confirm-password'
+              ref={passwordConfirmRef}
+              placeholder="Leave blank to keep the same"
+              required>
+            </input>
+          </div>
+          <button className="generic-button" disabled={loading} type="submit">
+            Update profile
+          </button>
+        </form>
+        <div className="text-center">
+          <Link to="/dashboard">Cancel</Link>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
