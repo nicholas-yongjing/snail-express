@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 import NavigationBar from "./NavigationBar";
 
@@ -32,15 +31,15 @@ export default function Login() {
     <div>
       <NavigationBar />
       <div className="log-in">
-        <h1>Login</h1>
+        <h1>Log in</h1>
         {error && <div className="login-failed">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div>
-            <label for='email'>Email Address: </label>
+            <label htmlFor='email'>Email Address: </label>
             <input type='email' id='email' ref={emailRef} required></input>
           </div>
           <div>
-            <label for='password'>Password: </label>
+            <label htmlFor='password'>Password: </label>
             <input type='password' id='password' ref={passwordRef} required></input>
           </div>
           <button disabled={loading} type="submit">

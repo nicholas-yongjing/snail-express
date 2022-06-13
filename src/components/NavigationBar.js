@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function NavigationBar() {
   const [error, setError] = useState("");
@@ -27,7 +27,7 @@ export default function NavigationBar() {
           <Link to="/">Pricing</Link>
         </div>
         <nav className="nav-bar-right">
-          <Link to="/login">Login</Link>
+          <Link to="/login">Log in</Link>
           <Link to="/signup">Sign Up</Link>
         </nav>
       </nav>
