@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -8,11 +8,14 @@ export default function LandingPage() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  if (currentUser) {
-    navigate("/dashboard");
-  } else {
-    return (
-      <>
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard");
+    }
+  }, []);
+
+  return (
+    <>
       <div className="container">
         <NavigationBar />
         <div className="d-flex flex-column">
@@ -27,7 +30,6 @@ export default function LandingPage() {
           <div className="fs-2">You are currently on our landing page.</div>
         </div>
       </div>
-      </>
-    );
-  }
+    </>
+  );
 }
