@@ -84,7 +84,7 @@ export default function NavigationBar() {
           </button>
           <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div className="navbar-nav">
-              <Link className="nav-link text-light" to='/'>Forums</Link>
+              <Link className="nav-link text-light" to='/forums'>Forums</Link>
               <Link className="nav-link text-light" to='/'>Quiz</Link>
               <Link className="nav-link text-light" to='/'>Lecture Feedback</Link>
             </div>

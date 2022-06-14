@@ -11,6 +11,7 @@ import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./Dashboard";
 import Profile from "./Profile";
 import UpdateProfile from "./UpdateProfile";
+import Forums from "./Forums";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}></Route>
               <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>}></Route>
               <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>}></Route>
+              <Route path="/forums" element={<PrivateRoute><Forums /></PrivateRoute>}></Route>
             </Routes>
           </AuthProvider>
         </BrowserRouter>
