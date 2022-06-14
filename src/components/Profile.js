@@ -3,10 +3,13 @@ import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
+import NavigationBar from "./NavigationBar";
+
 export default function Profile() {
   const { currentUser } = useAuth();
   return (
     <>
+      <NavigationBar />
       <Card>
         <Card.Body>
           {/* <img src={logo} className="img-responsive" alt="Website logo" height="150px" /> */}

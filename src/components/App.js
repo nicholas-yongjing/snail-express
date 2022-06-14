@@ -11,7 +11,6 @@ import Profile from "./Profile";
 import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContext";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import NavigationBar from "./NavigationBar";
 
 function App() {
   return (
@@ -23,14 +22,13 @@ function App() {
         <Router>
           <AuthProvider>
             <Routes>
+              <Route path="/" element={<LandingPage />}> </Route>
               <Route path="/signup" element={<SignUp />}> </Route>
               <Route path="/login" element={<Login />}> </Route>
-              <Route path="/forgot-password" element={<ForgotPassword/>}> </Route>F
-              <Route path="/" element={<LandingPage />}> </Route>
+              <Route path="/forgot-password" element={<ForgotPassword/>}> </Route>
               <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}></Route>
-              <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>}></Route>
               <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>}></Route>
-              <Route path="/navigation-bar" element={<NavigationBar />}> </Route>
+              <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>}></Route>
             </Routes>
           </AuthProvider>
         </Router>
