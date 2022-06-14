@@ -1,5 +1,4 @@
 import React from "react";
-import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContext";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -15,27 +14,19 @@ import Forums from "./Forums";
 
 function App() {
   return (
-    <Container
-      className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <div className="w-100" style={{ maxWidth: "400px" }}>
-        <BrowserRouter>
-          <AuthProvider>
-            <Routes>
-              <Route path="/" element={<LandingPage />}> </Route>
-              <Route path="/signup" element={<SignUp />}> </Route>
-              <Route path="/login" element={<Login />}> </Route>
-              <Route path="/forgot-password" element={<ForgotPassword/>}> </Route>
-              <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}></Route>
-              <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>}></Route>
-              <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>}></Route>
-              <Route path="/forums" element={<PrivateRoute><Forums /></PrivateRoute>}></Route>
-            </Routes>
-          </AuthProvider>
-        </BrowserRouter>
-      </div>
-    </Container>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
