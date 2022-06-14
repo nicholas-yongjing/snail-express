@@ -12,7 +12,7 @@ export default function LandingPage() {
     if (currentUser) {
       navigate("/dashboard");
     }
-  }, []);
+  });
 
   return (
     <>

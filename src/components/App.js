@@ -1,16 +1,16 @@
 import React from "react";
-import SignUp from "./SignUp";
-import Dashboard from "./Dashboard";
-import Login from "./Login";
-import PrivateRoute from "./PrivateRoute";
-import UpdateProfile from "./UpdateProfile";
-import LandingPage from "./LandingPage";
-import ForgotPassword from "./ForgotPassword";
-import Profile from "./Profile";
-
 import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContext";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import LandingPage from "./LandingPage";
+import SignUp from "./SignUp";
+import Login from "./Login";
+import ForgotPassword from "./ForgotPassword";
+import PrivateRoute from "./PrivateRoute";
+import Dashboard from "./Dashboard";
+import Profile from "./Profile";
+import UpdateProfile from "./UpdateProfile";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
       style={{ minHeight: "100vh" }}
     >
       <div className="w-100" style={{ maxWidth: "400px" }}>
-        <Router>
+        <BrowserRouter>
           <AuthProvider>
             <Routes>
               <Route path="/" element={<LandingPage />}> </Route>
@@ -31,7 +31,7 @@ function App() {
               <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>}></Route>
             </Routes>
           </AuthProvider>
-        </Router>
+        </BrowserRouter>
       </div>
     </Container>
   );
