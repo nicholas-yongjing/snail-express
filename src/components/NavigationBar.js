@@ -17,6 +17,10 @@ export default function NavigationBar() {
 
   function getPublicNavbar() {
     return (
+      <div>
+        <div>-</div>{/*Line break to account for navbar out of document flow*/}
+        <div>-</div>
+        <div>-</div>
       <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">
@@ -61,11 +65,16 @@ export default function NavigationBar() {
           </nav>
         </div>
       </nav>
+      </div>
     );
   }
 
   function getPrivateNavBar() {
     return (
+      <div>
+        <div>-</div>{/*Line break to account for navbar out of document flow*/}
+        <div>-</div>
+        <div>-</div> 
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="/dashboard">
@@ -106,6 +115,7 @@ export default function NavigationBar() {
           </nav>
         </div>
       </nav>
+      </div>
     );
   }
 

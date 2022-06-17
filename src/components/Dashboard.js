@@ -1,8 +1,10 @@
 import React from "react";
+import {Link} from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Container } from "react-bootstrap";
 
 import NavigationBar from "./NavigationBar";
+import Classes from "./Classes"; 
 
 export default function Dashboard() {
   const { currentUser } = useAuth();
@@ -20,6 +22,8 @@ export default function Dashboard() {
           </div>
           <br></br>
           <div className="fs-2">You are currently on the dashboard page.</div>
+          <Classes user={currentUser} />
+          <Link to="/add-class">Add Class</Link>
         </div>
       </Container>
     </>
