@@ -21,7 +21,10 @@ export default function AddClass() {
             setLoading(true);
             createClass(
                 classNameRef.current.value,
-                currentUser.uid,
+                {
+                    id: currentUser.uid,
+                    email: currentUser.email
+                },
                 studentsRef.current.value.trim().split(/\s+/));
             navigate("/dashboard");
         } catch {
