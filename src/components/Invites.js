@@ -9,28 +9,19 @@ export default function Invites() {
     const { currentUser } = useAuth();
     const [invites, setInvites] = useState([]);
 
-
     useEffect(() => {
-        console.log('efftec')
         if (currentUser.email) {
-            retrieveInvites();        
-        }
-    }, [currentUser]);
-
-    function retrieveInvites() { 
-        getInvites(currentUser.email).then((snapShot) => {
-            setInvites([]);
-            snapShot.forEach((invite) => {
-                setInvites((oldInvites) => {
-                    return [...oldInvites, { ...invite.data(), id: invite.id }]
+            getInvites(currentUser.email)
+                .then((querySnapshot) => {
+                    setInvites(querySnapshot.docs.map((docSnapshot) => {
+                        return { ...(docSnapshot.data()), id: docSnapshot.id };
+                    }))
                 })
-            });
-        });
-    }
+        }
+    }, [currentUser, handleDelete]);
 
     function handleDelete(inviteId) {
         deleteInvite(inviteId, currentUser.email)
-            .then(() => retrieveInvites());
     }
 
     return (
@@ -42,7 +33,9 @@ export default function Invites() {
                         <div key={invite.id}>
                             <div>{invite.className}</div>
                             <div>Tutor: {invite.headTutor.email}</div>
-                            <button onClick={() => handleDelete(invite.id)}>delete invitation</button>
+                            <button onClick={() => handleDelete(invite.id)}>
+                                delete invitation
+                            </button>
                         </div>
                     );
                 })
