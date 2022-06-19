@@ -9,7 +9,9 @@ import NavigationBar from "../components/NavigationBar";
 export default function AddClass() {
     const { currentUser } = useAuth();
     const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
     const [loading, setLoading] = useState('');
+    const formRef = useRef();
     const classNameRef = useRef();
     const studentsRef = useRef();
     const navigate = useNavigate();
@@ -17,6 +19,7 @@ export default function AddClass() {
     async function handleSubmit(event) {
         event.preventDefault();
         try {
+            setMessage('');
             setError('');
             setLoading(true);
             createClass(
@@ -26,7 +29,8 @@ export default function AddClass() {
                     email: currentUser.email
                 },
                 studentsRef.current.value.trim().split(/\s+/));
-            navigate("/dashboard");
+            formRef.current.reset();
+            setMessage('Class successfully created!')
         } catch {
             setError('Failed to sign in');
         }
@@ -36,9 +40,9 @@ export default function AddClass() {
     return (
         <div>
             <NavigationBar />
-
             {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleSubmit}>
+            {message && <Alert variant="success">{message}</Alert>}
+            <Form ref={formRef} onSubmit={handleSubmit}>
                 <Form.Group id="class-name">
                     <Form.Label>Class Name</Form.Label>
                     <Form.Control type="text" ref={classNameRef} required />
