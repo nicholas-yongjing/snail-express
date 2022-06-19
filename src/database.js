@@ -1,11 +1,12 @@
-import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc, query } from "firebase/firestore";
+import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc, collectionGroup } from "firebase/firestore";
 import { firestore } from "./firebase";
 
 async function createClass(className, headTutor, studentsEmail) {
-    await addDoc(collection(firestore, "classes"), {
+    return await addDoc(collection(firestore, "classes"), {
         className: className,
         headTutor: headTutor,
-        invites: studentsEmail
+        invites: studentsEmail,
+        studentIds: []
     }).catch((err) => {
         console.log(`Error creating class: ${err}`);
     })
@@ -13,46 +14,63 @@ async function createClass(className, headTutor, studentsEmail) {
 
 async function addUserToClass(classId, user, userType) {
     if (userType === 'student') {
-        const docRef = doc(firestore, "classes", classId, "students", user.id);
-        await setDoc(docRef, user);
+        const classDocRef = doc(firestore, "classes", classId);
+        getDoc(classDocRef)
+            .then((snapshot) => {
+                const oldStudentIds = snapshot.data().studentIds;
+                setDoc(classDocRef,
+                    {studentIds: [...oldStudentIds, user.id]}, 
+                    {merge: true})
+            });
+        const studentDocRef = doc(firestore, "classes", classId, "students", user.id);
+        return await setDoc(studentDocRef, user);
     } else {
         throw new Error(`Invalid user type: ${userType}`);
     }
 }
 
-/*async function getClasses(userId) {
-    const query = query(collection(firestore, 'classes'),
-                    where());
-}*/
+async function getClasses(userId, role) {
+    console.log("Retrieving classes")
+    if (role === 'student') {
+        const q = query(collection(firestore, "classes"),
+            where('studentIds', 'array-contains', userId));
+        return (getDocs(q)
+            .catch((err) => {
+                console.log(`Error retrieving classes: ${err}`)
+            }));
+    } else {
+        throw new Error(`Unknown role: ${role}`)
+    }
+}
 
 async function getInvites(email) {
+    console.log("Retrieving invites")
     const q = query(collection(firestore, "classes"),
         where('invites', 'array-contains', email));
     return (getDocs(q)
         .catch((err) => {
             console.log(`Error retrieving invites: ${err}`)
         }));
-
 }
 
 async function deleteInvite(inviteId, email) {
     const oldInvites = await getDoc(doc(firestore, "classes", inviteId));
     const newInvites = oldInvites.data().invites.filter((invite) => invite !== email);
-    await setDoc(doc(firestore, "classes", inviteId),
+    return await setDoc(doc(firestore, "classes", inviteId),
         { invites: newInvites },
-        { merge: true })
+        { merge: true });
 }
 
 async function acceptInvite(inviteId, studentId, email) {
     const snapshot = await getDoc(doc(firestore, "classes", inviteId));
     if (snapshot.data().invites.includes(email)) {
-        addUserToClass(inviteId,
+        return addUserToClass(inviteId,
             {
                 id: studentId,
                 email: email
             },
-            'student');
-        deleteInvite(inviteId, email);
+            'student')
+            .then(deleteInvite(inviteId, email));
     } else {
         throw new Error('User is not invited to class and cannot accept invite');
     }
@@ -60,4 +78,4 @@ async function acceptInvite(inviteId, studentId, email) {
 
 }
 
-export { createClass, getInvites, acceptInvite, deleteInvite };
+export { createClass, getInvites, acceptInvite, deleteInvite, getClasses };

@@ -10,6 +10,10 @@ export default function Invites() {
     const [invites, setInvites] = useState([]);
 
     useEffect(() => {
+        populateInvites();
+    }, [currentUser.email]);
+
+    function populateInvites() {
         if (currentUser.email) {
             getInvites(currentUser.email)
                 .then((querySnapshot) => {
@@ -20,15 +24,21 @@ export default function Invites() {
                     }
                 })
         }
-    }, [currentUser, handleDelete]);
+    }
+
+    function handleAccept(inviteId) {
+        acceptInvite(inviteId, currentUser.uid, currentUser.email)
+            .then(() => populateInvites());
+    }
 
     function handleDelete(inviteId) {
         deleteInvite(inviteId, currentUser.email)
+            .then(() => populateInvites());
     }
 
     return (
         <Container>
-            <h1>My classes</h1>
+            <h1>Pending Invitations</h1>
             {
                 invites.map((invite) => {
                     return (
@@ -36,7 +46,7 @@ export default function Invites() {
                             <Card.Body>
                                 <div>{invite.className}</div>
                                 <div>Tutor: {invite.headTutor.email}</div>
-                                <button onClick={() => acceptInvite(invite.id, currentUser.uid, currentUser.email)}>
+                                <button onClick={() => handleAccept(invite.id)}>
                                     Accept invitation
                                 </button>
                                 <button onClick={() => handleDelete(invite.id)}>

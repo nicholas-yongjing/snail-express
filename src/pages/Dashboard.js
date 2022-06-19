@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Container } from "react-bootstrap";
 
 import NavigationBar from "../components/NavigationBar";
+import Classes from "../components/Classes"; 
 import Invites from "../components/Invites"; 
 
 export default function Dashboard() {
@@ -21,6 +22,7 @@ export default function Dashboard() {
           </div>
           <br></br>
           <div className="fs-2">You are currently on the dashboard page.</div>
+          <Classes />
           <Invites />
           <Link to="/add-class">Add Class</Link>
         </div>
