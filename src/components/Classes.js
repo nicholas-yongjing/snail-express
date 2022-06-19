@@ -1,65 +1,67 @@
 import { useEffect, useState } from 'react';
-
 import { useAuth } from "../contexts/AuthContext";
-import { Card } from 'react-bootstrap';
-
+import { useClass } from '../contexts/ClassContext';
 import { getClasses } from '../database';
+import { Card } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 export default function Classes() {
     const { currentUser } = useAuth();
+    const { setCurrentClass } = useClass();
     const [enrolledClasses, setEnrolledClasses] = useState([]);
     const [teachingClasses, setTeachingClasses] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (currentUser.email) {
-            getClasses(currentUser.uid, 'student')
-                .then((querySnapshot) => {
-                    if (querySnapshot !== undefined) {
-                        setEnrolledClasses(querySnapshot.docs.map((docSnapshot) => {
-                            return { ...(docSnapshot.data()), id: docSnapshot.id };
-                        }))
-                    }
-                })
-            getClasses(currentUser.uid, 'tutor')
-                .then((querySnapshot) => {
-                    if (querySnapshot !== undefined) {
-                        setTeachingClasses(querySnapshot.docs.map((docSnapshot) => {
-                            return { ...(docSnapshot.data()), id: docSnapshot.id };
-                        }))
-                    }
-                })
+            populateClasses('student', setEnrolledClasses);
+            populateClasses('tutor', setTeachingClasses);
         }
     }, [currentUser]);
+
+    function populateClasses(userType, setter) {
+        getClasses(currentUser.uid, userType)
+            .then((querySnapshot) => {
+                if (querySnapshot !== undefined) {
+                    setter(querySnapshot.docs.map((docSnapshot) => {
+                        return { ...(docSnapshot.data()), id: docSnapshot.id };
+                    }))
+                }
+            })
+    }
+
+    function handleClick(clss) {
+        setCurrentClass(clss)
+        navigate('/forums');
+    }
 
     return (
         <Card>
             <Card.Body>
-            <h1>My classes</h1>
-            <h2>Enrolled</h2>
-            {
-                enrolledClasses.map((clss) => {
+                <h1>My classes</h1>
+                {[['Enrolled', enrolledClasses],
+                ['Teaching', teachingClasses]].map(([header, arr]) => {
                     return (
-                        <Card key={clss.id}>
-                            <Card.Body>
-                                <div>{clss.className}</div>
-                            </Card.Body>
-                        </Card>
+                        <div key={header}>
+                            <h2>{header}</h2>
+                            {
+                                arr.map((clss) => {
+                                    return (
+                                        <Card
+                                            key={clss.id} 
+                                            onClick={() => handleClick(clss)}
+                                        >
+                                            <Card.Body>
+                                                <div>{clss.className}</div>
+                                            </Card.Body>
+                                        </Card>
+                                    );
+                                })
+                            }
+                        </div>
                     );
-                })
-            }
-            <h2>Teaching</h2>
-            {
-                teachingClasses.map((clss) => {
-                    return (
-                        <Card key={clss.id}>
-                            <Card.Body>
-                                <div>{clss.className}</div>
-                            </Card.Body>
-                        </Card>
-                    );
-                })
-            }
-        </Card.Body>
+                })}
+            </Card.Body>
         </Card>
     );
 };

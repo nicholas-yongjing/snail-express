@@ -17,9 +17,9 @@ export default function Dashboard() {
         style={{ minHeight: "100vh" }}
       >
         <div className="w-100" style={{ maxWidth: "400px" }}>
-          <div className="fs-2">
+          <h1 className="fs-2">
             Welcome back! <strong>{currentUser.email}</strong>
-          </div>
+          </h1>
           <br></br>
           <div className="fs-2">You are currently on the dashboard page.</div>
           <Classes />
