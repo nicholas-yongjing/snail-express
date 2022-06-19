@@ -1,16 +1,20 @@
-import React from "react";
-import { AuthProvider } from "../contexts/AuthContext";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-import LandingPage from "./LandingPage";
-import SignUp from "./SignUp";
-import Login from "./Login";
-import ForgotPassword from "./ForgotPassword";
-import PrivateRoute from "./PrivateRoute";
-import Dashboard from "./Dashboard";
-import Profile from "./Profile";
-import UpdateProfile from "./UpdateProfile";
-import AddClass from "./AddClass";
+import LandingPage from "./pages/LandingPage";
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import UpdateProfile from "./pages/UpdateProfile";
+import AddClass from "./pages/AddClass";
+
+function PrivateRoute({ children }) {
+  const { currentUser } = useAuth();
+
+  return currentUser ? children : <Navigate to="/" />;
+}
 
 function App() {
   return (

@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Container } from "react-bootstrap";
 
-import NavigationBar from "./NavigationBar";
+import NavigationBar from "../components/NavigationBar";
 
 export default function LandingPage() {
   const { currentUser } = useAuth();

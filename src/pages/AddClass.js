@@ -1,10 +1,10 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Form, Button, Alert } from "react-bootstrap";
 import { createClass } from "../database";
 
-import NavigationBar from "./NavigationBar";
+import NavigationBar from "../components/NavigationBar";
 
 export default function AddClass() {
     const { currentUser } = useAuth();

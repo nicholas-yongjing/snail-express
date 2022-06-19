@@ -1,9 +1,8 @@
-import React from "react";
 import { Container, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-import NavigationBar from "./NavigationBar";
+import NavigationBar from "../components/NavigationBar";
 
 export default function Profile() {
   const { currentUser } = useAuth();

@@ -1,10 +1,9 @@
-import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Container } from "react-bootstrap";
 
-import NavigationBar from "./NavigationBar";
-import Invites from "./Invites"; 
+import NavigationBar from "../components/NavigationBar";
+import Invites from "../components/Invites"; 
 
 export default function Dashboard() {
   const { currentUser } = useAuth();
