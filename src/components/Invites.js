@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { useAuth } from "../contexts/AuthContext";
-import { Container } from 'react-bootstrap';
+import { Card, Container } from 'react-bootstrap';
 
-import { getInvites, deleteInvite } from '../database';
+import { getInvites, deleteInvite, acceptInvite } from '../database';
 
 export default function Invites() {
     const { currentUser } = useAuth();
@@ -13,9 +13,11 @@ export default function Invites() {
         if (currentUser.email) {
             getInvites(currentUser.email)
                 .then((querySnapshot) => {
-                    setInvites(querySnapshot.docs.map((docSnapshot) => {
-                        return { ...(docSnapshot.data()), id: docSnapshot.id };
-                    }))
+                    if (querySnapshot !== undefined) {
+                        setInvites(querySnapshot.docs.map((docSnapshot) => {
+                            return { ...(docSnapshot.data()), id: docSnapshot.id };
+                        }))
+                    }
                 })
         }
     }, [currentUser, handleDelete]);
@@ -30,13 +32,18 @@ export default function Invites() {
             {
                 invites.map((invite) => {
                     return (
-                        <div key={invite.id}>
-                            <div>{invite.className}</div>
-                            <div>Tutor: {invite.headTutor.email}</div>
-                            <button onClick={() => handleDelete(invite.id)}>
-                                delete invitation
-                            </button>
-                        </div>
+                        <Card key={invite.id}>
+                            <Card.Body>
+                                <div>{invite.className}</div>
+                                <div>Tutor: {invite.headTutor.email}</div>
+                                <button onClick={() => acceptInvite(invite.id, currentUser.uid, currentUser.email)}>
+                                    Accept invitation
+                                </button>
+                                <button onClick={() => handleDelete(invite.id)}>
+                                    delete invitation
+                                </button>
+                            </Card.Body>
+                        </Card>
                     );
                 })
             }
