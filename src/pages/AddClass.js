@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Form, Button, Alert } from "react-bootstrap";
 import { createClass } from "../database";
@@ -14,7 +14,6 @@ export default function AddClass() {
     const formRef = useRef();
     const classNameRef = useRef();
     const studentsRef = useRef();
-    const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();

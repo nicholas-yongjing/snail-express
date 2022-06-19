@@ -1,4 +1,4 @@
-import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc, collectionGroup } from "firebase/firestore";
+import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc } from "firebase/firestore";
 import { firestore } from "./firebase";
 
 async function createClass(className, headTutor, studentsEmail) {
@@ -31,16 +31,20 @@ async function addUserToClass(classId, user, userType) {
 
 async function getClasses(userId, role) {
     console.log("Retrieving classes")
+    let q;
     if (role === 'student') {
-        const q = query(collection(firestore, "classes"),
+        q = query(collection(firestore, "classes"),
             where('studentIds', 'array-contains', userId));
-        return (getDocs(q)
-            .catch((err) => {
-                console.log(`Error retrieving classes: ${err}`)
-            }));
+    } else if (role === 'tutor') {
+        q = query(collection(firestore, "classes"),
+            where('headTutor.id', '==', userId));
     } else {
         throw new Error(`Unknown role: ${role}`)
     }
+    return (getDocs(q)
+        .catch((err) => {
+            console.log(`Error retrieving classes: ${err}`)
+        }));
 }
 
 async function getInvites(email) {

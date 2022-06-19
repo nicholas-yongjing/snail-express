@@ -1,20 +1,29 @@
 import { useEffect, useState } from 'react';
 
 import { useAuth } from "../contexts/AuthContext";
-import { Card, Container } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 
 import { getClasses } from '../database';
 
 export default function Classes() {
     const { currentUser } = useAuth();
-    const [classes, setClasses] = useState([]);
+    const [enrolledClasses, setEnrolledClasses] = useState([]);
+    const [teachingClasses, setTeachingClasses] = useState([]);
 
     useEffect(() => {
         if (currentUser.email) {
             getClasses(currentUser.uid, 'student')
                 .then((querySnapshot) => {
                     if (querySnapshot !== undefined) {
-                        setClasses(querySnapshot.docs.map((docSnapshot) => {
+                        setEnrolledClasses(querySnapshot.docs.map((docSnapshot) => {
+                            return { ...(docSnapshot.data()), id: docSnapshot.id };
+                        }))
+                    }
+                })
+            getClasses(currentUser.uid, 'tutor')
+                .then((querySnapshot) => {
+                    if (querySnapshot !== undefined) {
+                        setTeachingClasses(querySnapshot.docs.map((docSnapshot) => {
                             return { ...(docSnapshot.data()), id: docSnapshot.id };
                         }))
                     }
@@ -23,10 +32,12 @@ export default function Classes() {
     }, [currentUser]);
 
     return (
-        <Container>
+        <Card>
+            <Card.Body>
             <h1>My classes</h1>
+            <h2>Enrolled</h2>
             {
-                classes.map((clss) => {
+                enrolledClasses.map((clss) => {
                     return (
                         <Card key={clss.id}>
                             <Card.Body>
@@ -36,6 +47,19 @@ export default function Classes() {
                     );
                 })
             }
-        </Container>
+            <h2>Teaching</h2>
+            {
+                teachingClasses.map((clss) => {
+                    return (
+                        <Card key={clss.id}>
+                            <Card.Body>
+                                <div>{clss.className}</div>
+                            </Card.Body>
+                        </Card>
+                    );
+                })
+            }
+        </Card.Body>
+        </Card>
     );
 };
