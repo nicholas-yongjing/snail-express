@@ -116,6 +116,7 @@ export default function NavigationBar() {
                 role="button"
                 to="/"
                 onClick={handleLogout}
+                style={{width: '100px'}}
               >
                 Log out
               </Link>

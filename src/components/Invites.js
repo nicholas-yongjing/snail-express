@@ -41,7 +41,8 @@ export default function Invites() {
             <Card.Body>
                 <h1>Pending Invitations</h1>
                 {
-                    invites.map((invite) => {
+                    (invites.length > 0)
+                    ? invites.map((invite) => {
                         return (
                             <Card key={invite.id}>
                                 <Card.Body>
@@ -57,6 +58,7 @@ export default function Invites() {
                             </Card>
                         );
                     })
+                    : <div>No invitations</div>
                 }
             </Card.Body>
         </Card>

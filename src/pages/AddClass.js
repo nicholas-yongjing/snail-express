@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Card } from "react-bootstrap";
 import { createClass } from "../database";
 
 import NavigationBar from "../components/NavigationBar";
@@ -37,11 +37,15 @@ export default function AddClass() {
     }
 
     return (
-        <div>
+        <>
             <NavigationBar />
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
-            <Form ref={formRef} onSubmit={handleSubmit}>
+            <Form
+                ref={formRef}
+                onSubmit={handleSubmit}
+                className='d-grid m-5'
+            >
                 <Form.Group id="class-name">
                     <Form.Label>Class Name</Form.Label>
                     <Form.Control type="text" ref={classNameRef} required />
@@ -58,14 +62,13 @@ export default function AddClass() {
                     />
                 </Form.Group>
                 <br></br>
-                <Button disabled={loading} className="w-100" type="submit">
+                <Button disabled={loading} className="w-25" type="submit">
                     Create Class
                 </Button>
+                <br></br>
+                <Link to="/dashboard">Back to dashboard</Link>
             </Form>
-            <br></br>
-            <Link to="/dashboard">Back to dashboard</Link>
-
-        </div>
+        </>
 
     );
 
