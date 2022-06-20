@@ -7,11 +7,10 @@ export default function ClassDashBoard() {
     const { currentClass, setCurrentClass } = useClass();
     const navigate = useNavigate()
     const sidebarLinks = [['/class-dashboard', 'Students'],
-                ['/class-dashboard', 'Tutors'],
-                ['/settings', 'Settings']];
+                        ['/class-dashboard', 'Tutors'],
+                        ['/settings-general', 'Settings']];
     function handleClick() {
         setCurrentClass(null);
-        navigate('/dashboard');
     }
 
     return (
