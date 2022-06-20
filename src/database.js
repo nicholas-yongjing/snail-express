@@ -19,8 +19,8 @@ async function addUserToClass(classId, user, userType) {
             .then((snapshot) => {
                 const oldStudentIds = snapshot.data().studentIds;
                 setDoc(classDocRef,
-                    {studentIds: [...oldStudentIds, user.id]}, 
-                    {merge: true})
+                    { studentIds: [...oldStudentIds, user.id] },
+                    { merge: true })
             });
         const studentDocRef = doc(firestore, "classes", classId, "students", user.id);
         return await setDoc(studentDocRef, user);
@@ -78,8 +78,25 @@ async function acceptInvite(inviteId, studentId, email) {
     } else {
         throw new Error('User is not invited to class and cannot accept invite');
     }
-
-
 }
 
-export { createClass, getInvites, acceptInvite, deleteInvite, getClasses };
+async function addForumThread(classId, threadName) {
+    const threadsRef = collection(firestore, "classes", classId, "forumThreads");
+    return (
+        addDoc(threadsRef, { name: threadName })
+            .catch((err) => {
+                throw new Error(`Error adding forum thread: ${err}`);
+            })
+    );
+}
+
+async function getForumThreads(classId) {
+    console.log("Retrieving forum threads");
+    const threadsRef = collection(firestore, "classes", classId, "forumThreads");
+    return (getDocs(threadsRef)
+        .catch((err) => {
+            throw new Error(`Error retrieving forum threads for class ${classId}`)
+        }));
+}
+
+export { createClass, getInvites, acceptInvite, deleteInvite, getClasses, addForumThread, getForumThreads };
