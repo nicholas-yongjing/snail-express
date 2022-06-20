@@ -5,8 +5,7 @@ export default function ClassDashBoard() {
     return (
         <div
             className='d-flex flex-column align-items-stretch gap-3 p-4 bg-secondary p-2'
-            style={{height: '100vh', width: 'min(400px, 25vw)'}}
-        >
+            style={{height: '100vh', width: 'min(400px, 25vw)'}}>
             {
                 [['/dashboard', 'Students'],
                 ['/dashboard', 'Tutors'],

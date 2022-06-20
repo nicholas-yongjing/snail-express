@@ -1,10 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useClass } from '../contexts/ClassContext';
 import NavigationBar from "../components/NavigationBar";
 import ClassSideBar from "../components/ClassSideBar"
 
 export default function ClassDashBoard() {
-    const { currentClass } = useClass();
+    const { currentClass, setCurrentClass } = useClass();
+    const navigate = useNavigate()
+
+    function handleClick() {
+        setCurrentClass(null);
+        navigate('/dashboard');
+    }
 
     return (
         <>
@@ -15,7 +21,7 @@ export default function ClassDashBoard() {
                 <span className='fs-1'>{currentClass ? currentClass.className : ''} </span>
                 <span>
                     <Link to='/dashboard'>
-                        <button className='btn btn-secondary fs-4'>
+                        <button className='btn btn-secondary fs-4' onClick={handleClick}>
                             Back to dashboard
                         </button>
                     </Link>

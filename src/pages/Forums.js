@@ -1,20 +1,18 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useClass } from '../contexts/ClassContext';
+import { useState } from 'react';
 import NavigationBar from "../components/NavigationBar";
-import { useEffect } from 'react';
+import ForumSideBar from "../components/ForumSideBar";
+import ForumPosts from "../components/ForumPosts";
 
 export default function Forums() {
-    const { currentClass } = useClass();
-    const navigate = useNavigate();
+    const [thread, setThread] = useState(null);
 
     return (
         <>
         <NavigationBar />
-        <div>
-            <span>{currentClass ? currentClass.className : ''} </span>
-            <span><Link to='/dashboard'>Back to dashboard</Link></span>
+        <div className='d-flex'>
+            <ForumSideBar thread={thread} setThread = {setThread}/>
+            <ForumPosts thread={thread}/>
         </div>
-        
         </>
 
     );

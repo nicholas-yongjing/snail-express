@@ -21,7 +21,7 @@ export default function NavigationBar() {
       <>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav fs-3">
-            <Link className="nav-link text-light" to='/dashboard'>Dashboard</Link>
+            <Link className="nav-link text-light" to='/class-dashboard'>Dashboard</Link>
             <Link className="nav-link text-light" to='/forums'>Forums</Link>
             <Link className="nav-link text-light" to='/'>Quiz</Link>
             <Link className="nav-link text-light" to='/'>Lecture Feedback</Link>
