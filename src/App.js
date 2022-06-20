@@ -13,7 +13,7 @@ import UpdateProfile from "./pages/UpdateProfile";
 import AddClass from "./pages/AddClass";
 import ClassDashboard from "./pages/ClassDashboard"
 import Forums from "./pages/Forums";
-import ClassDashBoard from "./pages/ClassDashboard";
+import ClassSettings from "./pages/ClassSettings";
 
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
@@ -44,7 +44,8 @@ function App() {
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>} />
             <Route path="/add-class" element={<PrivateRoute><AddClass /></PrivateRoute>} />
-            <Route path="/class-dashboard" element={<ClassRoute><ClassDashBoard /></ClassRoute>} />
+            <Route path="/class-dashboard" element={<ClassRoute><ClassDashboard /></ClassRoute>} />
+            <Route path="/settings" element={<ClassRoute><ClassSettings /></ClassRoute>} />
             <Route path="/forums" element={<ClassRoute><Forums /></ClassRoute>} />
           </Routes>
         </ClassProvider>

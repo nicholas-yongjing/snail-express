@@ -9,7 +9,7 @@ export default function ClassDashBoard() {
             {
                 [['/dashboard', 'Students'],
                 ['/dashboard', 'Tutors'],
-                ['/dashboard', 'Settings']].map(([link, text]) => {
+                ['/settings', 'Settings']].map(([link, text]) => {
                     return (
                         <Link
                             to={link}
