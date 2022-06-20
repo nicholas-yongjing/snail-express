@@ -33,7 +33,7 @@ export default function Classes() {
 
     function handleClick(clss) {
         setCurrentClass(clss)
-        navigate('/forums');
+        navigate('/class-dashboard');
     }
 
     return (
@@ -42,7 +42,7 @@ export default function Classes() {
                 <div className='d-flex gap-3 justify-content-between'>
                     <h1>My classes</h1>
                     <Link to="/add-class">
-                        <button type="button" class="btn btn-primary">
+                        <button type="button" className="btn btn-primary">
                             Add Class
                         </button>
                     </Link>
@@ -51,10 +51,10 @@ export default function Classes() {
                 {[['Enrolled', enrolledClasses],
                 ['Teaching', teachingClasses]].map(([header, arr]) => {
                     return (
-                        <Card key={header} y>
+                        <Card key={header}>
                             <h2 className='d-flex justify-content-center p-2'>{header}</h2>
                             <br />
-                            {
+                              {
                                 (arr.length > 0) 
                                 ? arr.map((clss) => {
                                     return (
@@ -71,7 +71,7 @@ export default function Classes() {
                                     );
                                 })
                                 : <h4 className='d-flex justify-content-center'>No classes</h4>
-                            }   
+                            } 
                         </Card>
                     );
                 })}

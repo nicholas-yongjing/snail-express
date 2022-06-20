@@ -20,7 +20,8 @@ export default function NavigationBar() {
     return (
       <>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div className="navbar-nav">
+          <div className="navbar-nav fs-3">
+            <Link className="nav-link text-light" to='/dashboard'>Dashboard</Link>
             <Link className="nav-link text-light" to='/forums'>Forums</Link>
             <Link className="nav-link text-light" to='/'>Quiz</Link>
             <Link className="nav-link text-light" to='/'>Lecture Feedback</Link>
@@ -36,9 +37,9 @@ export default function NavigationBar() {
         <div>-</div>{/*Line break to account for navbar out of document flow*/}
         <div>-</div>
         <div>-</div>
-        <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top p-2">
           <div className="container-fluid">
-            <a className="navbar-brand" href="/">
+            <a className="navbar-brand fs-1" href="/">
               snail-express
             </a>
             <button
@@ -53,7 +54,7 @@ export default function NavigationBar() {
               <span className="navbar-toggler-icon"></span>
             </button>
             <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-              <div className="navbar-nav">
+              <div className="navbar-nav fs-2">
                 <Link className="nav-link" to='/'>Home</Link>
                 <Link className="nav-link" to='/'>Features</Link>
                 <Link className="nav-link" to='/'>Pricing</Link>
@@ -90,9 +91,9 @@ export default function NavigationBar() {
         <div>-</div>{/*Line break to account for navbar out of document flow*/}
         <div>-</div>
         <div>-</div>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top p-2">
           <div className="container-fluid">
-            <a className="navbar-brand" href="/dashboard">
+            <a className="navbar-brand fs-1" href="/dashboard">
               snail-express
             </a>
             <button
