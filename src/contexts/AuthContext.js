@@ -28,6 +28,7 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    setCurrentUser({});
     return signOut(auth);
   }
 
@@ -50,9 +51,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-      // setLoading(false);
     });
-    return () => unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const value = {
