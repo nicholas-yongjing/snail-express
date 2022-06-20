@@ -4,14 +4,17 @@ import ForumSideBar from "../components/ForumSideBar";
 import ForumPosts from "../components/ForumPosts";
 
 export default function Forums() {
-    const [thread, setThread] = useState(null);
+    const [currentThread, setCurrentThread] = useState(null);
 
     return (
         <>
         <NavigationBar />
         <div className='d-flex'>
-            <ForumSideBar thread={thread} setThread = {setThread}/>
-            <ForumPosts thread={thread}/>
+            <ForumSideBar
+                currentThread={currentThread}
+                setCurrentThread = {setCurrentThread}
+            />
+            <ForumPosts currentThread={currentThread}/>
         </div>
         </>
 
