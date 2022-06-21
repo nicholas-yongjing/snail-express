@@ -1,5 +1,5 @@
 import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc } from "firebase/firestore";
-import { firestore } from "./firebase";
+import { auth, firestore } from "./firebase";
 
 async function createClass(className, headTutor, studentsEmail) {
     return await addDoc(collection(firestore, "classes"), {
@@ -107,8 +107,34 @@ async function getForumThreads(classId) {
                 return { ...(docSnapshot.data()), id: docSnapshot.id };
             });
         }).catch((err) => {
-            throw new Error(`Error retrieving forum threads for class ${classId}: ${err}`)
+            throw new Error(`Error retrieving forum threads: ${err}`)
         }));
 }
 
-export { createClass, getInvites, acceptInvite, deleteInvite, getClasses, addForumThread, getForumThreads };
+async function addForumPost(classId, threadId, postTitle, postBody, author) {
+    const post = {title: postTitle,
+                body: postBody,
+                author: author,
+                endorsed: null};
+    const postsRef = collection(firestore, "classes",
+        classId, "forumThreads", threadId, "forumPosts");
+    return await addDoc(postsRef, post).catch((err) => {
+        throw new Error(`Error creating post: ${err}`);
+    });    
+}
+
+async function getForumPosts(classId, threadId) {
+    console.log("Retrieving forum posts")
+    const postsRef = collection(firestore, "classes",
+        classId, "forumThreads", threadId, "forumPosts");
+    return (getDocs(postsRef)
+        .then((querySnapshot) => {
+            return querySnapshot.docs.map((docSnapshot) => {
+                return { ...(docSnapshot.data()), id: docSnapshot.id };
+            });
+        }).catch((err) => {
+            throw new Error(`Error retrieving forum posts: ${err}`)
+        })); 
+}
+
+export { createClass, getInvites, acceptInvite, deleteInvite, getClasses, addForumThread, getForumThreads, addForumPost, getForumPosts };
