@@ -13,14 +13,11 @@ export default function ForumSideBar(props) {
 
     async function populateThreads() {
         if (currentClass.id) {
-            getForumThreads(currentClass.id)
-                .then((querySnapshot) => {
-                    if (querySnapshot !== undefined) {
-                        setThreads(querySnapshot.docs.map((docSnapshot) => {
-                            return { ...(docSnapshot.data()), id: docSnapshot.id };
-                        }))
-                    }
-                })
+            getForumThreads(currentClass.id).then((retrievedThreads) => {
+                if (retrievedThreads) {
+                    setThreads(retrievedThreads);
+                }
+            });
         }
     }
 

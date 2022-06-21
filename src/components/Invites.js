@@ -15,14 +15,11 @@ export default function Invites() {
 
     function populateInvites() {
         if (currentUser.email) {
-            getInvites(currentUser.email)
-                .then((querySnapshot) => {
-                    if (querySnapshot !== undefined) {
-                        setInvites(querySnapshot.docs.map((docSnapshot) => {
-                            return { ...(docSnapshot.data()), id: docSnapshot.id };
-                        }))
-                    }
-                })
+            getInvites(currentUser.email).then((invites) => {
+                if (invites) {
+                    setInvites(invites);
+                }
+            })
         }
     }
 

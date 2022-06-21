@@ -4,8 +4,7 @@ import SideBar from "../components/SideBar";
 
 export default function SettingsGeneral() {
     const sidebarLinks = [['/settings-general', 'General'],
-    ['/settings-forums', 'Forum'],
-    ];
+                        ['/settings-forums', 'Forum']];
     return (
         <>
             <NavigationBar />

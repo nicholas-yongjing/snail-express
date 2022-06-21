@@ -42,7 +42,11 @@ async function getClasses(userId, role) {
         throw new Error(`Unknown role: ${role}`)
     }
     return (getDocs(q)
-        .catch((err) => {
+        .then((querySnapshot) => {
+            return querySnapshot.docs.map((docSnapshot) => {
+                return { ...(docSnapshot.data()), id: docSnapshot.id };
+            });
+        }).catch((err) => {
             console.log(`Error retrieving classes: ${err}`)
         }));
 }
@@ -52,7 +56,11 @@ async function getInvites(email) {
     const q = query(collection(firestore, "classes"),
         where('invites', 'array-contains', email));
     return (getDocs(q)
-        .catch((err) => {
+        .then((querySnapshot) => {
+            return querySnapshot.docs.map((docSnapshot) => {
+                return { ...(docSnapshot.data()), id: docSnapshot.id };
+            });
+        }).catch((err) => {
             console.log(`Error retrieving invites: ${err}`)
         }));
 }
@@ -94,8 +102,12 @@ async function getForumThreads(classId) {
     console.log("Retrieving forum threads");
     const threadsRef = collection(firestore, "classes", classId, "forumThreads");
     return (getDocs(threadsRef)
-        .catch((err) => {
-            throw new Error(`Error retrieving forum threads for class ${classId}`)
+        .then((querySnapshot) => {
+            return querySnapshot.docs.map((docSnapshot) => {
+                return { ...(docSnapshot.data()), id: docSnapshot.id };
+            });
+        }).catch((err) => {
+            throw new Error(`Error retrieving forum threads for class ${classId}: ${err}`)
         }));
 }
 

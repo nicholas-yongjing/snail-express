@@ -21,14 +21,11 @@ export default function Classes() {
     }, [currentUser]);
 
     function populateClasses(userType, setter) {
-        getClasses(currentUser.uid, userType)
-            .then((querySnapshot) => {
-                if (querySnapshot !== undefined) {
-                    setter(querySnapshot.docs.map((docSnapshot) => {
-                        return { ...(docSnapshot.data()), id: docSnapshot.id };
-                    }))
-                }
-            })
+        getClasses(currentUser.uid, userType).then((classes) => {
+            if (classes) {
+                setter(classes);
+            }
+        })
     }
 
     function handleClick(clss) {
