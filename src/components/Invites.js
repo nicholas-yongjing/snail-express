@@ -5,9 +5,10 @@ import { Card } from 'react-bootstrap';
 
 import { getInvites, deleteInvite, acceptInvite } from '../database';
 
-export default function Invites() {
+export default function Invites(props) {
     const { currentUser } = useAuth();
     const [invites, setInvites] = useState([]);
+    const populateClasses = props.populateClasses;
 
     useEffect(() => {
         populateInvites();
@@ -26,7 +27,10 @@ export default function Invites() {
 
     function handleAccept(inviteId) {
         acceptInvite(inviteId, currentUser.uid, currentUser.email)
-            .then(() => populateInvites());
+            .then(() => {
+                populateInvites();
+                populateClasses();
+            });
     }
 
     function handleDelete(inviteId) {

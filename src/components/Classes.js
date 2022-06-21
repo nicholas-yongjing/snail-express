@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from '../contexts/ClassContext';
 import { getClasses } from '../database';
+import Invites from "./Invites";
 import { Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
@@ -73,6 +74,9 @@ export default function Classes() {
                     );
                 })}
             </Card.Body>
+            <Invites populateClasses={() => {
+                populateClasses('student', setEnrolledClasses)
+            }}/>
         </Card>
     );
 };

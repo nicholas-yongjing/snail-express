@@ -4,7 +4,6 @@ import { Container } from "react-bootstrap";
 
 import NavigationBar from "../components/NavigationBar";
 import Classes from "../components/Classes"; 
-import Invites from "../components/Invites"; 
 
 export default function Dashboard() {
   const { currentUser } = useAuth();
@@ -19,7 +18,6 @@ export default function Dashboard() {
           </h1>
           <br></br>
           <Classes />
-          <Invites />
       </Container>
     </>
   );
