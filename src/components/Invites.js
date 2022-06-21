@@ -14,6 +14,7 @@ export default function Invites() {
     }, [currentUser.email]);
 
     function populateInvites() {
+        console.log('populating invites');
         if (currentUser.email) {
             getInvites(currentUser.email).then((invites) => {
                 if (invites) {
@@ -29,6 +30,7 @@ export default function Invites() {
     }
 
     function handleDelete(inviteId) {
+        console.log('deleting invites');
         deleteInvite(inviteId, currentUser.email)
             .then(() => populateInvites());
     }

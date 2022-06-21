@@ -37,7 +37,7 @@ export default function AddClass() {
     }
 
     return (
-        <>
+        <div className="p-4">
             <NavigationBar />
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
@@ -68,7 +68,7 @@ export default function AddClass() {
                 <br></br>
                 <Link to="/dashboard">Back to dashboard</Link>
             </Form>
-        </>
+        </div>
 
     );
 
