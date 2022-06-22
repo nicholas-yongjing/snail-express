@@ -22,7 +22,12 @@ export default function SettingsForums() {
     }, [currentClass.id]);
 
     function isTutor() {
-        return (currentClass && currentClass.headTutor.id === currentUser.uid);
+        return (
+          currentClass && (
+            currentClass.headTutor.id === currentUser.uid ||
+            currentClass.tutorIds.includes(currentUser.uid)
+          )
+        );
     }
 
     function populateThreads() {
