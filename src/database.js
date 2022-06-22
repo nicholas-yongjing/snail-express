@@ -134,7 +134,7 @@ async function addForumThread(classId, threadName) {
   return (
     addDoc(threadsRef, { name: threadName })
       .catch((err) => {
-        throw new Error(`Error adding forum thread: ${err}`);
+        console.log(`Error adding forum thread: ${err}`);
       })
   );
 }
@@ -148,7 +148,7 @@ async function getForumThreads(classId) {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
       });
     }).catch((err) => {
-      throw new Error(`Error retrieving forum threads: ${err}`)
+      console.log(`Error retrieving forum threads: ${err}`)
     }));
 }
 
@@ -157,12 +157,12 @@ async function addForumPost(classId, threadId, postTitle, postBody, author) {
     title: postTitle,
     body: postBody,
     author: author,
-    endorsed: null
+    endorsed: false
   };
   const postsRef = collection(firestore, "classes",
     classId, "forumThreads", threadId, "forumPosts");
   return await addDoc(postsRef, post).catch((err) => {
-    throw new Error(`Error creating post: ${err}`);
+    console.log(`Error creating post: ${err}`);
   });
 }
 
@@ -176,8 +176,22 @@ async function getForumPosts(classId, threadId) {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
       });
     }).catch((err) => {
-      throw new Error(`Error retrieving forum posts: ${err}`)
+      console.log(`Error retrieving forum posts: ${err}`)
     }));
 }
 
-export { createClass, getInvites, acceptInvite, deleteInvite, getClasses, addForumThread, getForumThreads, addForumPost, getForumPosts };
+async function togglePostEndorsement(classId, threadId, postId) {
+  const docRef = doc(firestore, "classes", classId,
+    "forumThreads", threadId, "forumPosts", postId);
+  return await getDoc(docRef)
+    .then((snapshot) => {
+      setDoc(docRef,
+        {endorsed: !snapshot.data().endorsed},
+        { merge: true }
+      )
+    }).catch((err) => {
+      console.log(`Error toggling post endorsement: ${err}`);
+    })
+}
+
+export { createClass, getInvites, acceptInvite, deleteInvite, getClasses, addForumThread, getForumThreads, addForumPost, getForumPosts, togglePostEndorsement };

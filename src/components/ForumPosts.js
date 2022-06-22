@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useClass } from '../contexts/ClassContext';
 import { getForumPosts } from "../database";
 import AddPost from '../components/AddPost';
+import ReactionBar from "../components/ReactionBar";
 
 export default function ForumPosts(props) {
     const { currentClass } = useClass();
@@ -43,10 +44,17 @@ export default function ForumPosts(props) {
                         {
                             posts.map((post) => {
                                 return (
-                                    <Card key={post.id} className='p-4'>
+                                    <Card key={post.id}>
+                                      <Card.Body>
                                         <h3><strong>{post.title}</strong></h3>
                                         <h4>{post.author.email}</h4>
                                         <p>{post.body}</p>
+                                      </Card.Body>
+                                      <ReactionBar
+                                        currentThread={currentThread}
+                                        content={post}
+                                        contentType='post'
+                                      />
                                     </Card>
                                 );
                             })
