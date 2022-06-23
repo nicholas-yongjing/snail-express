@@ -182,6 +182,35 @@ async function getForumPosts(classId, threadId) {
     }));
 }
 
+async function addForumReply(classId, threadId, postId, postBody, author) {
+  const reply = {
+    body: postBody,
+    author: author,
+    endorsed: false,
+    upvoters: [],
+    downvoters: []
+  };
+  const repliesRef = collection(firestore, "classes", classId,
+    "forumThreads", threadId, "forumPosts", postId, "forumReplies");
+  return await addDoc(repliesRef, reply).catch((err) => {
+    console.log(`Error creating post: ${err}`);
+  });
+}
+
+async function getForumReplies(classId, threadId, postId) {
+  console.log("Retrieving forum replies");
+  const repliesRef = collection(firestore, "classes",
+    classId, "forumThreads", threadId, "forumPosts", postId, "forumReplies");
+  return (getDocs(repliesRef)
+    .then((querySnapshot) => {
+      return querySnapshot.docs.map((docSnapshot) => {
+        return { ...(docSnapshot.data()), id: docSnapshot.id };
+      });
+    }).catch((err) => {
+      console.log(`Error retrieving forum replies: ${err}`)
+    }));
+}
+
 async function togglePostEndorsement(classId, threadId, postId, replyId = null) {
   let docRef;
   if (replyId === null) {
@@ -257,4 +286,5 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
 
 export { createClass, getInvites, acceptInvite, deleteInvite,
   getClasses, addForumThread, getForumThreads, addForumPost,
-  getForumPosts, togglePostEndorsement, togglePostvote };
+  getForumPosts, addForumReply, getForumReplies,
+  togglePostEndorsement, togglePostvote };

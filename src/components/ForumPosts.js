@@ -60,7 +60,12 @@ export default function ForumPosts(props) {
 
             <br />
             {
-              posts.map((post) => <Post key={post.id} thread={currentThread} post={post} />)
+              posts.map((post) => <Post
+                  key={post.id}
+                  thread={currentThread}
+                  post={post}
+                  populatePosts={populatePosts}
+              />)
             }
           </Card>
           : <div>No Threads Selected</div>

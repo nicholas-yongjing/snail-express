@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
-import { togglePostEndorsement, togglePostvote } from "../database"
+import { togglePostEndorsement, togglePostvote } from "../database";
+import AddReply from "./AddReply";
 
 export default function ReactionBar(props) {
   const currentThread = props.currentThread;
+  const currentPost = props.currentPost;
   const content = props.content;
-  //const contentType = props.contentType;
+  const contentType = props.contentType;
+  const populatePosts = props.populatePosts;
   const { currentUser } = useAuth();
   const { currentClass } = useClass();
   const [endorsed, setEndorsed] = useState(content.endorsed);
   const [currentVote, setCurrentVote] = useState(getInitialVote());
+  const [expandForm, setExpandForm] = useState(false);
   const initialVote = getInitialVote();
 
   function getInitialVote() {
@@ -47,82 +51,106 @@ export default function ReactionBar(props) {
     }
   }
 
-    function isTutor() {
-      return (
-        currentClass && (
-          currentClass.headTutor.id === currentUser.uid ||
-          currentClass.tutorIds.includes(currentUser.uid)
-        )
-      );
-    }
-
-    function handleEndorse(e) {
-      e.preventDefault();
-      setEndorsed(!endorsed);
-      togglePostEndorsement(currentClass.id, currentThread.id, content.id);
-    }
-
-    function handleUpvote(e) {
-      e.preventDefault();
-      setCurrentVote((oldVote) => {
-        return (oldVote === 'upvote') ? 'neutral' : 'upvote';
-      });
-      togglePostvote(currentUser.uid, 'upvote', currentClass.id,
-        currentThread.id, content.id);
-    }
-
-    function handleDownvote(e) {
-      e.preventDefault();
-      setCurrentVote((oldVote) => {
-        return (oldVote === 'downvote') ? 'neutral' : 'downvote';
-      });
-      togglePostvote(currentUser.uid, 'downvote', currentClass.id,
-        currentThread.id, content.id);
-    }
-
+  function isTutor() {
     return (
-      <div className="p-2 d-flex justify-content-between align-items-center">
-        {
-          endorsed
-            ? <div className="text-info">
-              <strong>
-                This post is endorsed by the tutors
-              </strong>
-            </div>
-            : <br />
-        }
-        <div className="d-flex justify-content-end align-items-center gap-2">
-          {
-            isTutor()
-              ? <button
-                className="btn btn-primary"
-                onClick={(e) => handleEndorse(e)}
-              >
-                Endorse
-              </button>
-              : ""
-          }
-          <button
-            className={"btn" + (currentVote === 'upvote'
-                        ? " btn-success"
-                        : " btn-secondary")}
-            onClick={(e) => handleUpvote(e)}
-          >
-            ▲
-          </button>
-          <button
-            className={"btn" + (currentVote === 'downvote'
-                        ? " btn-danger"
-                        : " btn-secondary")}
-            onClick={(e) => handleDownvote(e)}
-          >
-            ▼
-          </button>=
-          <div>
-            {getVotes('upvotes')} Upvotes • {getVotes('downvotes')} Downvotes
-          </div>
-        </div>
-
-      </div>
+      currentClass && (
+        currentClass.headTutor.id === currentUser.uid ||
+        currentClass.tutorIds.includes(currentUser.uid)
+      )
     );
   }
+
+  function handleEndorse(e) {
+    e.preventDefault();
+    setEndorsed(!endorsed);
+    togglePostEndorsement(currentClass.id, currentThread.id,
+      currentPost.id, contentType === 'post' ? null : content.id);
+  }
+
+  function handleUpvote(e) {
+    e.preventDefault();
+    setCurrentVote((oldVote) => {
+      return (oldVote === 'upvote') ? 'neutral' : 'upvote';
+    });
+    togglePostvote(currentUser.uid, 'upvote', currentClass.id,
+      currentThread.id, currentPost.id,
+      contentType === 'post' ? null : content.id);
+  }
+
+  function handleDownvote(e) {
+    e.preventDefault();
+    setCurrentVote((oldVote) => {
+      return (oldVote === 'downvote') ? 'neutral' : 'downvote';
+    });
+    togglePostvote(currentUser.uid, 'downvote', currentClass.id,
+      currentThread.id, currentPost.id,
+      contentType === 'post' ? null : content.id);
+  }
+
+  return (
+    <div className="p-4">
+    <div className="p-2 d-flex justify-content-between align-items-center">
+      {
+        endorsed
+          ? <div className="text-info">
+            <strong>
+              This {contentType} is endorsed by the tutors
+            </strong>
+          </div>
+          : <br />
+      }
+      <div className="d-flex justify-content-end align-items-center gap-2">
+        {
+          contentType === 'post'
+            ? <button
+              className="btn btn-primary"
+              onClick={() => setExpandForm(!expandForm)}
+            >
+              Reply
+            </button>
+            : <></>
+        }
+        {
+          isTutor()
+            ? <button
+              className="btn btn-primary"
+              onClick={(e) => handleEndorse(e)}
+            >
+              Endorse
+            </button>
+            : <></>
+        }
+        <button
+          className={"btn" + (currentVote === 'upvote'
+            ? " btn-success"
+            : " btn-secondary")}
+          onClick={(e) => handleUpvote(e)}
+        >
+          ▲
+        </button>
+        <button
+          className={"btn" + (currentVote === 'downvote'
+            ? " btn-danger"
+            : " btn-secondary")}
+          onClick={(e) => handleDownvote(e)}
+        >
+          ▼
+        </button>=
+        <div>
+          {getVotes('upvotes')} Upvotes • {getVotes('downvotes')} Downvotes
+        </div>
+      </div>
+
+    </div>
+      {
+        (contentType === 'post' && expandForm)
+          ? <AddReply
+            currentThread={currentThread}
+            currentPost={content}
+            populatePosts={populatePosts}
+          />
+          : <></>
+      }
+    </div>
+  );
+}
