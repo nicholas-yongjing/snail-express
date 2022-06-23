@@ -23,7 +23,7 @@ async function addUserToClass(classId, user, role) {
         const newData = {};
         newData[field] = [...((snapshot.data())[field]), user.id]
         setDoc(classDocRef, newData, { merge: true })
-      });  
+      });
   }
 
   async function addUserDoc() {
@@ -157,7 +157,9 @@ async function addForumPost(classId, threadId, postTitle, postBody, author) {
     title: postTitle,
     body: postBody,
     author: author,
-    endorsed: false
+    endorsed: false,
+    upvoters: [],
+    downvoters: []
   };
   const postsRef = collection(firestore, "classes",
     classId, "forumThreads", threadId, "forumPosts");
@@ -180,13 +182,20 @@ async function getForumPosts(classId, threadId) {
     }));
 }
 
-async function togglePostEndorsement(classId, threadId, postId) {
-  const docRef = doc(firestore, "classes", classId,
-    "forumThreads", threadId, "forumPosts", postId);
+async function togglePostEndorsement(classId, threadId, postId, replyId = null) {
+  let docRef;
+  if (replyId === null) {
+    docRef = doc(firestore, "classes", classId,
+      "forumThreads", threadId, "forumPosts", postId);
+  } else {
+    docRef = doc(firestore, "classes", classId,
+      "forumThreads", threadId, "forumPosts", postId,
+      "forumReplies", replyId);
+  }
   return await getDoc(docRef)
     .then((snapshot) => {
       setDoc(docRef,
-        {endorsed: !snapshot.data().endorsed},
+        { endorsed: !snapshot.data().endorsed },
         { merge: true }
       )
     }).catch((err) => {
@@ -194,4 +203,58 @@ async function togglePostEndorsement(classId, threadId, postId) {
     })
 }
 
-export { createClass, getInvites, acceptInvite, deleteInvite, getClasses, addForumThread, getForumThreads, addForumPost, getForumPosts, togglePostEndorsement };
+async function togglePostvote(userId, voteType, classId, threadId, postId, replyId = null) {
+  function getDocRef() {
+    if (replyId === null) {
+      return doc(firestore, "classes", classId,
+        "forumThreads", threadId, "forumPosts", postId);
+    } else {
+      return doc(firestore, "classes", classId,
+        "forumThreads", threadId, "forumPosts", postId,
+        "forumReplies", replyId);
+    }
+  }
+
+  async function updateUpvoters(snapshot) {
+    const upvoters = snapshot.data().upvoters;
+    if (upvoters.includes(userId)) {
+      return await setDoc(docRef,
+        { upvoters: upvoters.filter((id) => id !== userId) },
+        { merge: true }
+      );
+    } else if (voteType === 'upvote') {
+      return await setDoc(docRef,
+        { upvoters: [...upvoters, userId] },
+        { merge: true }
+      );
+    }
+  }
+
+  async function updateDownvoters(snapshot) {
+    const downvoters = snapshot.data().downvoters;
+    if (downvoters.includes(userId)) {
+      return await setDoc(docRef,
+        { downvoters: downvoters.filter((id) => id !== userId) },
+        { merge: true }
+      );
+    } else if (voteType === 'downvote') {
+      return await setDoc(docRef,
+        { downvoters: [...downvoters, userId] },
+        { merge: true }
+      );
+    }
+  }
+
+  const docRef = getDocRef();
+  return await getDoc(docRef)
+    .then((snapshot) => {
+      updateUpvoters(snapshot);
+      updateDownvoters(snapshot);
+    }).catch((err) => {
+      console.log(`Error toggling post endorsement: ${err}`);
+    })
+}
+
+export { createClass, getInvites, acceptInvite, deleteInvite,
+  getClasses, addForumThread, getForumThreads, addForumPost,
+  getForumPosts, togglePostEndorsement, togglePostvote };
