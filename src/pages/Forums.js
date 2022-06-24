@@ -9,7 +9,7 @@ export default function Forums() {
     return (
         <>
         <NavigationBar />
-        <div className='d-flex'>
+        <div className='d-flex align-items-stretch'>
             <ForumSideBar
                 currentThread={currentThread}
                 setCurrentThread = {setCurrentThread}

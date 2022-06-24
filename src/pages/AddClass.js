@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Form, Button, Alert, Card } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import { createClass } from "../database";
 
 import NavigationBar from "../components/NavigationBar";
@@ -14,6 +14,7 @@ export default function AddClass() {
     const formRef = useRef();
     const classNameRef = useRef();
     const studentsRef = useRef();
+    const tutorsRef = useRef();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -27,7 +28,8 @@ export default function AddClass() {
                     id: currentUser.uid,
                     email: currentUser.email
                 },
-                studentsRef.current.value.trim().split(/\s+/));
+                studentsRef.current.value.trim().split(/\s+/),
+                tutorsRef.current.value.trim().split(/\s+/))
             formRef.current.reset();
             setMessage('Class successfully created!')
         } catch {
@@ -37,7 +39,7 @@ export default function AddClass() {
     }
 
     return (
-        <>
+        <div className="p-4">
             <NavigationBar />
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
@@ -61,6 +63,15 @@ export default function AddClass() {
                         placeholder="Enter students email separated by new lines"
                     />
                 </Form.Group>
+                <Form.Group id="tutors">
+                    <Form.Label>Tutors</Form.Label>
+                    <Form.Control
+                        as="textarea"    
+                        rows={5}
+                        ref={tutorsRef}
+                        placeholder="Enter tutors email separated by new lines"
+                    />
+                </Form.Group>
                 <br></br>
                 <Button disabled={loading} className="w-25" type="submit">
                     Create Class
@@ -68,7 +79,7 @@ export default function AddClass() {
                 <br></br>
                 <Link to="/dashboard">Back to dashboard</Link>
             </Form>
-        </>
+        </div>
 
     );
 
