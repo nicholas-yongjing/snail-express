@@ -1,152 +1,86 @@
-import React, { useCallback, useMemo, useEffect, useState } from "react";
-import NavigationBar from "../components/NavigationBar";
 import {
   Button,
   Card,
-  DropdownButton,
   Dropdown,
+  DropdownButton,
   ProgressBar,
   Spinner,
 } from "react-bootstrap";
-
-import {
-  query,
-  doc,
-  collection,
-  getDoc,
-  getDocs,
-  setDoc,
-  deleteDocs,
-  where,
-  deleteDoc,
-  onSnapshot,
-} from "firebase/firestore";
+import { firestore } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
-import { firestore } from "../firebase";
+import {
+  collection,
+  deleteDoc,
+  getDocs,
+  doc,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
+import { useState } from "react";
+import NavigationBar from "../components/NavigationBar";
 
 const LiveFeedback = () => {
-  const { currentClass } = useClass();
+  const { currentClass, isTutor } = useClass();
   const { currentUser } = useAuth();
-  const [results, setResults] = useState([]);
-  const [decoy, setDecoy] = useState(false);
-  const { isTutor } = useClass();
-
-  // Reset previous submission when user enter feedback page
-  useEffect(() => {
-    // ???
-  }, [currentClass.id, currentUser.email]);
+  const [results, setResults] = useState([0, 0, 0, 0]);
+  const [loading, setLoading] = useState(false);
 
   const reactions = ["fast", "slow", "confusing", "good"];
   const variants = ["danger", "info", "warning", "success"];
+  const feedbackRef = collection(
+    firestore,
+    "classes",
+    currentClass.id,
+    "feedback"
+  );
 
-  const resetResponseHandler = (event) => {
-    const feedbackRef = collection(
-      firestore,
-      "classes",
-      currentClass.id,
-      "feedback"
-    );
-    const q = getDocs(feedbackRef).then((ss) =>
-      ss.docs.map((d) => {
-        const newRef = doc(
-          firestore,
-          "classes",
-          currentClass.id,
-          "feedback",
-          d.id
-        );
-        deleteDoc(newRef).then(() => console.log("deleted" + d.id));
-      })
-    );
-    pullFeedback();
-  };
-
-  const pushFeedbackHandler = async (event, reaction) => {
-    event.preventDefault();
-    const current = new Date();
-    const feedbackRef = collection(
-      firestore,
-      "classes",
-      currentClass.id,
-      "feedback"
-    );
-    setDoc(doc(feedbackRef, `${current.getTime()}`), {
-      user: currentUser.email,
+  const handleSubmit = (event, reaction) => {
+    setLoading(true);
+    setDoc(doc(feedbackRef, `${new Date().getTime()}`), {
       reaction: reaction,
-    });
-    pullFeedback();
+      user: currentUser.displayName,
+    }).then(() => setLoading(false));
   };
 
-  const pullFeedback = () => {
-    const feedbackRef = collection(
-      firestore,
-      "classes",
-      currentClass.id,
-      "feedback"
-    );
-
-    const promises = reactions.map((reaction) => {
-      const q = query(feedbackRef, where("reaction", "==", reaction));
-      return getDocs(q).then((snapshot) => {
-        console.log("inside pull");
-        return snapshot.docs.map((docSnapshot) => {
-          return docSnapshot.data();
+  const handleReset = () => {
+    setLoading(true);
+    getDocs(feedbackRef)
+      .then((snapshot) => {
+        snapshot.docs.map((docu) => {
+          const docRef = doc(feedbackRef, docu.id);
+          deleteDoc(docRef).then(() => console.log("Deleted " + docu.id));
         });
-      });
-    });
-
-
-    // onSnapshot(feedbackRef, doc => {
-    //   console.log(doc);
-    // })
-    // const promises = reactions.map((reaction) => {
-    //   const q = query(feedbackRef, where("reaction", "==", reaction));
-    //   return getDocs(q).then((snapshot) => {
-    //     console.log("inside pull");
-    //     return snapshot.docs.map((docSnapshot) => {
-    //       return docSnapshot.data();
-    //     });
-    //   });
-    // });
-
-    const counts = [];
-    Promise.all(
-      promises.map((promise) => promise.then((arr) => counts.push(arr.length)))
-    ).then();
-    setResults(counts);
-    return counts;
+      })
+      .then(() => setLoading(false));
   };
 
-  // const checkFeedback = () => {
-  //   while (true) {
-  //     setTimeout(() => console.log("3 secs"), 3000);
-  //     pullFeedback();
-  //   }
-  // };
+  onSnapshot(feedbackRef, (snapshot) => {
+    const arr = [0, 0, 0, 0];
+    snapshot.docs.map((doc) => {
+      arr[reactions.indexOf(doc.data().reaction)] += 1;
+    });
+    setResults(arr);
+  }).then(() => console.log("Refreshing")).catch(error => console.log(error));
 
-  // const memoResults = useMemo(() => pullFeedback(), []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("waiting");
-      setDecoy(!decoy);
-    }, 2000);
-  }, [decoy]);
+  const sum = (arr) => arr.reduce((x, y) => x + y, 0);
 
   return (
     <>
       <NavigationBar />
-      <br></br>
       <Card
-        className="d-flex align-items-center justify-content-center mt-5"
-        style={{ maxWidth: "900px", margin: "auto" }}
+        className="d-flex align-items-center mt-5"
+        style={{ margin: "auto", maxWidth: "900px", minHeight: "350px" }}
       >
-        <DropdownButton id="dropdown-basic-button" title="Submit feedback" className="mt-4">
+        <DropdownButton
+          id="dropdown-basic-button"
+          title="Submit feedback"
+          className="mt-4"
+        >
           {reactions.map((reaction) => {
             return (
               <Dropdown.Item
-                onClick={(event) => pushFeedbackHandler(event, reaction)}
+                onClick={(event) => handleSubmit(event, reaction)}
                 key={reaction}
               >
                 {reaction}
@@ -155,60 +89,58 @@ const LiveFeedback = () => {
           })}
         </DropdownButton>
         <br></br>
-        <br></br>
-        {/* {checkFeedback()} */}
-        {results.length === reactions.length ? (
-          reactions.map((x) => {
-            const fraction =
-              results.length == 0
-                ? 0
-                : Math.round(
-                    (results[reactions.indexOf(x)] /
-                      results.reduce((x, y) => x + y, 0)) *
-                      100
-                  );
-            return (
-              <div key={x}>
-                <ProgressBar
-                  style={{
-                    minHeight: "30px",
-                    minWidth: "400px",
-                    maxWidth: "800px",
-                  }}
-                  animated
-                  now={fraction}
-                  label={`${fraction}%`}
-                  variant={variants[reactions.indexOf(x)]}
-                />
-                <div className="fs-5">
-                  {results[reactions.indexOf(x)] +
-                    " out of " +
-                    results.reduce((x, y) => x + y, 0) +
-                    " find the lecture "}
-                  <strong>{x}</strong>
+        <div>
+          {!loading ? (
+            reactions.map((reaction) => {
+              const percentage =
+                sum(results) == 0
+                  ? 0
+                  : Math.round(
+                      (results[reactions.indexOf(reaction)] / sum(results)) * 100
+                    );
+              return (
+                <div key={reaction}>
+                  <ProgressBar
+                    style={{
+                      minHeight: "30px",
+                      minWidth: "400px",
+                      maxWidth: "800px"
+                    }}
+                    animated
+                    now={percentage}
+                    label={`${percentage}%`}
+                    variant={variants[reactions.indexOf(reaction)]}
+                  />
+                  <div className="fs-5">
+                    {results[reactions.indexOf(reaction)] +
+                      " out of " +
+                      sum(results) +
+                      " find the lecture "}
+                    <strong>{reaction}</strong>
+                  </div>
                 </div>
-                <br></br>
-              </div>
-            );
-          })
-        ) : (
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        )}
+              );
+            })
+          ) : (
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          )}
+        </div>
       </Card>
       <br></br>
-      {isTutor() ? (
-        <Button
-          onClick={resetResponseHandler}
-          className="d-flex align-items-center justify-content-center"
-          style={{ margin: "auto", minWidth: "400px" }}
-        >
-          Reset responses
-        </Button>
-      ) : (
-        <div></div>
-      )}
+      <div className="d-flex align-items-center">
+        {isTutor() ? (
+          <Button
+            onClick={handleReset}
+            style={{ margin: "auto", minWidth: "400px" }}
+          >
+            Reset responses
+          </Button>
+        ) : (
+          <div></div>
+        )}{" "}
+      </div>
     </>
   );
 };

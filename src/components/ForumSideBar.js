@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useClass } from "../contexts/ClassContext";
-import { getForumThreads } from "../utilities/database";
+import { getForumThreads } from "../database";
 
 export default function ForumSideBar(props) {
     const {currentThread, setCurrentThread} = props;

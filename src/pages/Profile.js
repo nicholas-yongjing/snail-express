@@ -1,11 +1,13 @@
-import { Container, Card } from "react-bootstrap";
+import { Container, Card, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useClass } from "../contexts/ClassContext";
 
 import NavigationBar from "../components/NavigationBar";
 
 export default function Profile() {
   const { currentUser } = useAuth();
+  const {currentClass, isTutor } = useClass();
   return (
     <>
       <NavigationBar />
@@ -13,22 +15,16 @@ export default function Profile() {
         className="d-flex align-items-center justify-content-center"
         style={{ minHeight: "100vh" }}
       >
-        <div className="w-100" style={{ maxWidth: "400px" }}>
-          <Card>
+        <div>
+          <Card className="d-flex align-items-center" style={{minWidth: "300px"}}>
             <Card.Body>
-              {/* <img src={logo} className="img-responsive" alt="Website logo" height="150px" /> */}
               <h2 className="text-center mb-4">Profile</h2>
-              <div>
-                <strong>Name:</strong> Insert name here after linking database
+              <img src={`${currentUser.photoURL}`} style={{height: "200px", width: "220px", borderRadius: "50%"}}/>
+              <div className="mt-3">
+                <strong>Name:</strong> {currentUser.displayName}
               </div>
               <div>
                 <strong>Email:</strong> {currentUser.email}
-              </div>
-              <div>
-                <strong>Enrolled course:</strong> CP2106
-              </div>
-              <div>
-                <strong>Role:</strong> Student
               </div>
               <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
                 Update profile

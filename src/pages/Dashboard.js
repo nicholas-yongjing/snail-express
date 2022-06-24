@@ -35,7 +35,7 @@ export default function Dashboard() {
       <NavigationBar />
       <Container className="m-5 d-flex flex-column gap-4">
         <h1 className="fs-2">
-          Welcome back, <strong>{currentUser.email}</strong>!
+          Welcome back, <strong>{currentUser.displayName}</strong>!
         </h1>
         <div className='d-flex gap-3 justify-content-between'>
           <h1><strong>My Classes</strong></h1>
