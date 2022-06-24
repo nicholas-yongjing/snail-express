@@ -35,7 +35,7 @@ const LiveFeedback = () => {
   }, [currentClass.id, currentUser.email]);
 
   const reactions = ["fast", "slow", "confusing", "good"];
-  const variants = ["success", "info", "warning", "danger"];
+  const variants = ["danger", "info", "warning", "success"];
 
   const pushFeedbackHandler = async (event, reaction) => {
     event.preventDefault();
@@ -88,70 +88,63 @@ const LiveFeedback = () => {
     <>
       <NavigationBar />
       <br></br>
-      <Card className="d-flex align-items-center justify-content-center" style={{maxWidth: "900px", margin: "auto"}}> 
-      <DropdownButton id="dropdown-basic-button" title="Submit feedback">
-        {reactions.map((reaction) => {
-          return (
-            <Dropdown.Item
-              onClick={(event) => pushFeedbackHandler(event, reaction)}
-              key={reaction}
-            >
-              {reaction}
-            </Dropdown.Item>
-          );
-        })}
-      </DropdownButton>
-      <br></br>
-      {/* {results.length === reactions.length ? (
-        reactions.map((reaction) => (
-          <div key={reaction}>
-            <div>
-              {results[reactions.indexOf(reaction)] +
-                " out of " +
-                results.reduce((x, y) => x + y, 0) +
-                " find the lecture "}
-              <strong>{reaction}</strong>
-            </div>
-          </div>
-        ))
-      ) : (
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      )} */}
-      <br></br>
-      {results.length === reactions.length ? (
-        reactions.map((x) => {
-          const fraction = Math.round(
-            (results[reactions.indexOf(x)] /
-              results.reduce((x, y) => x + y, 0)) *
-              100
-          );
-          return (
-            <div key={x}>
-              <ProgressBar
-                style={{ minHeight: "30px", maxWidth: "800px" }}
-                animated
-                now={fraction}
-                label={`${fraction}%`}
-                variant={variants[reactions.indexOf(x)]}
-              />
-              <div className="fs-5">
-                {results[reactions.indexOf(x)] +
-                  " out of " +
-                  results.reduce((x, y) => x + y, 0) +
-                  " find the lecture "}
-                <strong>{x}</strong>
+      <Card
+        className="d-flex align-items-center justify-content-center"
+        style={{ maxWidth: "900px", margin: "auto" }}
+      >
+        <DropdownButton id="dropdown-basic-button" title="Submit feedback">
+          {reactions.map((reaction) => {
+            return (
+              <Dropdown.Item
+                onClick={(event) => pushFeedbackHandler(event, reaction)}
+                key={reaction}
+              >
+                {reaction}
+              </Dropdown.Item>
+            );
+          })}
+        </DropdownButton>
+        <br></br>
+        <br></br>
+        {results.length === reactions.length ? (
+          reactions.map((x) => {
+            const fraction =
+              results.length == 0
+                ? 0
+                : Math.round(
+                    (results[reactions.indexOf(x)] /
+                      results.reduce((x, y) => x + y, 0)) *
+                      100
+                  );
+            return (
+              <div key={x}>
+                <ProgressBar
+                  style={{
+                    minHeight: "30px",
+                    minWidth: "400px",
+                    maxWidth: "800px",
+                  }}
+                  animated
+                  now={fraction}
+                  label={`${fraction}%`}
+                  variant={variants[reactions.indexOf(x)]}
+                />
+                <div className="fs-5">
+                  {results[reactions.indexOf(x)] +
+                    " out of " +
+                    results.reduce((x, y) => x + y, 0) +
+                    " find the lecture "}
+                  <strong>{x}</strong>
+                </div>
+                <br></br>
               </div>
-              <br></br>
-            </div>
-          );
-        })
-      ) : (
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      )}
+            );
+          })
+        ) : (
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        )}
       </Card>
     </>
   );
