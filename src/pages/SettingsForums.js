@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useClass } from "../contexts/ClassContext";
-import { addForumThread, getForumThreads } from "../database";
+import { addForumThread, getForumThreads } from "../utilities/database";
 import { Alert, Button, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";

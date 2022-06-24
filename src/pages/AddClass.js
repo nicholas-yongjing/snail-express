@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Form, Button, Alert, Card } from "react-bootstrap";
-import { createClass } from "../database";
+import { createClass } from "../utilities/database";
 
 import NavigationBar from "../components/NavigationBar";
 

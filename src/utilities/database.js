@@ -1,5 +1,5 @@
 import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc } from "firebase/firestore";
-import { firestore } from "./firebase";
+import { firestore } from "../firebase";
 
 async function createClass(className, headTutor, studentsEmail) {
     return await addDoc(collection(firestore, "classes"), {

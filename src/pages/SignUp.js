@@ -56,7 +56,11 @@ function SignUp() {
                   </Form.Group>
                   <Form.Group id="password-confirm">
                     <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control type="password" ref={passwordConfirmRef} required />
+                    <Form.Control
+                      type="password"
+                      ref={passwordConfirmRef}
+                      required
+                    />
                   </Form.Group>
                   <br></br>
                   <Button disabled={loading} className="w-100" type="submit">
@@ -65,6 +69,12 @@ function SignUp() {
                 </Form>
               </Card.Body>
             </Card>
+            <div className="text-center">
+              Already have an account? Proceed to <Link to="/Login">login</Link>
+            </div>
+            <div className="text-center">
+              Back to <Link to="/">home</Link>
+            </div>{" "}
             <br></br>
             <div className="text-center">
               Already have an account? Proceed to <Link to="/Login">login</Link>

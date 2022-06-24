@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from '../contexts/ClassContext';
-import { getClasses } from '../database';
+import { getClasses } from '../utilities/database';
 import { Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 

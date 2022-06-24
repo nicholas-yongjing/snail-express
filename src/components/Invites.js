@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from "../contexts/AuthContext";
 import { Card } from 'react-bootstrap';
 
-import { getInvites, deleteInvite, acceptInvite } from '../database';
+import { getInvites, deleteInvite, acceptInvite } from '../utilities/database';
 
 export default function Invites() {
     const { currentUser } = useAuth();

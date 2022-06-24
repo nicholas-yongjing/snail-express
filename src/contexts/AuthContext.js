@@ -65,6 +65,7 @@ export function AuthProvider({ children }) {
     updateUserPassword,
   };
 
+
   return (
     <AuthContext.Provider value={value}>
       {/* {!loading && children} */}
