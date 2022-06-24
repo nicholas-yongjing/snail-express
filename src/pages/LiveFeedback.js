@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
 import NavigationBar from "../components/NavigationBar";
 import {
   Button,
@@ -19,9 +19,10 @@ import {
   deleteDocs,
   where,
   deleteDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { useAuth } from "../contexts/AuthContext";
-import { useClass, isTutor } from "../contexts/ClassContext";
+import { useClass } from "../contexts/ClassContext";
 import { firestore } from "../firebase";
 
 const LiveFeedback = () => {
@@ -29,6 +30,7 @@ const LiveFeedback = () => {
   const { currentUser } = useAuth();
   const [results, setResults] = useState([]);
   const [decoy, setDecoy] = useState(false);
+  const { isTutor } = useClass();
 
   // Reset previous submission when user enter feedback page
   useEffect(() => {
@@ -39,26 +41,26 @@ const LiveFeedback = () => {
   const variants = ["danger", "info", "warning", "success"];
 
   const resetResponseHandler = (event) => {
-    event.preventDefault();
     const feedbackRef = collection(
-        firestore,
-        "classes",
-        currentClass.id,
-        "feedback"
-      );
-      const q = getDocs(feedbackRef).then((ss) =>
-        ss.docs.map(d => {
-          const newRef = doc(
-            firestore,
-            "classes",
-            currentClass.id,
-            "feedback", 
-            d.id
-          );
-          deleteDoc(newRef).then(() => console.log("deleted" + d.id));
-        })
-      );
-  }
+      firestore,
+      "classes",
+      currentClass.id,
+      "feedback"
+    );
+    const q = getDocs(feedbackRef).then((ss) =>
+      ss.docs.map((d) => {
+        const newRef = doc(
+          firestore,
+          "classes",
+          currentClass.id,
+          "feedback",
+          d.id
+        );
+        deleteDoc(newRef).then(() => console.log("deleted" + d.id));
+      })
+    );
+    pullFeedback();
+  };
 
   const pushFeedbackHandler = async (event, reaction) => {
     event.preventDefault();
@@ -83,28 +85,53 @@ const LiveFeedback = () => {
       currentClass.id,
       "feedback"
     );
+
     const promises = reactions.map((reaction) => {
       const q = query(feedbackRef, where("reaction", "==", reaction));
       return getDocs(q).then((snapshot) => {
+        console.log("inside pull");
         return snapshot.docs.map((docSnapshot) => {
           return docSnapshot.data();
         });
       });
     });
 
+
+    // onSnapshot(feedbackRef, doc => {
+    //   console.log(doc);
+    // })
+    // const promises = reactions.map((reaction) => {
+    //   const q = query(feedbackRef, where("reaction", "==", reaction));
+    //   return getDocs(q).then((snapshot) => {
+    //     console.log("inside pull");
+    //     return snapshot.docs.map((docSnapshot) => {
+    //       return docSnapshot.data();
+    //     });
+    //   });
+    // });
+
     const counts = [];
     Promise.all(
       promises.map((promise) => promise.then((arr) => counts.push(arr.length)))
     ).then();
-    const oldResults = [...results];
     setResults(counts);
     return counts;
   };
 
-  const memoResults = useMemo(() => pullFeedback(), []);
+  // const checkFeedback = () => {
+  //   while (true) {
+  //     setTimeout(() => console.log("3 secs"), 3000);
+  //     pullFeedback();
+  //   }
+  // };
+
+  // const memoResults = useMemo(() => pullFeedback(), []);
 
   useEffect(() => {
-    setTimeout(() => setDecoy(!decoy), 1000);
+    setTimeout(() => {
+      console.log("waiting");
+      setDecoy(!decoy);
+    }, 2000);
   }, [decoy]);
 
   return (
@@ -112,10 +139,10 @@ const LiveFeedback = () => {
       <NavigationBar />
       <br></br>
       <Card
-        className="d-flex align-items-center justify-content-center"
+        className="d-flex align-items-center justify-content-center mt-5"
         style={{ maxWidth: "900px", margin: "auto" }}
       >
-        <DropdownButton id="dropdown-basic-button" title="Submit feedback">
+        <DropdownButton id="dropdown-basic-button" title="Submit feedback" className="mt-4">
           {reactions.map((reaction) => {
             return (
               <Dropdown.Item
@@ -129,6 +156,7 @@ const LiveFeedback = () => {
         </DropdownButton>
         <br></br>
         <br></br>
+        {/* {checkFeedback()} */}
         {results.length === reactions.length ? (
           reactions.map((x) => {
             const fraction =
@@ -168,8 +196,19 @@ const LiveFeedback = () => {
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         )}
-        {/* {isTutor() ? <Button onClick={resetResponseHandler}>Reset responses</Button> : <div></div>} */}
       </Card>
+      <br></br>
+      {isTutor() ? (
+        <Button
+          onClick={resetResponseHandler}
+          className="d-flex align-items-center justify-content-center"
+          style={{ margin: "auto", minWidth: "400px" }}
+        >
+          Reset responses
+        </Button>
+      ) : (
+        <div></div>
+      )}
     </>
   );
 };

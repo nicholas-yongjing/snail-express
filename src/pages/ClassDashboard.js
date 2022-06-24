@@ -1,8 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useClass } from '../contexts/ClassContext';
 import NavigationBar from "../components/NavigationBar";
-import SideBar from "../components/SideBar"
-import FeedbackSettings from './FeedbackSettings';
+import SideBar from "../components/SideBar";
 import { Button } from 'react-bootstrap';
 
 export default function ClassDashBoard() {
@@ -26,8 +25,6 @@ export default function ClassDashBoard() {
                 <SideBar links={sidebarLinks}/>
             <div className='d-flex justify-content-between p-4 w-100'>
                 <span className='fs-1'>{currentClass ? currentClass.className : ''}
-                <br></br> 
-                <button className='btn btn-primary fs-5' onClick={navigateFeedbackSettings}>Go to Feedback Settings</button>
             </span>
                 <span>
                     <Link to='/dashboard'>
