@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect, useState } from "react";
 import NavigationBar from "../components/NavigationBar";
 import {
+  Button,
   Card,
   DropdownButton,
   Dropdown,
@@ -20,7 +21,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { useAuth } from "../contexts/AuthContext";
-import { useClass } from "../contexts/ClassContext";
+import { useClass, isTutor } from "../contexts/ClassContext";
 import { firestore } from "../firebase";
 
 const LiveFeedback = () => {
@@ -36,6 +37,28 @@ const LiveFeedback = () => {
 
   const reactions = ["fast", "slow", "confusing", "good"];
   const variants = ["danger", "info", "warning", "success"];
+
+  const resetResponseHandler = (event) => {
+    event.preventDefault();
+    const feedbackRef = collection(
+        firestore,
+        "classes",
+        currentClass.id,
+        "feedback"
+      );
+      const q = getDocs(feedbackRef).then((ss) =>
+        ss.docs.map(d => {
+          const newRef = doc(
+            firestore,
+            "classes",
+            currentClass.id,
+            "feedback", 
+            d.id
+          );
+          deleteDoc(newRef).then(() => console.log("deleted" + d.id));
+        })
+      );
+  }
 
   const pushFeedbackHandler = async (event, reaction) => {
     event.preventDefault();
@@ -145,6 +168,7 @@ const LiveFeedback = () => {
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         )}
+        {/* {isTutor() ? <Button onClick={resetResponseHandler}>Reset responses</Button> : <div></div>} */}
       </Card>
     </>
   );

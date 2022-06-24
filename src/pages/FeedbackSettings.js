@@ -31,10 +31,10 @@ const FeedbackSettings = () => {
           );
     };
 
-    return 
+    return(
     <Button onClick={resetResponseHandler}>
         <div>Reset responses</div>
-    </Button>
+    </Button>);
 };
 
 export default FeedbackSettings;
