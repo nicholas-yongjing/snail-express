@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getClasses } from "../database";
 import { Container } from "react-bootstrap";
-
-import NavigationBar from "../components/NavigationBar";
+import WebPage from "../components/WebPage";
 import Classes from "../components/Classes";
 import Invites from "../components/Invites";
 
@@ -31,8 +30,7 @@ export default function Dashboard() {
   }
 
   return (
-    <>
-      <NavigationBar />
+    <WebPage>
       <Container className="m-5 d-flex flex-column gap-4">
         <h1 className="fs-2">
           Welcome back, <strong>{currentUser.email}</strong>!
@@ -58,6 +56,6 @@ export default function Dashboard() {
           populateClasses={() => populateClasses('student', setEnrolledClasses)}
         />
       </Container>
-    </>
+    </WebPage>
   );
 }

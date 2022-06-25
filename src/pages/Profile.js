@@ -1,19 +1,17 @@
 import { Container, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-
-import NavigationBar from "../components/NavigationBar";
+import WebPage from "../components/WebPage";
 
 export default function Profile() {
   const { currentUser } = useAuth();
   return (
-    <>
-      <NavigationBar />
+    <WebPage>
       <Container
         className="d-flex align-items-center justify-content-center"
         style={{ minHeight: "100vh" }}
       >
-        <div className="w-100" style={{ maxWidth: "400px" }}>
+        <div className="w-100 fs-4" style={{ maxWidth: "400px" }}>
           <Card>
             <Card.Body>
               {/* <img src={logo} className="img-responsive" alt="Website logo" height="150px" /> */}
@@ -37,6 +35,6 @@ export default function Profile() {
           </Card>
         </div>
       </Container>
-    </>
+    </WebPage>
   );
 }

@@ -17,20 +17,25 @@ export default function NavigationBar() {
   }
 
   function getLinks() {
-    return (
-      (currentUser && currentClass)
-        ? <div className="navbar-nav fs-5">
-          <Link className="nav-link text-light" to='/class-dashboard'>Dashboard</Link>
-          <Link className="nav-link text-light" to='/forums'>Forums</Link>
-          <Link className="nav-link text-light" to='/'>Quiz</Link>
-          <Link className="nav-link text-light" to='/'>Lecture Feedback</Link>
-        </div>
-        : <div className="navbar-nav fs-5">
+    if (currentUser && currentClass) {
+      return (<div className="navbar-nav fs-5">
+        <Link className="nav-link text-light" to='/class-dashboard'>Dashboard</Link>
+        <Link className="nav-link text-light" to='/forums'>Forums</Link>
+        <Link className="nav-link text-light" to='/'>Quiz</Link>
+        <Link className="nav-link text-light" to='/'>Lecture Feedback</Link>
+      </div>
+      );
+    } else if (!currentUser) {
+      return (
+        <div className="navbar-nav fs-5">
           <Link className="nav-link" to='/'>Home</Link>
           <Link className="nav-link" to='/'>Features</Link>
           <Link className="nav-link" to='/'>Pricing</Link>
         </div>
-    );
+      );
+    } else {
+      return <></>;
+    }
   }
 
   function getButtons() {
