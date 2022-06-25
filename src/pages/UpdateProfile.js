@@ -50,12 +50,12 @@ export default function UpdateProfile() {
         className="d-flex align-items-center justify-content-center"
         style={{ minHeight: "100vh" }}
       >
-        <div className="w-100" style={{ maxWidth: "400px" }}>
-          <Card>
+        <div className="w-100 fs-4" style={{ maxWidth: "500px" }}>
+          <Card className="slate-700 text-slate-200">
             <Card.Body>
               <h2 className="text-center mb-4">Update profile</h2>
               {error && <Alert variant="danger">{error}</Alert>}
-              <Form onSubmit={handleSubmit}>
+              <Form className="d-flex flex-column gap-2" onSubmit={handleSubmit}>
                 <Form.Group id="email" className="mb-2">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
@@ -82,7 +82,7 @@ export default function UpdateProfile() {
                   />
                 </Form.Group>
                 <br></br>
-                <Button disabled={loading} className="w-100" type="submit">
+                <Button disabled={loading} className="fs-5 generic-button w-100" type="submit">
                   Update profile
                 </Button>
               </Form>
@@ -90,7 +90,7 @@ export default function UpdateProfile() {
           </Card>
           <br></br>
           <div className="text-center">
-            <Link to="/profile">Cancel</Link>
+            <Link className="generic-link" to="/profile">Cancel</Link>
           </div>
         </div>
       </Container>
