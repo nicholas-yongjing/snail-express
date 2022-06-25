@@ -30,40 +30,32 @@ export default function Login() {
 
   return (
     <WebPage>
-      <Container
-        className="d-flex align-items-center justify-content-center"
-        style={{ minHeight: "100vh" }}
-      >
-        <div className="w-100" style={{ maxWidth: "400px" }}>
-          <Card>
-            <Card.Body>
-              <h2 className="text-center mb-4">Login</h2>
-              {error && <Alert variant="danger">{error}</Alert>}
-              <Form onSubmit={handleSubmit}>
-                <Form.Group id="email">
-                  <Form.Label>Email address</Form.Label>
-                  <Form.Control type="email" ref={emailRef} required />
-                </Form.Group>
-                <Form.Group id="password">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" ref={passwordRef} required />
-                </Form.Group>
-                <br></br>
-                <Button disabled={loading} className="w-100" type="submit">
-                  Enter
-                </Button>
-              </Form>
-              <div className="w-100 text-center mt-3">
-                <Link to="/forgot-password">Forgot password?</Link>
-              </div>
-            </Card.Body>
-          </Card>
-          <br></br>
-          <div className="text-center">
-            New to our website? Create an account <Link to="/signup">here</Link>
+      <Container className="flex-grow-1 d-flex align-items-center justify-content-center">
+        <div className="d-flex flex-column rounded p-4 w-100 slate-700 text-slate-200 gap-2 fs-4" style={{ maxWidth: "600px" }}>
+          <h2 className="text-center mb-4">Login</h2>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form className="d-flex flex-column gap-3" onSubmit={handleSubmit}>
+            <Form.Group id="email">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control className="fs-4" type="email" ref={emailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control className="fs-4" type="password" ref={passwordRef} required />
+            </Form.Group>
+            <br></br>
+            <Button disabled={loading} className="fs-4 w-100 slate-800 border-slate-800 hover-text-slate-700 hover-slate-200 hover-border-slate-200" type="submit">
+              Login
+            </Button>
+          </Form>
+          <div className="w-100 text-center mt-3">
+            <Link className="text-slate-200 hover-text-slate-300" to="/forgot-password">Forgot password?</Link>
           </div>
           <div className="text-center">
-            Back to <Link to="/">home</Link>
+            New to our website? Create an account <Link className="text-slate-200 hover-text-slate-300" to="/signup">here</Link>
+          </div>
+          <div className="text-center">
+            Back to <Link className="text-slate-200 hover-text-slate-300" to="/">home</Link>
           </div>
         </div>
       </Container>
