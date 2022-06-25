@@ -4,7 +4,7 @@ import { useClass } from "../contexts/ClassContext";
 import { addForumThread, getForumThreads } from "../database";
 import { Alert, Button, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import NavigationBar from "../components/NavigationBar";
+import WebPage from "../components/WebPage";
 import SideBar from "../components/SideBar";
 
 export default function SettingsForums() {
@@ -89,9 +89,8 @@ export default function SettingsForums() {
   }
 
   return (
-    <>
-      <NavigationBar />
-      <div className="d-flex">
+    <WebPage>
+      <div className="flex-grow-1 d-flex">
         <SideBar links={sidebarLinks} />
         <div className="w-100 p-4">
           <div className="d-flex justify-content-between">
@@ -111,6 +110,6 @@ export default function SettingsForums() {
           }
         </div>
       </div>
-    </>
+    </WebPage>
   );
 }

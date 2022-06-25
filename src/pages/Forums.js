@@ -8,7 +8,7 @@ export default function Forums() {
 
   return (
     <WebPage>
-      <div className='flex-grow-1 flex-shrink-0 d-flex align-items-stretch'>
+      <div className='flex-grow-1 d-flex'>
         <ForumSideBar
           currentThread={currentThread}
           setCurrentThread={setCurrentThread}
