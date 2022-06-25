@@ -35,6 +35,7 @@ export default function Post(props) {
         </Card.Body>
         <ReactionBar
           currentThread={currentThread}
+          currentPost={currentPost}
           content={currentPost}
           contentType='post'
           populatePosts={populatePosts}
