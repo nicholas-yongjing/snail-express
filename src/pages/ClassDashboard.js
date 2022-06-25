@@ -14,7 +14,7 @@ export default function ClassDashBoard() {
 
   return (
     <WebPage>
-      <div className='flex-grow-1 d-flex'>
+      <div className='slate-800 flex-grow-1 justify-self-stretch d-flex'>
         <SideBar>
           {
             sidebarLinks.map(([link, text]) => {

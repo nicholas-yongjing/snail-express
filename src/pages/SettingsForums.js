@@ -105,7 +105,7 @@ export default function SettingsForums() {
 
   return (
     <WebPage>
-      <div className="flex-grow-1 d-flex">
+      <div className="flex-grow-1 d-flex slate-800">
         <SideBar>
           {
             sidebarLinks.map(([link, text]) => {
