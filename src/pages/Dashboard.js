@@ -31,30 +31,34 @@ export default function Dashboard() {
 
   return (
     <WebPage>
-      <Container className="m-5 d-flex flex-column gap-4">
+      <Container className="align-self-center m-5 d-flex flex-column gap-4 text-slate-200">
         <h1 className="fs-2">
           Welcome back, <strong>{currentUser.email}</strong>!
         </h1>
-        <div className='d-flex gap-3 justify-content-between'>
-          <h1><strong>My Classes</strong></h1>
-          <Link to="/add-class">
-            <button type="button" className="btn btn-primary">
-              Add Class
-            </button>
-          </Link>
+        <div className="rounded p-4 d-flex flex-column gap-2 slate-700">
+          <div className='d-flex gap-3 justify-content-between'>
+            <h1><strong>My Classes</strong></h1>
+            <Link to="/add-class">
+              <button type="button" className="btn fs-4 generic-button">
+                Add Class
+              </button>
+            </Link>
+          </div>
+          <Classes classType={"Created"} classes={createdClasses} />
+          <Classes classType={"Teaching"} classes={teachingClasses} />
+          <Classes classType={"Enrolled"} classes={enrolledClasses} />
         </div>
-        <Classes classType={"Created"} classes={createdClasses} />
-        <Classes classType={"Teaching"} classes={teachingClasses} />
-        <Classes classType={"Enrolled"} classes={enrolledClasses} />
-        <h1><strong>Pending Invitations</strong></h1>
-        <Invites
-          role='tutor'
-          populateClasses={() => populateClasses('tutor', setTeachingClasses)}
-        />
-        <Invites
-          role='student'
-          populateClasses={() => populateClasses('student', setEnrolledClasses)}
-        />
+        <div className="rounded p-4 d-flex flex-column gap-2 slate-700">
+          <h1><strong>Pending Invitations</strong></h1>
+          <Invites
+            role='tutor'
+            populateClasses={() => populateClasses('tutor', setTeachingClasses)}
+          />
+          <Invites
+            role='student'
+            populateClasses={() => populateClasses('student', setEnrolledClasses)}
+          />
+        </div>
       </Container>
     </WebPage>
   );

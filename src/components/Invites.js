@@ -43,34 +43,30 @@ export default function Invites(props) {
         (invites.length > 0)
           ? invites.map((invite) => {
             return (
-              <Card key={invite.id} className='fs-5'>
-                <Card.Body>
+              <Card key={invite.id} className='fs-5 slate-800'>
+                <Card.Body className='d-flex flex-column gap-2'>
                   <h4><strong>{invite.className}</strong></h4>
                   <div>Tutor: {invite.headTutor.email}</div>
                   <div>You are invited to be a {role} for this class</div>
                   <div className='d-flex gap-2'>
                     <button
                       onClick={() => handleAccept(invite.id)}
-                      className="btn btn-primary"
+                      className="btn btn-success"
                     >
                       Accept invitation
                     </button>
                     <button
                       onClick={() => handleDelete(invite.id)}
-                      className='btn btn-secondary'
+                      className='btn generic-button-light'
                     >
-                      delete invitation
+                      Delete invitation
                     </button>
                   </div>
                 </Card.Body>
               </Card>
             );
           })
-          : <Card>
-            <Card.Body>
-              <h4>No invitations to be a {role}</h4>
-            </Card.Body>
-          </Card>
+          : <h4>No invitations to be a {role}</h4>
       }
     </div>
   );

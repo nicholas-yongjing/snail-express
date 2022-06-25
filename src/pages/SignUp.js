@@ -52,16 +52,16 @@ function SignUp() {
                   <Form.Control className="fs-4" type="password" ref={passwordConfirmRef} required />
                 </Form.Group>
                 <br></br>
-                <Button disabled={loading} className="w-100 fs-4 slate-800 border-slate-800 hover-text-slate-700 hover-slate-200 hover-border-slate-200" type="submit">
+                <Button disabled={loading} className="w-100 fs-4 generic-button" type="submit">
                   Sign Up
                 </Button>
               </Form>
           <br></br>
           <div className="text-center">
-            Already have an account? Proceed to <Link className="text-slate-200 hover-text-slate-300" to="/Login">login</Link>
+            Already have an account? Proceed to <Link className="generic-link" to="/Login">login</Link>
           </div>
           <div className="text-center">
-            Back to <Link className="text-slate-200 hover-text-slate-300" to="/">home</Link>
+            Back to <Link className="generic-link" to="/">home</Link>
           </div>
         </div>
       </Container>

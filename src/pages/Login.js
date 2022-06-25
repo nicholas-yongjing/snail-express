@@ -44,18 +44,18 @@ export default function Login() {
               <Form.Control className="fs-4" type="password" ref={passwordRef} required />
             </Form.Group>
             <br></br>
-            <Button disabled={loading} className="fs-4 w-100 slate-800 border-slate-800 hover-text-slate-700 hover-slate-200 hover-border-slate-200" type="submit">
+            <button disabled={loading} className="fs-4 p-1 generic-button" type="submit">
               Login
-            </Button>
+            </button>
           </Form>
           <div className="w-100 text-center mt-3">
-            <Link className="text-slate-200 hover-text-slate-300" to="/forgot-password">Forgot password?</Link>
+            <Link className="generic-link" to="/forgot-password">Forgot password?</Link>
           </div>
           <div className="text-center">
-            New to our website? Create an account <Link className="text-slate-200 hover-text-slate-300" to="/signup">here</Link>
+            New to our website? Create an account <Link className="generic-link" to="/signup">here</Link>
           </div>
           <div className="text-center">
-            Back to <Link className="text-slate-200 hover-text-slate-300" to="/">home</Link>
+            Back to <Link className="generic-link" to="/">home</Link>
           </div>
         </div>
       </Container>

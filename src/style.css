@@ -237,3 +237,46 @@
 .hover-border-slate-900:hover {
   border: 2px solid #0f172a;
 }
+
+.generic-button,
+.generic-button:active {
+  border: 2px solid #1e293b;
+  color: #e2e8f0;
+  background-color: #1e293b;
+}
+
+.generic-button:hover {
+  border: 2px solid #e2e8f0;
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.generic-button-light {
+  border: 2px solid #e2e8f0;
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.generic-button-light:hover {
+  color: #e2e8f0;
+  background-color: #1e293b;
+}
+.generic-link {
+  /*text-slate-200*/ 
+  color: #e2e8f0;
+}
+
+.generic-link:hover {
+  /*hover-text-slate-300*/
+  color: #cbd5e1;
+}
+
+.generic-field {
+  background-color: #1e293b;
+  border: 2px solid #1e293b;
+}
+
+.generic-field:focus {
+  background-color: #0f172a;
+  border: 2px solid #1e293b;
+}

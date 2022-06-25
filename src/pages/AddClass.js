@@ -39,17 +39,22 @@ export default function AddClass() {
 
   return (
     <WebPage>
-      {error && <Alert variant="danger">{error}</Alert>}
-      {message && <Alert variant="success">{message}</Alert>}
       <Form
         ref={formRef}
         onSubmit={handleSubmit}
-        className='d-grid m-5 fs-3 gap-3'
+        className='roundede d-grid m-5 p-4 gap-3 text-slate-200 slate-700'
       >
         <h1>Create Class</h1>
-        <Form.Group id="class-name">
+          {error && <Alert variant="danger">{error}</Alert>}
+          {message && <Alert variant="success">{message}</Alert>}
+        <Form.Group id="class-name" className="fs-3">
           <Form.Label>Class Name</Form.Label>
-          <Form.Control type="text" ref={classNameRef} required />
+          <Form.Control 
+            type="text"
+            ref={classNameRef}
+            required 
+            className="generic-field"
+          />
         </Form.Group>
         <Form.Group id="students">
           <Form.Label>Students</Form.Label>
@@ -59,6 +64,7 @@ export default function AddClass() {
             ref={studentsRef}
             required
             placeholder="Enter students email separated by new lines"
+            className="generic-field"
           />
         </Form.Group>
         <Form.Group id="tutors">
@@ -68,9 +74,10 @@ export default function AddClass() {
             rows={5}
             ref={tutorsRef}
             placeholder="Enter tutors email separated by new lines"
+            className="generic-field"
           />
         </Form.Group>
-        <Button disabled={loading} className="w-25" type="submit">
+        <Button disabled={loading} className="w-25 generic-button" type="submit">
           Create Class
         </Button>
         <Link className='fs-5' to="/dashboard">Back to dashboard</Link>

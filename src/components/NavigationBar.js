@@ -72,7 +72,7 @@ export default function NavigationBar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg p-3 justify-content-between slate-700">
+    <nav className="navbar navbar-expand-lg p-3 justify-content-between slate-900">
       <div className="d-flex align-items-center">
         <Link className="nav-link text-slate-200 text-slate-200 hover-text-slate-300 fs-3" to='/dashboard'>snail-express</Link>
         {getLinks()}
