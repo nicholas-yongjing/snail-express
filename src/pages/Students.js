@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { getDocs, collection } from "firebase/firestore";
 import { Card } from "react-bootstrap";
-import { useClass } from "../contexts/ClassContext";
-import NavigationBar from "../components/NavigationBar";
+import { useClass } from "../contexts/ClassContext"
 import { firestore } from "../firebase";
+import WebPage from "../components/WebPage";
 
 const Students = () => {
   const { currentClass } = useClass();
@@ -28,20 +28,20 @@ const Students = () => {
 
   return (
     <>
-      <NavigationBar />
+      <WebPage>
       <br></br>
       <div>
-        {console.log(studentList)}
-        {studentList.map((email) => {
+        {currentClass ? studentList.map((email) => {
           return (
-            <span key={email}>
-              <Card key={email} style={{ maxWidth: "300px", maxHeight: "300px" }}>
+            <div key={email}>
+              <Card className="slate-700 text-slate-200 d-flex align-items-center" key={email} style={{ maxWidth: "300px", maxHeight: "300px" }}>
                 <Card.Body>{email}</Card.Body>
               </Card>
-            </span>
+            </div>
           );
-        })}
+        }) : <div>No students</div>}
       </div>
+      </WebPage>
     </>
   );
 };
