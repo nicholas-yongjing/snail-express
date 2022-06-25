@@ -103,7 +103,7 @@ export default function ReactionBar(props) {
         {
           contentType === 'post'
             ? <button
-              className="btn btn-primary"
+              className="btn generic-button"
               onClick={() => setExpandForm(!expandForm)}
             >
               Reply
@@ -113,7 +113,7 @@ export default function ReactionBar(props) {
         {
           isTutor()
             ? <button
-              className="btn btn-primary"
+              className="btn generic-button"
               onClick={(e) => handleEndorse(e)}
             >
               Endorse
@@ -123,7 +123,7 @@ export default function ReactionBar(props) {
         <button
           className={"btn" + (currentVote === 'upvote'
             ? " btn-success"
-            : " btn-secondary")}
+            : " generic-button")}
           onClick={(e) => handleUpvote(e)}
         >
           ▲
@@ -131,11 +131,11 @@ export default function ReactionBar(props) {
         <button
           className={"btn" + (currentVote === 'downvote'
             ? " btn-danger"
-            : " btn-secondary")}
+            : " generic-button")}
           onClick={(e) => handleDownvote(e)}
         >
           ▼
-        </button>=
+        </button>
         <div>
           {getVotes('upvotes')} Upvotes • {getVotes('downvotes')} Downvotes
         </div>

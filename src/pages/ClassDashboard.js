@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useClass } from '../contexts/ClassContext';
 import SideBar from "../components/SideBar"
 import WebPage from '../components/WebPage';
+import { Button } from 'react-bootstrap';
 
 export default function ClassDashBoard() {
   const { currentClass, setCurrentClass } = useClass();
@@ -23,21 +24,21 @@ export default function ClassDashBoard() {
                 <Link
                   to={link}
                   key={text}
-                  className='d-flex justify-content-center'
+                  className='btn w-100 generic-button d-flex justify-content-center'
                 >
-                  <button type='button' className='btn w-100 btn-primary align-self-center'>
-                    {text}
-                  </button>
+                  {text}
                 </Link>
               );
             })
           }
         </SideBar>
-        <div className='d-flex justify-content-between p-4 w-100'>
-          <span className='fs-1'>{currentClass ? currentClass.className : ''} </span>
+        <div className='d-flex justify-content-between p-4 w-100 text-slate-200'>
+          <span className='fs-1'>
+            {currentClass ? currentClass.className : ''}
+          </span>
           <span>
             <Link to='/dashboard'>
-              <button className='btn btn-secondary fs-4' onClick={handleClick}>
+              <button className='btn generic-button-light fs-4' onClick={handleClick}>
                 Back to dashboard
               </button>
             </Link>

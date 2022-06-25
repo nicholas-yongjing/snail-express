@@ -54,7 +54,7 @@ export default function Forums() {
               : <div className="text-white d-flex justify-content-center">No threads found</div>
           }
         </SideBar>
-        <ForumPosts currentThread={currentThread} />
+        <ForumPosts currentThread={currentThread}/>
       </div>
     </WebPage>
 

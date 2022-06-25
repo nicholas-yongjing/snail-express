@@ -7,7 +7,7 @@ export default function Reply(props) {
   const currentReply = props.reply;
 
   return (
-    <Card>
+    <Card className='slate-700 text-slate-200'>
       <Card.Body>
         <h4>{currentReply.author.email}</h4>
         <p>{currentReply.body}</p>

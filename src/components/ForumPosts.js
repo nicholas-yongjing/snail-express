@@ -26,48 +26,50 @@ export default function ForumPosts(props) {
   }
 
   return (
-    <div className='d-flex flex-column align-items-stretch p-4 w-100'>
+    <div className='d-flex flex-column align-items-stretch p-4 w-100 slate-800 text-slate-200'>
       <div className='d-flex justify-content-between'>
         <h1>{currentClass ? currentClass.className : ''} </h1>
-        <span><Link to='/class-dashboard'>Back to dashboard</Link></span>
+        <Link className="generic-link fs-4" to='/class-dashboard'>Back to dashboard</Link>
       </div>
       <br />
       {
         (currentThread != null)
-          ? <Card className='p-4 d-flex flex-column gap-2'>
+          ? <div className='d-flex flex-column gap-2'>
             <div className='d-flex justify-content-between align-items-center'>
               <h2>
                 {currentThread.name}
               </h2>
               <button
-                className={'btn' + ( expandForm ? ' btn-secondary' : ' btn-success')}
+                className={'btn' + (expandForm ? ' generic-button-light' : ' btn-success')}
                 onClick={() => setExpandForm(!expandForm)}
               >
-                { expandForm
-                    ? "Hide Form"
-                    : "New Post"
+                {expandForm
+                  ? "Hide Form"
+                  : "New Post"
                 }
               </button>
             </div>
             {
               expandForm
                 ? <AddPost
-                    currentThread={currentThread}
-                    populatePosts={populatePosts}
+                  currentThread={currentThread}
+                  populatePosts={populatePosts}
                 />
                 : <></>
             }
 
             <br />
             {
-              posts.map((post) => <Post
+              (posts.length > 0)
+                ? posts.map((post) => <Post
                   key={post.id}
                   thread={currentThread}
                   post={post}
                   populatePosts={populatePosts}
-              />)
+                />)
+                : "No posts in this thread"
             }
-          </Card>
+          </div>
           : <div>No Threads Selected</div>
       }
     </div>

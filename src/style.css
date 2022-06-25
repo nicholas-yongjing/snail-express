@@ -260,6 +260,7 @@
 .generic-button-light:hover {
   color: #e2e8f0;
   background-color: #1e293b;
+  border: 2px solid #e2e8f0;
 }
 .generic-link {
   /*text-slate-200*/ 
@@ -272,11 +273,29 @@
 }
 
 .generic-field {
+  color: #cbd5e1;
   background-color: #1e293b;
   border: 2px solid #1e293b;
 }
 
 .generic-field:focus {
+  color: #cbd5e1;
   background-color: #0f172a;
   border: 2px solid #1e293b;
+}
+
+.generic-field-light {
+  color: #cbd5e1;
+  background-color: #cbd5e1;
+  border: 2px solid #cbd5e1;
+}
+
+.generic-field-light:focus {
+  color: #cbd5e1;
+  background-color: #94a3b8;
+  border: 2px solid #94a3b8;
+}
+
+.generic-field-light::placeholder {
+  color: #1e293b;
 }
