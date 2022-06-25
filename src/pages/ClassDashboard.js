@@ -16,7 +16,23 @@ export default function ClassDashBoard() {
   return (
     <WebPage>
       <div className='flex-grow-1 d-flex'>
-        <SideBar links={sidebarLinks} />
+        <SideBar>
+          {
+            sidebarLinks.map(([link, text]) => {
+              return (
+                <Link
+                  to={link}
+                  key={text}
+                  className='d-flex justify-content-center'
+                >
+                  <button type='button' className='btn w-100 btn-primary align-self-center'>
+                    {text}
+                  </button>
+                </Link>
+              );
+            })
+          }
+        </SideBar>
         <div className='d-flex justify-content-between p-4 w-100'>
           <span className='fs-1'>{currentClass ? currentClass.className : ''} </span>
           <span>
