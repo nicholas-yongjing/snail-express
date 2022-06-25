@@ -5,8 +5,8 @@ import WebPage from '../components/WebPage';
 
 export default function ClassDashBoard() {
   const { currentClass, setCurrentClass } = useClass();
-  const sidebarLinks = [['/class-dashboard', 'Students'],
-  ['/class-dashboard', 'Tutors'],
+  const sidebarLinks = [['/students', 'Students'],
+  ['/tutors', 'Tutors'],
   ['/settings-general', 'Settings']];
   function handleClick() {
     setCurrentClass(null);

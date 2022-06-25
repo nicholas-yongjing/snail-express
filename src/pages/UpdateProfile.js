@@ -8,8 +8,9 @@ export default function UpdateProfile() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
+  const displayPictureRef = useRef();
   const navigate = useNavigate();
-  const { currentUser, updateUserPassword, updateUserEmail } = useAuth();
+  const { currentUser, updateUserPassword, updateUserEmail, setProfile } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -30,8 +31,9 @@ export default function UpdateProfile() {
       promises.push(updateUserPassword(passwordRef.current.value));
     }
 
-    Promise
-      .all(promises)
+    promises.push(setProfile(displayPictureRef.current.value));
+
+    Promise.all(promises)
       .then(() => {
         navigate("/dashboard");
       })
@@ -82,6 +84,14 @@ export default function UpdateProfile() {
                       placeholder="Leave blank to keep the same"
                     />
                   </Form.Group>
+                <Form.Group id='photo' className="mb-3 mt-1">
+                  <Form.Label>Set profile picture</Form.Label>
+                  <Form.Control
+                    type="text"
+                    ref={displayPictureRef}
+                    placeholder="Enter the URL for your profile picture"
+                  />
+                </Form.Group>
                   <br></br>
                   <Button disabled={loading} className="fs-5 generic-button w-100" type="submit">
                     Update profile

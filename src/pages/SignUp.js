@@ -6,11 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import WebPage from "../components/WebPage";
 
 function SignUp() {
+  const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const navigate = useNavigate();
-  const { signup } = useAuth();
+  const { signup, setName } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,6 +26,7 @@ function SignUp() {
       setError("");
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
+      setName(nameRef.current.value);
       navigate("/dashboard");
     } catch {
       setError("Failed to create an account");
@@ -41,6 +43,10 @@ function SignUp() {
             <h2 className="text-center mb-4">Sign Up</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form className="d-flex flex-column gap-4" onSubmit={handleSubmit}>
+              <Form.Group id="full-name">
+                <Form.Label>Full name</Form.Label>
+                <Form.Control type="name" ref={nameRef} required />
+              </Form.Group>
               <Form.Group id="email">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control className="fs-4" type="email" ref={emailRef} required />
@@ -53,21 +59,22 @@ function SignUp() {
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control className="fs-4" type="password" ref={passwordConfirmRef} required />
               </Form.Group>
-              <br></br>
+              <br />
               <Button disabled={loading} className="w-100 fs-4 generic-button" type="submit">
                 Sign Up
               </Button>
             </Form>
-            <br></br>
+            <br />
             <div className="text-center">
               Already have an account? Proceed to <Link className="generic-link" to="/Login">login</Link>
             </div>
             <div className="text-center">
-              Back to <Link className="generic-link" to="/">home</Link>
+              Back to <Link className = "generic-link" to = "/"> home</ Link>
             </div>
+            <br />
           </div>
-        </Container>
-        <br />
+        </Container >
+    <br />
       </div>
     </WebPage>
   );

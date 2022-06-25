@@ -22,7 +22,7 @@ export default function NavigationBar() {
         <Link className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700" to='/class-dashboard'>Dashboard</Link>
         <Link className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700" to='/forums'>Forums</Link>
         <Link className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700" to='/'>Quiz</Link>
-        <Link className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700" to='/'>Lecture Feedback</Link>
+        <Link className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700" to='/livefeedback'>Lecture Feedback</Link>
       </div>
       );
     } else if (!currentUser) {
