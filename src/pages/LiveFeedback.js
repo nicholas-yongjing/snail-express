@@ -61,7 +61,7 @@ const LiveFeedback = () => {
       arr[reactions.indexOf(doc.data().reaction)] += 1;
     });
     setResults(arr);
-  }).then(() => console.log("Refreshing")).catch(error => console.log(error));
+  });
 
   const sum = (arr) => arr.reduce((x, y) => x + y, 0);
 

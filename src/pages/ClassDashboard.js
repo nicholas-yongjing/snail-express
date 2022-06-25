@@ -7,7 +7,7 @@ import { Button } from 'react-bootstrap';
 export default function ClassDashBoard() {
     const { currentClass, setCurrentClass } = useClass();
     const navigate = useNavigate()
-    const sidebarLinks = [['/class-dashboard', 'Students'],
+    const sidebarLinks = [['/students', 'Students'],
                         ['/class-dashboard', 'Tutors'],
                         ['/settings-general', 'Settings']];
     function handleClick() {
