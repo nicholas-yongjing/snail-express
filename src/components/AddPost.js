@@ -40,7 +40,7 @@ export default function AddPost(props) {
     }
 
     return (
-        <Card className="p-3">
+        <Card className="p-3 slate-700 text-slate-200">
             <h2>Create Post</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
@@ -55,6 +55,7 @@ export default function AddPost(props) {
                         ref={postTitleRef}
                         required 
                         placeholder="Title"
+                        className="generic-field"
                     />
                 </Form.Group>
                 <Form.Group id="post-body">
@@ -64,13 +65,13 @@ export default function AddPost(props) {
                         ref={postBodyRef}
                         required
                         placeholder="Post content"
+                        className="generic-field"
                     />
                 </Form.Group>
                 <br></br>
-                <Button disabled={loading} className="w-25" type="submit">
+                <Button disabled={loading} className="w-25 btn btn-success" type="submit">
                     Create Post
                 </Button>
-                <br></br>
             </Form>
         </Card>
     );

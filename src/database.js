@@ -1,4 +1,4 @@
-import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc } from "firebase/firestore";
+import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc, serverTimestamp, orderBy } from "firebase/firestore";
 import { firestore } from "./firebase";
 
 async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
@@ -8,9 +8,10 @@ async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
     studentInvites: studentsEmail,
     tutorInvites: tutorsEmail,
     studentIds: [],
-    tutorIds: []
+    tutorIds: [],
+    timestamp: serverTimestamp()
   }).catch((err) => {
-    console.log(`Error creating class: ${err}`);
+    throw new Error(`Error creating class: ${err}`);
   })
 }
 
@@ -38,7 +39,7 @@ async function addUserToClass(classId, user, role) {
   return addUserToArray()
     .then(() => addUserDoc())
     .catch((err) => {
-      console.log(`Error adding user to class: ${err}`);
+      throw new Error(`Error adding user to class: ${err}`);
     });
 }
 
@@ -47,13 +48,13 @@ async function getClasses(userId, role) {
   let q;
   if (role === 'student') {
     q = query(collection(firestore, "classes"),
-      where('studentIds', 'array-contains', userId));
+      where('studentIds', 'array-contains', userId), orderBy('timestamp'));
   } else if (role === 'head tutor') {
     q = query(collection(firestore, "classes"),
-      where('headTutor.id', '==', userId));
+      where('headTutor.id', '==', userId), orderBy('timestamp'));
   } else if (role === 'tutor') {
     q = query(collection(firestore, "classes"),
-      where('tutorIds', 'array-contains', userId));
+      where('tutorIds', 'array-contains', userId), orderBy('timestamp'));
   } else {
     throw new Error(`Unknown role: ${role}`)
   }
@@ -63,7 +64,7 @@ async function getClasses(userId, role) {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
       });
     }).catch((err) => {
-      console.log(`Error retrieving classes: ${err}`)
+      throw new Error(`Error retrieving classes: ${err}`)
     }));
 }
 
@@ -85,7 +86,7 @@ async function getInvites(email, role) {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
       });
     }).catch((err) => {
-      console.log(`Error retrieving invites: ${err}`)
+      throw new Error(`Error retrieving invites: ${err}`)
     }));
 }
 
@@ -135,7 +136,7 @@ async function addForumThread(classId, threadName) {
   return (
     addDoc(threadsRef, { name: threadName })
       .catch((err) => {
-        console.log(`Error adding forum thread: ${err}`);
+        throw new Error(`Error adding forum thread: ${err}`);
       })
   );
 }
@@ -149,7 +150,7 @@ async function getForumThreads(classId) {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
       });
     }).catch((err) => {
-      console.log(`Error retrieving forum threads: ${err}`)
+      throw new Error(`Error retrieving forum threads: ${err}`)
     }));
 }
 
@@ -165,7 +166,7 @@ async function addForumPost(classId, threadId, postTitle, postBody, author) {
   const postsRef = collection(firestore, "classes",
     classId, "forumThreads", threadId, "forumPosts");
   return await addDoc(postsRef, post).catch((err) => {
-    console.log(`Error creating post: ${err}`);
+    throw new Error(`Error creating post: ${err}`);
   });
 }
 
@@ -194,7 +195,7 @@ async function addForumReply(classId, threadId, postId, postBody, author) {
   const repliesRef = collection(firestore, "classes", classId,
     "forumThreads", threadId, "forumPosts", postId, "forumReplies");
   return await addDoc(repliesRef, reply).catch((err) => {
-    console.log(`Error creating post: ${err}`);
+    throw new Error(`Error creating post: ${err}`);
   });
 }
 
@@ -208,7 +209,7 @@ async function getForumReplies(classId, threadId, postId) {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
       });
     }).catch((err) => {
-      console.log(`Error retrieving forum replies: ${err}`)
+      throw new Error(`Error retrieving forum replies: ${err}`)
     }));
 }
 
@@ -229,7 +230,7 @@ async function togglePostEndorsement(classId, threadId, postId, replyId = null) 
         { merge: true }
       )
     }).catch((err) => {
-      console.log(`Error toggling post endorsement: ${err}`);
+      throw new Error(`Error toggling post endorsement: ${err}`);
     })
 }
 
@@ -281,7 +282,7 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
       updateUpvoters(snapshot);
       updateDownvoters(snapshot);
     }).catch((err) => {
-      console.log(`Error toggling post endorsement: ${err}`);
+      throw new Error(`Error toggling post endorsement: ${err}`);
     })
 }
 
