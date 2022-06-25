@@ -3,7 +3,7 @@ import { Container, Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 
-import NavigationBar from "../components/NavigationBar";
+import WebPage from "../components/WebPage";
 
 export default function ForgotPassword() {
   const emailRef = useRef();
@@ -29,8 +29,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <>
-      <NavigationBar />
+    <WebPage>
       <Container
         className="d-flex align-items-center justify-content-center"
         style={{ minHeight: "100vh" }}
@@ -58,6 +57,6 @@ export default function ForgotPassword() {
           </Card>
         </div>
       </Container>
-    </>
+    </WebPage>
   );
 }

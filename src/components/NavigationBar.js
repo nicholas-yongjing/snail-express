@@ -16,117 +16,63 @@ export default function NavigationBar() {
     }
   }
 
-  function getClassLinks() {
+  function getLinks() {
     return (
-      <>
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div className="navbar-nav fs-3">
-            <Link className="nav-link text-light" to='/class-dashboard'>Dashboard</Link>
-            <Link className="nav-link text-light" to='/forums'>Forums</Link>
-            <Link className="nav-link text-light" to='/'>Quiz</Link>
-            <Link className="nav-link text-light" to='/'>Lecture Feedback</Link>
-          </div>
+      (currentUser && currentClass)
+        ? <div className="navbar-nav fs-5">
+          <Link className="nav-link text-light" to='/class-dashboard'>Dashboard</Link>
+          <Link className="nav-link text-light" to='/forums'>Forums</Link>
+          <Link className="nav-link text-light" to='/'>Quiz</Link>
+          <Link className="nav-link text-light" to='/'>Lecture Feedback</Link>
         </div>
-      </>
+        : <div className="navbar-nav fs-5">
+          <Link className="nav-link" to='/'>Home</Link>
+          <Link className="nav-link" to='/'>Features</Link>
+          <Link className="nav-link" to='/'>Pricing</Link>
+        </div>
     );
   }
 
-  function getPublicNavbar() {
+  function getButtons() {
     return (
-      <div>
-        <div>-</div>{/*Line break to account for navbar out of document flow*/}
-        <div>-</div>
-        <div>-</div>
-        <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top p-2">
-          <div className="container-fluid">
-            <a className="navbar-brand fs-1" href="/">
-              snail-express
-            </a>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNavAltMarkup"
-              aria-controls="navbarNavAltMarkup"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-              <div className="navbar-nav fs-2">
-                <Link className="nav-link" to='/'>Home</Link>
-                <Link className="nav-link" to='/'>Features</Link>
-                <Link className="nav-link" to='/'>Pricing</Link>
-              </div>
-            </div>
-            <nav className="navbar navbar-dark bg-dark">
-              <form className="form-inline">
-                <a
-                  href="/login"
-                  className="btn bg-primary text-white"
-                  role="button"
-                >
-                  Login
-                </a>
-                <span> </span>
-                <a
-                  href="/signup"
-                  className="btn btn-secondary text-white"
-                  role="button"
-                >
-                  Sign Up
-                </a>
-              </form>
-            </nav>
-          </div>
-        </nav>
+      currentUser
+        ? <div className="d-flex">
+          <Link className="nav-link text-light" to='/profile'>Profile</Link>
+          <button
+            className="btn bg-secondary text-white fs-5"
+            onClick={handleLogout}
+          >
+            Log out
+          </button>
+        </div>
+        : <div className="d-flex gap-3">
+          <a
+            href="/login"
+            className="btn bg-primary text-white fs-5"
+            role="button"
+          >
+            Login
+          </a>
+          <a
+            href="/signup"
+            className="btn btn-secondary text-white fs-5"
+            role="button"
+          >
+            Sign Up
+          </a>
+        </div>
+    );
+  }
+
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3 justify-content-between">
+      <div className="d-flex align-items-center">
+        <Link className="nav-link text-light fs-3" to='/dashboard'>snail-express</Link>
+        {getLinks()}
       </div>
-    );
-  }
 
-  function getPrivateNavBar() {
-    return (
-      <div>
-        <div>-</div>{/*Line break to account for navbar out of document flow*/}
-        <div>-</div>
-        <div>-</div>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top p-2">
-          <div className="container-fluid">
-            <a className="navbar-brand fs-1" href="/dashboard">
-              snail-express
-            </a>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNavAltMarkup"
-              aria-controls="navbarNavAltMarkup"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            {Boolean(currentClass) && getClassLinks()}
-            <Link className="nav-link text-light" to='/profile'>Profile</Link>
-          </div>
-          <nav className="navbar navbar-dark bg-dark">
-            <form className="form-inline">
-              <Link
-                className="btn bg-secondary text-white"
-                role="button"
-                to="/"
-                onClick={handleLogout}
-                style={{width: '100px'}}
-              >
-                Log out
-              </Link>
-            </form>
-          </nav>
-        </nav >
-      </div >
-    );
-  }
+      {getButtons()}
 
-  return (currentUser ? getPrivateNavBar() : getPublicNavbar());
+    </nav >
+  );
 }
