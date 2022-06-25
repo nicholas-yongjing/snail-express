@@ -1,55 +1,132 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useClass } from "../contexts/ClassContext";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function NavigationBar() {
-  const [error, setError] = useState("");
   const { currentUser, logout } = useAuth();
+  const { currentClass } = useClass();
   const navigate = useNavigate();
 
   async function handleLogout() {
-    setError("");
     try {
       await logout();
       navigate("/login", { replace: true });
     } catch {
-      setError("Failed to log out");
+      console.log("Failed to log out");
     }
   }
 
-  function getPublicNavBar() {
+  function getClassLinks() {
     return (
-      <nav className="nav-bar">
-        <div className="nav-bar-left">
-          <Link to="/" className="logo">snail-express</Link>
-          <Link to="/">Home</Link>
-          <Link to="/">Features</Link>
-          <Link to="/">Pricing</Link>
+      <>
+        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div className="navbar-nav fs-3">
+            <Link className="nav-link text-light" to='/class-dashboard'>Dashboard</Link>
+            <Link className="nav-link text-light" to='/forums'>Forums</Link>
+            <Link className="nav-link text-light" to='/'>Quiz</Link>
+            <Link className="nav-link text-light" to='/'>Lecture Feedback</Link>
+          </div>
         </div>
-        <div className="nav-bar-right">
-          <button onClick={() => {navigate('/login')}}>Log in</button>
-          <button onClick={() => {navigate('/signup')}}>Sign Up</button>
-        </div>
-      </nav>
+      </>
+    );
+  }
+
+  function getPublicNavbar() {
+    return (
+      <div>
+        <div>-</div>{/*Line break to account for navbar out of document flow*/}
+        <div>-</div>
+        <div>-</div>
+        <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top p-2">
+          <div className="container-fluid">
+            <a className="navbar-brand fs-1" href="/">
+              snail-express
+            </a>
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNavAltMarkup"
+              aria-controls="navbarNavAltMarkup"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div className="navbar-nav fs-2">
+                <Link className="nav-link" to='/'>Home</Link>
+                <Link className="nav-link" to='/'>Features</Link>
+                <Link className="nav-link" to='/'>Pricing</Link>
+              </div>
+            </div>
+            <nav className="navbar navbar-dark bg-dark">
+              <form className="form-inline">
+                <a
+                  href="/login"
+                  className="btn bg-primary text-white"
+                  role="button"
+                >
+                  Login
+                </a>
+                <span> </span>
+                <a
+                  href="/signup"
+                  className="btn btn-secondary text-white"
+                  role="button"
+                >
+                  Sign Up
+                </a>
+              </form>
+            </nav>
+          </div>
+        </nav>
+      </div>
     );
   }
 
   function getPrivateNavBar() {
     return (
-      <nav className="nav-bar">
-        <div className="nav-bar-left">
-          <Link to="/dashboard" className="logo">snail-express</Link>
-          <Link to="/forums">Forums</Link>
-          <Link to="/quiz">Quiz</Link>
-          <Link to="/lecture-feedback">Lecture Feedback</Link>
-        </div>
-        <div className="nav-bar-right">
-          <Link to="/profile">Profile</Link>
-          <button className="log-out" onClick={handleLogout}>Log out</button>
-        </div>
-      </nav>
+      <div>
+        <div>-</div>{/*Line break to account for navbar out of document flow*/}
+        <div>-</div>
+        <div>-</div>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top p-2">
+          <div className="container-fluid">
+            <a className="navbar-brand fs-1" href="/dashboard">
+              snail-express
+            </a>
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNavAltMarkup"
+              aria-controls="navbarNavAltMarkup"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            {Boolean(currentClass) && getClassLinks()}
+            <Link className="nav-link text-light" to='/profile'>Profile</Link>
+          </div>
+          <nav className="navbar navbar-dark bg-dark">
+            <form className="form-inline">
+              <Link
+                className="btn bg-secondary text-white"
+                role="button"
+                to="/"
+                onClick={handleLogout}
+                style={{width: '100px'}}
+              >
+                Log out
+              </Link>
+            </form>
+          </nav>
+        </nav >
+      </div >
     );
   }
 
-  return (currentUser ? getPrivateNavBar() : getPublicNavBar());
+  return (currentUser ? getPrivateNavBar() : getPublicNavbar());
 }

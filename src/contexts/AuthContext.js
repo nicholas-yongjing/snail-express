@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { Alert } from "react-bootstrap";
+import { createContext, useContext, useState, useEffect } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -19,7 +18,6 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState({});
-  // const [loading, setLoading] = useState(true);
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -30,6 +28,7 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    setCurrentUser({});
     return signOut(auth);
   }
 
@@ -52,9 +51,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-      // setLoading(false);
     });
-    return () => unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const value = {
