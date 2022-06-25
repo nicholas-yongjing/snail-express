@@ -45,7 +45,7 @@ function SignUp() {
             <Form className="d-flex flex-column gap-4" onSubmit={handleSubmit}>
               <Form.Group id="full-name">
                 <Form.Label>Full name</Form.Label>
-                <Form.Control type="name" ref={nameRef} required />
+                <Form.Control className="fs-4" type="name" ref={nameRef} required />
               </Form.Group>
               <Form.Group id="email">
                 <Form.Label>Email address</Form.Label>

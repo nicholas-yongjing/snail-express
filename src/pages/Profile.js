@@ -1,6 +1,7 @@
 import { Container, Card, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useClass } from "../contexts/ClassContext";
 import WebPage from "../components/WebPage";
 
 export default function Profile() {
