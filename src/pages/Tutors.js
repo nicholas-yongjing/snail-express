@@ -4,6 +4,7 @@ import { Card } from "react-bootstrap";
 import { useClass } from "../contexts/ClassContext";
 import NavigationBar from "../components/NavigationBar";
 import { firestore } from "../firebase";
+import WebPage from "../components/WebPage";
 
 const Tutors = () => {
   const { currentClass } = useClass();
@@ -28,19 +29,20 @@ const Tutors = () => {
 
   return (
     <>
-      <NavigationBar />
+      <WebPage>
       <br></br>
       <div>
-        {tutorList.map((name) => {
+        {currentClass ? tutorList.map((name) => {
           return (
-            <span key={name}>
-              <Card key={name} style={{ maxWidth: "300px", maxHeight: "300px" }}>
+            <div key={name}>
+              <Card className="slate-700 text-slate-200 d-flex align-items-center" key={name} style={{ maxWidth: "300px", maxHeight: "300px" }}>
                 <Card.Body>{name}</Card.Body>
               </Card>
-            </span>
+            </div>
           );
-        })}
+        }) : <div>No tutors</div>}
       </div>
+      </WebPage>
     </>
   );
 };
