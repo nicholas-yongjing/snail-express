@@ -1,6 +1,7 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { Link, useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 export default function NavigationBar() {
   const { currentUser, logout } = useAuth();
@@ -21,10 +22,18 @@ export default function NavigationBar() {
       <>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav fs-5">
-            <Link className="nav-link text-light" to='/class-dashboard'>Dashboard</Link>
-            <Link className="nav-link text-light" to='/forums'>Forums</Link>
-            <Link className="nav-link text-light" to='/'>Quiz</Link>
-            <Link className="nav-link text-light" to='/livefeedback'>Lecture Feedback</Link>
+            <Link className="nav-link text-light" to="/class-dashboard">
+              Dashboard
+            </Link>
+            <Link className="nav-link text-light" to="/forums">
+              Forums
+            </Link>
+            <Link className="nav-link text-light" to="/">
+              Quiz
+            </Link>
+            <Link className="nav-link text-light" to="/livefeedback">
+              Lecture Feedback
+            </Link>
           </div>
         </div>
       </>
@@ -34,12 +43,13 @@ export default function NavigationBar() {
   function getPublicNavbar() {
     return (
       <div>
-        <div>-</div>{/*Line break to account for navbar out of document flow*/}
+        <div>-</div>
+        {/*Line break to account for navbar out of document flow*/}
         <div>-</div>
         <div>-</div>
         <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top p-2">
           <div className="container-fluid">
-            <a className="navbar-brand fs-2" href="/">
+            <a className="navbar-brand fs-3" href="/">
               snail-express
             </a>
             <button
@@ -55,28 +65,26 @@ export default function NavigationBar() {
             </button>
             <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div className="navbar-nav fs-5">
-                <Link className="nav-link" to='/'>Home</Link>
-                <Link className="nav-link" to='/'>Features</Link>
-                <Link className="nav-link" to='/'>Pricing</Link>
+                <Link className="nav-link" to="/">
+                  Home
+                </Link>
+                <Link className="nav-link" to="/">
+                  Features
+                </Link>
+                <Link className="nav-link" to="/">
+                  Pricing
+                </Link>
               </div>
             </div>
             <nav className="navbar navbar-dark bg-dark">
               <form className="form-inline">
-                <a
-                  href="/login"
-                  className="btn bg-primary text-white"
-                  role="button"
-                >
-                  Login
-                </a>
-                <span> </span>
-                <a
-                  href="/signup"
-                  className="btn btn-secondary text-white"
-                  role="button"
-                >
-                  Sign Up
-                </a>
+                <Link className="navbar-brand fs-2" to="/login">
+                  <Button>Login</Button>
+                </Link>
+                <span></span>
+                <Link className="navbar-brand fs-2" to="/signup">
+                  <Button className="btn-secondary">Sign Up</Button>
+                </Link>
               </form>
             </nav>
           </div>
@@ -88,14 +96,16 @@ export default function NavigationBar() {
   function getPrivateNavBar() {
     return (
       <div>
-        <div>-</div>{/*Line break to account for navbar out of document flow*/}
+        <div>-</div>
+        {/*Line break to account for navbar out of document flow*/}
         <div>-</div>
         <div>-</div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top p-2">
           <div className="container-fluid">
-            <a className="navbar-brand fs-1" href="/dashboard">
+            <Link className="navbar-brand fs-2" to="/dashboard">
               snail-express
-            </a>
+            </Link>
+
             <button
               className="navbar-toggler"
               type="button"
@@ -108,7 +118,9 @@ export default function NavigationBar() {
               <span className="navbar-toggler-icon"></span>
             </button>
             {Boolean(currentClass) && getClassLinks()}
-            <Link className="nav-link text-light" to='/profile'>Profile</Link>
+            <Link className="nav-link text-light" to="/profile">
+              Profile
+            </Link>
           </div>
           <nav className="navbar navbar-dark bg-dark">
             <form className="form-inline">
@@ -117,16 +129,16 @@ export default function NavigationBar() {
                 role="button"
                 to="/"
                 onClick={handleLogout}
-                style={{width: '100px'}}
+                style={{ width: "100px" }}
               >
                 Log out
               </Link>
             </form>
           </nav>
-        </nav >
-      </div >
+        </nav>
+      </div>
     );
   }
 
-  return (currentUser ? getPrivateNavBar() : getPublicNavbar());
+  return currentUser ? getPrivateNavBar() : getPublicNavbar();
 }
