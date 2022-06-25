@@ -106,7 +106,7 @@ async function deleteInvite(inviteId, role, email) {
     { merge: true });
 }
 
-async function acceptInvite(inviteId, studentId, role, email) {
+async function acceptInvite(inviteId, studentId, role, email, name) {
   let field;
   if (role === 'student') {
     field = 'studentInvites';
@@ -120,7 +120,8 @@ async function acceptInvite(inviteId, studentId, role, email) {
     return addUserToClass(inviteId,
       {
         id: studentId,
-        email: email
+        email: email, 
+        name: name
       },
       role)
       .then(deleteInvite(inviteId, role, email));

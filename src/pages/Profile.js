@@ -19,7 +19,8 @@ export default function Profile() {
           <Card className="d-flex align-items-center" style={{minWidth: "300px"}}>
             <Card.Body>
               <h2 className="text-center mb-4">Profile</h2>
-              <img src={`${currentUser.photoURL}`} style={{height: "200px", width: "220px", borderRadius: "50%"}}/>
+              {currentUser.photoURL != null && <img src={`${currentUser.photoURL}`} style={{height: "200px", width: "220px", borderRadius: "50%"}}/>}
+              
               <div className="mt-3">
                 <strong>Name:</strong> {currentUser.displayName}
               </div>

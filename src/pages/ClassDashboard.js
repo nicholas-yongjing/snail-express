@@ -8,7 +8,7 @@ export default function ClassDashBoard() {
     const { currentClass, setCurrentClass } = useClass();
     const navigate = useNavigate()
     const sidebarLinks = [['/students', 'Students'],
-                        ['/class-dashboard', 'Tutors'],
+                        ['/tutors', 'Tutors'],
                         ['/settings-general', 'Settings']];
     function handleClick() {
         setCurrentClass(null);

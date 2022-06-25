@@ -5,20 +5,20 @@ import { useClass } from "../contexts/ClassContext";
 import NavigationBar from "../components/NavigationBar";
 import { firestore } from "../firebase";
 
-const Students = () => {
+const Tutors = () => {
   const { currentClass } = useClass();
-  const [studentList, setStudentList] = useState([]);
+  const [tutorList, setTutorList] = useState([]);
 
-  const studentsRef = collection(
+  const tutorsRef = collection(
     firestore,
     "classes",
     currentClass.id,
-    "students"
+    "tutors"
   );
 
   useEffect(() => {
-    getDocs(studentsRef).then((snapshot) => {
-      setStudentList(
+    getDocs(tutorsRef).then((snapshot) => {
+      setTutorList(
         snapshot.docs.map((doc) => {
           return doc.data().name;
         })
@@ -31,12 +31,11 @@ const Students = () => {
       <NavigationBar />
       <br></br>
       <div>
-        {console.log(studentList)}
-        {studentList.map((email) => {
+        {tutorList.map((name) => {
           return (
-            <span key={email}>
-              <Card key={email} style={{ maxWidth: "300px", maxHeight: "300px" }}>
-                <Card.Body>{email}</Card.Body>
+            <span key={name}>
+              <Card key={name} style={{ maxWidth: "300px", maxHeight: "300px" }}>
+                <Card.Body>{name}</Card.Body>
               </Card>
             </span>
           );
@@ -46,4 +45,4 @@ const Students = () => {
   );
 };
 
-export default Students;
+export default Tutors;
