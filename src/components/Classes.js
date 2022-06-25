@@ -19,15 +19,19 @@ export default function Classes(props) {
           (classes.length > 0)
             ? classes.map((clss) => {
               return (
-                <Card key={clss.id}>
+                <Card
+                  key={clss.id}
+                  className="fs-5 generic-button"
+                  role='button'
+                  onClick={() => handleClick(clss)}
+                >
                   <Card.Body>
                     <h4
-                      key={clss.id}
-                      onClick={() => handleClick(clss)}
-                      className='d-flex align-items-center border-primary text-primary'
+                      key={clss.id}     
+                      className='d-flex align-items-center'
                       style={{ cursor: 'pointer' }}
                     >
-                      {clss.className}
+                      <strong>{clss.className}</strong>                    
                     </h4>
                     {classType} class
                   </Card.Body>

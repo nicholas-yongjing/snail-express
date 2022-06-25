@@ -26,35 +26,35 @@ export default function Post(props) {
   }
 
   return (
-    <div>
-    <Card>
-      <Card.Body>
-        <h3><strong>{currentPost.title}</strong></h3>
-        <h4>{currentPost.author.email}</h4>
-        <p>{currentPost.body}</p>
-      </Card.Body>
-      <ReactionBar
-        currentThread={currentThread}
-        content={currentPost}
-        contentType='post'
-        populatePosts={populatePosts}
-      />
-    </Card>
-    <div style={{marginLeft: '40px'}}>
-    {
-      replies.map((reply) => {
-        return(
-          <Reply
-            key={reply.id}
-            thread={currentThread}
-            post={currentPost}
-            reply={reply}
-          />
-        );
-      })
-    }
- 
+    <div className='d-flex flex-column fs-5'>
+      <Card className='slate-700'>
+        <Card.Body>
+          <h3><strong>{currentPost.title}</strong></h3>
+          <h4>{currentPost.author.email}</h4>
+          <p>{currentPost.body}</p>
+        </Card.Body>
+        <ReactionBar
+          currentThread={currentThread}
+          currentPost={currentPost}
+          content={currentPost}
+          contentType='post'
+          populatePosts={populatePosts}
+        />
+      </Card>
+      <div className="p-4 d-flex flex-column align-items-stretch gap-4">
+        {
+          replies.map((reply) => {
+            return (
+              <Reply
+                key={reply.id}
+                thread={currentThread}
+                post={currentPost}
+                reply={reply}
+              />
+            );
+          })
+        }
+      </div>
     </div>
-   </div>
- );
+  );
 }

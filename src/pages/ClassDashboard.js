@@ -1,42 +1,51 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useClass } from '../contexts/ClassContext';
-import NavigationBar from "../components/NavigationBar";
-import SideBar from "../components/SideBar";
-import { Button } from 'react-bootstrap';
+import SideBar from "../components/SideBar"
+import WebPage from '../components/WebPage';
 
 export default function ClassDashBoard() {
-    const { currentClass, setCurrentClass } = useClass();
-    const navigate = useNavigate()
-    const sidebarLinks = [['/students', 'Students'],
-                        ['/class-dashboard', 'Tutors'],
-                        ['/settings-general', 'Settings']];
-    function handleClick() {
-        setCurrentClass(null);
-    }
-    
-    function navigateFeedbackSettings() {
-        navigate("/feedbacksettings");
-    }
+  const { currentClass, setCurrentClass } = useClass();
+  const sidebarLinks = [['/students', 'Students'],
+  ['/tutors', 'Tutors'],
+  ['/settings-general', 'Settings']];
+  function handleClick() {
+    setCurrentClass(null);
+  }
 
-    return (
-        <>
-            <NavigationBar />
-            <div className='d-flex'>
-                <SideBar links={sidebarLinks}/>
-            <div className='d-flex justify-content-between p-4 w-100'>
-                <span className='fs-1'>{currentClass ? currentClass.className : ''}
-            </span>
-                <span>
-                    <Link to='/dashboard'>
-                        <button className='btn btn-secondary fs-4' onClick={handleClick}>
-                            Back to dashboard
-                        </button>
-                    </Link>
-                </span>
-            </div>
-            
-            </div>
-        </>
+  return (
+    <WebPage>
+      <div className='slate-800 flex-grow-1 justify-self-stretch d-flex'>
+        <SideBar>
+          {
+            sidebarLinks.map(([link, text]) => {
+              return (
+                <Link
+                  to={link}
+                  key={text}
+                  className='btn fs-4 w-100 generic-button d-flex justify-content-center'
+                >
+                  {text}
+                </Link>
+              );
+            })
+          }
+        </SideBar>
+        <div className='d-flex justify-content-between p-4 w-100 text-slate-200'>
+          <span className='fs-1'>
+            <strong>
+              {currentClass ? currentClass.className : ''}
+            </strong>
+          </span>
+          <span>
+            <Link to='/dashboard'>
+              <button className='btn generic-button-light fs-4' onClick={handleClick}>
+                Back to dashboard
+              </button>
+            </Link>
+          </span>
+        </div>
+      </div>
+    </WebPage>
 
-    );
+  );
 }

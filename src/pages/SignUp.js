@@ -3,7 +3,7 @@ import { Container, Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
-import NavigationBar from "../components/NavigationBar";
+import WebPage from "../components/WebPage";
 
 function SignUp() {
   const nameRef = useRef();
@@ -11,7 +11,7 @@ function SignUp() {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const navigate = useNavigate();
-  const { signup,setName } = useAuth();
+  const { signup, setName } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -35,57 +35,48 @@ function SignUp() {
   }
 
   return (
-    <>
-      <div className="container">
-        <NavigationBar />
-        <Container
-          className="d-flex align-items-center justify-content-center"
-          style={{ minHeight: "100vh" }}
-        >
-          <div className="w-100" style={{ maxWidth: "400px" }}>
-            <Card>
-              <Card.Body>
-                <h2 className="text-center mb-4">Sign Up</h2>
-                {error && <Alert variant="danger">{error}</Alert>}
-                <Form onSubmit={handleSubmit}>
-                <Form.Group id="email">
-                    <Form.Label>Full name</Form.Label>
-                    <Form.Control type="name" ref={nameRef} required />
-                  </Form.Group>
-                  <Form.Group id="email">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" ref={emailRef} required />
-                  </Form.Group>
-                  <Form.Group id="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" ref={passwordRef} required />
-                  </Form.Group>
-                  <Form.Group id="password-confirm">
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      ref={passwordConfirmRef}
-                      required
-                    />
-                  </Form.Group>
-                  <br></br>
-                  <Button disabled={loading} className="w-100" type="submit">
-                    Sign Up
-                  </Button>
-                </Form>
-              </Card.Body>
-            </Card>
+    <WebPage>
+      <div className="slate-800">
+        <br />
+        <Container className="d-flex justify-content-center">
+          <div className="p-4 d-flex flex-column w-100 slate-700 text-slate-200 fs-4" style={{ maxWidth: "600px" }}>
+            <h2 className="text-center mb-4">Sign Up</h2>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Form className="d-flex flex-column gap-4" onSubmit={handleSubmit}>
+              <Form.Group id="full-name">
+                <Form.Label>Full name</Form.Label>
+                <Form.Control type="name" ref={nameRef} required />
+              </Form.Group>
+              <Form.Group id="email">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control className="fs-4" type="email" ref={emailRef} required />
+              </Form.Group>
+              <Form.Group id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control className="fs-4" type="password" ref={passwordRef} required />
+              </Form.Group>
+              <Form.Group id="password-confirm">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control className="fs-4" type="password" ref={passwordConfirmRef} required />
+              </Form.Group>
+              <br />
+              <Button disabled={loading} className="w-100 fs-4 generic-button" type="submit">
+                Sign Up
+              </Button>
+            </Form>
+            <br />
             <div className="text-center">
-              Already have an account? Proceed to <Link to="/Login">login</Link>
+              Already have an account? Proceed to <Link className="generic-link" to="/Login">login</Link>
             </div>
             <div className="text-center">
-              Back to <Link to="/">home</Link>
-            </div>{" "}
-            <br></br>
+              Back to <Link className = "generic-link" to = "/"> home</ Link>
+            </div>
+            <br />
           </div>
-        </Container>
+        </Container >
+    <br />
       </div>
-    </>
+    </WebPage>
   );
 }
 

@@ -1,22 +1,62 @@
-import { useState } from 'react';
-import NavigationBar from "../components/NavigationBar";
-import ForumSideBar from "../components/ForumSideBar";
+import { useState, useEffect } from 'react';
+import { useClass } from "../contexts/ClassContext";
+import { getForumThreads } from "../database";
+import SideBar from "../components/SideBar";
 import ForumPosts from "../components/ForumPosts";
+import WebPage from '../components/WebPage';
 
 export default function Forums() {
-    const [currentThread, setCurrentThread] = useState(null);
+  const { currentClass } = useClass();
+  const [threads, setThreads] = useState([]);
+  const [currentThread, setCurrentThread] = useState(null);
 
-    return (
-        <>
-        <NavigationBar />
-        <div className='d-flex align-items-stretch'>
-            <ForumSideBar
-                currentThread={currentThread}
-                setCurrentThread = {setCurrentThread}
-            />
-            <ForumPosts currentThread={currentThread}/>
-        </div>
-        </>
+  useEffect(() => {
+    populateThreads()
+  }, [currentClass.id]);
 
-    );
+  async function populateThreads() {
+    if (currentClass.id) {
+      getForumThreads(currentClass.id).then((retrievedThreads) => {
+        if (retrievedThreads) {
+          setThreads(retrievedThreads);
+        }
+      });
+    }
+  }
+
+  function handleClick(newThread) {
+    setCurrentThread(newThread)
+  }
+
+  return (
+    <WebPage>
+      <div className='flex-grow-1 d-flex'>
+        <SideBar
+          currentThread={currentThread}
+          setCurrentThread={setCurrentThread}
+        >
+          {
+            (threads.length > 0)
+              ? threads.map((thread) => {
+                return (
+                  <div
+                    key={thread.id}
+                    onClick={() => handleClick(thread)}
+                    style={{ cursor: 'pointer' }}
+                    className={currentThread && thread.id === currentThread.id
+                      ? 'text-info'
+                      : 'text-white'}
+                  >
+                    {thread.name}
+                  </div>
+                );
+              })
+              : <div className="text-white d-flex justify-content-center">No threads found</div>
+          }
+        </SideBar>
+        <ForumPosts currentThread={currentThread}/>
+      </div>
+    </WebPage>
+
+  );
 }
