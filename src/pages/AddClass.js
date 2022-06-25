@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Container } from "react-bootstrap";
 import { createClass } from "../database";
 import WebPage from "../components/WebPage";
 
@@ -39,6 +39,7 @@ export default function AddClass() {
 
   return (
     <WebPage>
+      <Container className="rounded">
       <Form
         ref={formRef}
         onSubmit={handleSubmit}
@@ -80,8 +81,9 @@ export default function AddClass() {
         <Button disabled={loading} className="w-25 generic-button" type="submit">
           Create Class
         </Button>
-        <Link className='fs-5' to="/dashboard">Back to dashboard</Link>
+        <Link className='fs-5 generic-link' to="/dashboard">Back to dashboard</Link>
       </Form>
-    </WebPage>
+      </Container>
+   </WebPage>
   );
 }

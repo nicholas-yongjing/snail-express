@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useClass } from '../contexts/ClassContext';
 import { getForumPosts } from "../database";
@@ -28,7 +27,11 @@ export default function ForumPosts(props) {
   return (
     <div className='d-flex flex-column align-items-stretch p-4 w-100 slate-800 text-slate-200'>
       <div className='d-flex justify-content-between'>
-        <h1>{currentClass ? currentClass.className : ''} </h1>
+        <h1>
+          <strong>
+            {currentClass ? currentClass.className : ''}
+          </strong>
+        </h1>
         <Link className="generic-link fs-4" to='/class-dashboard'>Back to dashboard</Link>
       </div>
       <br />

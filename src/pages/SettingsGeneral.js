@@ -15,7 +15,7 @@ export default function SettingsGeneral() {
                 <Link
                   to={link}
                   key={text}
-                  className='btn w-100 generic-button d-flex justify-content-center'
+                  className='btn fs-4 w-100 generic-button d-flex justify-content-center'
                 >
                   {text}
                 </Link>

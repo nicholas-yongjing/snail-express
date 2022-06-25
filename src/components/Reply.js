@@ -6,7 +6,7 @@ export default function Reply(props) {
   const currentReply = props.reply;
 
   return (
-    <div className='d-flex gap-4'>
+    <div className='d-flex gap-5'>
       <div className='vr'></div>
       <div className="flex-grow-1 rounded slate-700 text-slate-200">
         <div className='p-4'>
