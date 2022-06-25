@@ -88,60 +88,60 @@ export default function ReactionBar(props) {
   }
 
   return (
-    <div className="p-4">
-    <div className="p-2 d-flex justify-content-between align-items-center">
-      {
-        endorsed
-          ? <div className="text-info">
-            <strong>
-              This {contentType} is endorsed by the tutors
-            </strong>
+    <div className="p-2 slate-700">
+      <div className="p-2 d-flex justify-content-between align-items-center">
+        {
+          endorsed
+            ? <div className="text-info">
+              <strong>
+                This {contentType} is endorsed by the tutors
+              </strong>
+            </div>
+            : <br />
+        }
+        <div className="d-flex justify-content-end align-items-center gap-2">
+          {
+            contentType === 'post'
+              ? <button
+                className="btn generic-button"
+                onClick={() => setExpandForm(!expandForm)}
+              >
+                Reply
+              </button>
+              : <></>
+          }
+          {
+            isTutor()
+              ? <button
+                className="btn generic-button"
+                onClick={(e) => handleEndorse(e)}
+              >
+                Endorse
+              </button>
+              : <></>
+          }
+          <button
+            className={"btn" + (currentVote === 'upvote'
+              ? " btn-success"
+              : " generic-button")}
+            onClick={(e) => handleUpvote(e)}
+          >
+            ▲
+          </button>
+          <button
+            className={"btn" + (currentVote === 'downvote'
+              ? " btn-danger"
+              : " generic-button")}
+            onClick={(e) => handleDownvote(e)}
+          >
+            ▼
+          </button>
+          <div>
+            {getVotes('upvotes')} Upvotes • {getVotes('downvotes')} Downvotes
           </div>
-          : <br />
-      }
-      <div className="d-flex justify-content-end align-items-center gap-2">
-        {
-          contentType === 'post'
-            ? <button
-              className="btn generic-button"
-              onClick={() => setExpandForm(!expandForm)}
-            >
-              Reply
-            </button>
-            : <></>
-        }
-        {
-          isTutor()
-            ? <button
-              className="btn generic-button"
-              onClick={(e) => handleEndorse(e)}
-            >
-              Endorse
-            </button>
-            : <></>
-        }
-        <button
-          className={"btn" + (currentVote === 'upvote'
-            ? " btn-success"
-            : " generic-button")}
-          onClick={(e) => handleUpvote(e)}
-        >
-          ▲
-        </button>
-        <button
-          className={"btn" + (currentVote === 'downvote'
-            ? " btn-danger"
-            : " generic-button")}
-          onClick={(e) => handleDownvote(e)}
-        >
-          ▼
-        </button>
-        <div>
-          {getVotes('upvotes')} Upvotes • {getVotes('downvotes')} Downvotes
         </div>
-      </div>
 
-    </div>
+      </div>
       {
         (contentType === 'post' && expandForm)
           ? <AddReply
