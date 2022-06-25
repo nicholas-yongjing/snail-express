@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Container, Form, Button, Card, Alert } from "react-bootstrap";
+import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -39,42 +39,76 @@ function SignUp() {
       <div className="slate-800">
         <br />
         <Container className="d-flex justify-content-center">
-          <div className="p-4 d-flex flex-column w-100 slate-700 text-slate-200 fs-4" style={{ maxWidth: "600px" }}>
+          <div
+            className="p-4 d-flex flex-column w-100 slate-700 text-slate-200 fs-4"
+            style={{ maxWidth: "600px" }}
+          >
             <h2 className="text-center mb-4">Sign Up</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form className="d-flex flex-column gap-4" onSubmit={handleSubmit}>
               <Form.Group id="full-name">
                 <Form.Label>Full name</Form.Label>
-                <Form.Control className="fs-4" type="name" ref={nameRef} required />
+                <Form.Control
+                  className="fs-4"
+                  type="name"
+                  ref={nameRef}
+                  required
+                />
               </Form.Group>
               <Form.Group id="email">
                 <Form.Label>Email address</Form.Label>
-                <Form.Control className="fs-4" type="email" ref={emailRef} required />
+                <Form.Control
+                  className="fs-4"
+                  type="email"
+                  ref={emailRef}
+                  required
+                />
               </Form.Group>
               <Form.Group id="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control className="fs-4" type="password" ref={passwordRef} required />
+                <Form.Control
+                  className="fs-4"
+                  type="password"
+                  ref={passwordRef}
+                  required
+                />
               </Form.Group>
               <Form.Group id="password-confirm">
                 <Form.Label>Confirm Password</Form.Label>
-                <Form.Control className="fs-4" type="password" ref={passwordConfirmRef} required />
+                <Form.Control
+                  className="fs-4"
+                  type="password"
+                  ref={passwordConfirmRef}
+                  required
+                />
               </Form.Group>
               <br />
-              <Button disabled={loading} className="w-100 fs-4 generic-button" type="submit">
+              <Button
+                disabled={loading}
+                className="w-100 fs-4 generic-button"
+                type="submit"
+              >
                 Sign Up
               </Button>
             </Form>
             <br />
             <div className="text-center">
-              Already have an account? Proceed to <Link className="generic-link" to="/Login">login</Link>
+              Already have an account? Proceed to{" "}
+              <Link className="generic-link" to="/Login">
+                login
+              </Link>
             </div>
             <div className="text-center">
-              Back to <Link className = "generic-link" to = "/"> home</ Link>
+              Back to{" "}
+              <Link className="generic-link" to="/">
+                {" "}
+                home
+              </Link>
             </div>
             <br />
           </div>
-        </Container >
-    <br />
+        </Container>
+        <br />
       </div>
     </WebPage>
   );
