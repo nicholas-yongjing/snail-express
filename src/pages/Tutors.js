@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react";
 import { getDocs, collection } from "firebase/firestore";
 import { Card } from "react-bootstrap";
-import { useClass } from "../contexts/ClassContext"
+import { useClass } from "../contexts/ClassContext";
+import NavigationBar from "../components/NavigationBar";
 import { firestore } from "../firebase";
 import WebPage from "../components/WebPage";
 
-const Students = () => {
+const Tutors = () => {
   const { currentClass } = useClass();
-  const [studentList, setStudentList] = useState([]);
+  const [tutorList, setTutorList] = useState([]);
 
-  const studentsRef = collection(
+  const tutorsRef = collection(
     firestore,
     "classes",
     currentClass.id,
-    "students"
+    "tutors"
   );
 
   useEffect(() => {
-    getDocs(studentsRef).then((snapshot) => {
-      setStudentList(
+    getDocs(tutorsRef).then((snapshot) => {
+      setTutorList(
         snapshot.docs.map((doc) => {
           return doc.data().name;
         })
@@ -31,19 +32,19 @@ const Students = () => {
       <WebPage>
       <br></br>
       <div>
-        {currentClass ? studentList.map((email) => {
+        {currentClass ? tutorList.map((name) => {
           return (
-            <div key={email}>
-              <Card className="slate-700 text-slate-200 d-flex align-items-center" key={email} style={{ maxWidth: "300px", maxHeight: "300px" }}>
-                <Card.Body>{email}</Card.Body>
+            <div key={name}>
+              <Card className="slate-700 text-slate-200 d-flex align-items-center" key={name} style={{ maxWidth: "300px", maxHeight: "300px" }}>
+                <Card.Body>{name}</Card.Body>
               </Card>
             </div>
           );
-        }) : <div>No students</div>}
+        }) : <div>No tutors</div>}
       </div>
       </WebPage>
     </>
   );
 };
 
-export default Students;
+export default Tutors;

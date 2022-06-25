@@ -17,6 +17,7 @@ import SettingsForums from "./pages/SettingsForums";
 import Forums from "./pages/Forums";
 import LiveFeedback from "./pages/LiveFeedback";
 import Students from "./pages/Students";
+import Tutors from "./pages/Tutors";
 
 
 function PrivateRoute({ children }) {
@@ -54,6 +55,7 @@ function App() {
             <Route path="/forums" element={<ClassRoute><Forums /></ClassRoute>} />
             <Route path="/livefeedback" element={<ClassRoute><LiveFeedback /></ClassRoute>} />
             <Route path="/students" element={<ClassRoute><Students /></ClassRoute>} />
+            <Route path="/tutors" element={<ClassRoute><Tutors/></ClassRoute>} />
           </Routes>
         </ClassProvider>
       </AuthProvider>

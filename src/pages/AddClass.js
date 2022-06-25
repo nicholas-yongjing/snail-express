@@ -39,6 +39,7 @@ export default function AddClass() {
 
   return (
     <WebPage>
+      <div className="slate-800">
       <Container className="rounded">
       <Form
         ref={formRef}
@@ -84,6 +85,7 @@ export default function AddClass() {
         <Link className='fs-5 generic-link' to="/dashboard">Back to dashboard</Link>
       </Form>
       </Container>
+      </div>
    </WebPage>
   );
 }

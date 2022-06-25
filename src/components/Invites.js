@@ -24,7 +24,7 @@ export default function Invites(props) {
   }
 
   function handleAccept(inviteId) {
-    acceptInvite(inviteId, currentUser.uid, role, currentUser.email)
+    acceptInvite(inviteId, currentUser.uid, role, currentUser.email, currentUser.displayName)
       .then(() => {
         populateInvites();
         populateClasses();

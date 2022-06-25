@@ -18,7 +18,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { useState } from "react";
-import NavigationBar from "../components/NavigationBar";
+import WebPage from "../components/WebPage";
 
 const LiveFeedback = () => {
   const { currentClass, isTutor } = useClass();
@@ -67,80 +67,82 @@ const LiveFeedback = () => {
 
   return (
     <>
-      <NavigationBar />
-      <Card
-        className="d-flex align-items-center mt-5"
-        style={{ margin: "auto", maxWidth: "900px", minHeight: "350px" }}
-      >
-        <DropdownButton
-          id="dropdown-basic-button"
-          title="Submit feedback"
-          className="mt-4"
+      <WebPage>
+        <Card
+          className="d-flex align-items-center mt-5 p-4 slate-600 text-slate-200"
+          style={{ margin: "auto", maxWidth: "900px", minHeight: "350px" }}
         >
-          {reactions.map((reaction) => {
-            return (
-              <Dropdown.Item
-                onClick={(event) => handleSubmit(event, reaction)}
-                key={reaction}
-              >
-                {reaction}
-              </Dropdown.Item>
-            );
-          })}
-        </DropdownButton>
-        <br></br>
-        <div>
-          {!loading ? (
-            reactions.map((reaction) => {
-              const percentage =
-                sum(results) == 0
-                  ? 0
-                  : Math.round(
-                      (results[reactions.indexOf(reaction)] / sum(results)) * 100
-                    );
-              return (
-                <div key={reaction}>
-                  <ProgressBar
-                    style={{
-                      minHeight: "30px",
-                      minWidth: "400px",
-                      maxWidth: "800px"
-                    }}
-                    animated
-                    now={percentage}
-                    label={`${percentage}%`}
-                    variant={variants[reactions.indexOf(reaction)]}
-                  />
-                  <div className="fs-5">
-                    {results[reactions.indexOf(reaction)] +
-                      " out of " +
-                      sum(results) +
-                      " find the lecture "}
-                    <strong>{reaction}</strong>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-          )}
-        </div>
-      </Card>
-      <br></br>
-      <div className="d-flex align-items-center">
-        {isTutor() ? (
-          <Button
-            onClick={handleReset}
-            style={{ margin: "auto", minWidth: "400px" }}
+          <DropdownButton
+            title="Submit feedback"
+            className="slate-800 btn-secondary"
           >
-            Reset responses
-          </Button>
-        ) : (
-          <div></div>
-        )}{" "}
-      </div>
+            {reactions.map((reaction) => {
+              return (
+                <Dropdown.Item
+                  onClick={(event) => handleSubmit(event, reaction)}
+                  key={reaction}
+                >
+                  {reaction}
+                </Dropdown.Item>
+              );
+            })}
+          </DropdownButton>
+          <br></br>
+          <div>
+            {!loading ? (
+              reactions.map((reaction) => {
+                const percentage =
+                  sum(results) == 0
+                    ? 0
+                    : Math.round(
+                        (results[reactions.indexOf(reaction)] / sum(results)) *
+                          100
+                      );
+                return (
+                  <div key={reaction}>
+                    <ProgressBar
+                      style={{
+                        minHeight: "30px",
+                        minWidth: "400px",
+                        maxWidth: "800px",
+                      }}
+                      animated
+                      now={percentage}
+                      label={`${percentage}%`}
+                      variant={variants[reactions.indexOf(reaction)]}
+                    />
+                    <div className="fs-5">
+                      {results[reactions.indexOf(reaction)] +
+                        " out of " +
+                        sum(results) +
+                        " find the lecture "}
+                      <strong className="text-slate-200">{reaction}</strong>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            )}
+          </div>
+          <div className="mt-3 d-flex align-items-center">
+            {isTutor() ? (
+              <Button
+                className="generic-button"
+                onClick={handleReset}
+                style={{ margin: "auto", minWidth: "400px" }}
+              >
+                Reset responses
+              </Button>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        </Card>
+        <br></br>
+      </WebPage>
     </>
   );
 };
