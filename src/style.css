@@ -285,13 +285,13 @@
 }
 
 .generic-field-light {
-  color: #cbd5e1;
+  color: #1e293b;
   background-color: #cbd5e1;
   border: 2px solid #cbd5e1;
 }
 
 .generic-field-light:focus {
-  color: #cbd5e1;
+  color: #1e293b;
   background-color: #94a3b8;
   border: 2px solid #94a3b8;
 }

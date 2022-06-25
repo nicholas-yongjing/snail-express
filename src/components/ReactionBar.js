@@ -88,7 +88,7 @@ export default function ReactionBar(props) {
   }
 
   return (
-    <div className="p-2 slate-700">
+    <div className="p-4 slate-700">
       <div className="p-2 d-flex justify-content-between align-items-center">
         {
           endorsed

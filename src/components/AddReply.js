@@ -40,14 +40,14 @@ export default function AddReply(props) {
     }
 
     return (
-        <Card className="p-3">
+        <Card className="p-4 slate-800 text-slate-200">
             <h2>Post Reply</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
             <Form
                 ref={formRef}
                 onSubmit={handleSubmit}
-                className="p-2 d-flex flex-column gap-3"
+                className="d-flex flex-column gap-3"
             >
                 <Form.Group id="post-body">
                     <Form.Control
@@ -56,13 +56,12 @@ export default function AddReply(props) {
                         ref={postBodyRef}
                         required
                         placeholder="Reply"
+                        className="generic-field-light"
                     />
                 </Form.Group>
-                <br></br>
                 <Button disabled={loading} className="w-25" type="submit">
                     Create Reply
                 </Button>
-                <br></br>
             </Form>
         </Card>
     );
