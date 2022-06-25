@@ -17,7 +17,7 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WebPage from "../components/WebPage";
 
 const LiveFeedback = () => {
@@ -47,7 +47,7 @@ const LiveFeedback = () => {
     setLoading(true);
     getDocs(feedbackRef)
       .then((snapshot) => {
-        snapshot.docs.map((docu) => {
+        snapshot.docs.forEach((docu) => {
           const docRef = doc(feedbackRef, docu.id);
           deleteDoc(docRef).then(() => console.log("Deleted " + docu.id));
         });
@@ -55,13 +55,18 @@ const LiveFeedback = () => {
       .then(() => setLoading(false));
   };
 
-  onSnapshot(feedbackRef, (snapshot) => {
-    const arr = [0, 0, 0, 0];
-    snapshot.docs.map((doc) => {
-      arr[reactions.indexOf(doc.data().reaction)] += 1;
+  useEffect(() => {
+    const unsubscribe = onSnapshot(feedbackRef, (snapshot) => {
+      const arr = [0, 0, 0, 0];
+      snapshot.docs.forEach((doc) => {
+        arr[reactions.indexOf(doc.data().reaction)] += 1;
+      });
+      setResults(arr);
     });
-    setResults(arr);
-  });
+
+    return () => unsubscribe();
+  }, []); 
+  
 
   const sum = (arr) => arr.reduce((x, y) => x + y, 0);
 
@@ -92,7 +97,7 @@ const LiveFeedback = () => {
             {!loading ? (
               reactions.map((reaction) => {
                 const percentage =
-                  sum(results) == 0
+                  sum(results) === 0
                     ? 0
                     : Math.round(
                         (results[reactions.indexOf(reaction)] / sum(results)) *
