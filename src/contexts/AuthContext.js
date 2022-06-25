@@ -7,8 +7,11 @@ import {
   onAuthStateChanged,
   updateEmail,
   updatePassword,
+  updateProfile
 } from "firebase/auth";
 import { auth } from "../firebase";
+import { firestore } from "../firebase";
+import { collection, setDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -48,6 +51,22 @@ export function AuthProvider({ children }) {
     });;
   }
 
+  function setName(name) {
+    const user = auth.currentUser;
+    return updateProfile(user, {
+      ...user,
+      displayName: name
+    }).then(() => console.log("Successfully updated user name!"));
+  }
+
+  function setProfile(link) {
+    const user = auth.currentUser;
+    return updateProfile(user, {
+      ...user, 
+      photoURL: link
+    }).then(() => console.log("Successfully updated profile picture!"));
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
@@ -57,6 +76,8 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    setName,
+    setProfile,
     signup,
     login,
     logout,
@@ -64,6 +85,7 @@ export function AuthProvider({ children }) {
     updateUserEmail,
     updateUserPassword,
   };
+
 
   return (
     <AuthContext.Provider value={value}>

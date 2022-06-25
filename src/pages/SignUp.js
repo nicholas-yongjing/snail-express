@@ -6,11 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 
 function SignUp() {
+  const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const navigate = useNavigate();
-  const { signup } = useAuth();
+  const { signup,setName } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,6 +26,7 @@ function SignUp() {
       setError("");
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
+      setName(nameRef.current.value);
       navigate("/dashboard");
     } catch {
       setError("Failed to create an account");
@@ -46,6 +48,10 @@ function SignUp() {
                 <h2 className="text-center mb-4">Sign Up</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form onSubmit={handleSubmit}>
+                <Form.Group id="email">
+                    <Form.Label>Full name</Form.Label>
+                    <Form.Control type="name" ref={nameRef} required />
+                  </Form.Group>
                   <Form.Group id="email">
                     <Form.Label>Email address</Form.Label>
                     <Form.Control type="email" ref={emailRef} required />
@@ -56,7 +62,11 @@ function SignUp() {
                   </Form.Group>
                   <Form.Group id="password-confirm">
                     <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control type="password" ref={passwordConfirmRef} required />
+                    <Form.Control
+                      type="password"
+                      ref={passwordConfirmRef}
+                      required
+                    />
                   </Form.Group>
                   <br></br>
                   <Button disabled={loading} className="w-100" type="submit">
@@ -65,13 +75,13 @@ function SignUp() {
                 </Form>
               </Card.Body>
             </Card>
-            <br></br>
             <div className="text-center">
               Already have an account? Proceed to <Link to="/Login">login</Link>
             </div>
             <div className="text-center">
               Back to <Link to="/">home</Link>
-            </div>
+            </div>{" "}
+            <br></br>
           </div>
         </Container>
       </div>

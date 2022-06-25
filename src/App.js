@@ -15,6 +15,8 @@ import ClassDashboard from "./pages/ClassDashboard"
 import SettingsGeneral from "./pages/SettingsGeneral";
 import SettingsForums from "./pages/SettingsForums";
 import Forums from "./pages/Forums";
+import LiveFeedback from "./pages/LiveFeedback";
+import Students from "./pages/Students";
 
 
 function PrivateRoute({ children }) {
@@ -50,6 +52,8 @@ function App() {
             <Route path="/settings-general" element={<ClassRoute><SettingsGeneral /></ClassRoute>} />
             <Route path="/settings-forums" element={<ClassRoute><SettingsForums /></ClassRoute>} />
             <Route path="/forums" element={<ClassRoute><Forums /></ClassRoute>} />
+            <Route path="/livefeedback" element={<ClassRoute><LiveFeedback /></ClassRoute>} />
+            <Route path="/students" element={<ClassRoute><Students /></ClassRoute>} />
           </Routes>
         </ClassProvider>
       </AuthProvider>
