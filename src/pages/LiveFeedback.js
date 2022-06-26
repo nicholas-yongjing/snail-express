@@ -37,7 +37,7 @@ const LiveFeedback = () => {
 
   const handleSubmit = (event, reaction) => {
     setLoading(true);
-    setDoc(doc(feedbackRef, `${new Date().getTime()}`), {
+    setDoc(doc(feedbackRef, currentUser.uid), {
       reaction: reaction,
       user: currentUser.displayName,
     }).then(() => setLoading(false));
@@ -73,7 +73,8 @@ const LiveFeedback = () => {
   return (
     <>
       <WebPage>
-        <Card
+        <div className="slate-800">
+  <Card
           className="d-flex align-items-center mt-5 p-4 slate-600 text-slate-200"
           style={{ margin: "auto", maxWidth: "900px", minHeight: "350px" }}
         >
@@ -147,7 +148,8 @@ const LiveFeedback = () => {
           </div>
         </Card>
         <br></br>
-      </WebPage>
+       </div>
+       </WebPage>
     </>
   );
 };
