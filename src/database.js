@@ -1,6 +1,7 @@
-import { collection, addDoc, query, getDocs, where, setDoc, getDoc, doc, serverTimestamp, orderBy } from "firebase/firestore";
 import { firestore } from "./firebase";
-
+import { doc, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc,
+  query, where, orderBy, serverTimestamp } from "firebase/firestore";
+  
 async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   return await addDoc(collection(firestore, "classes"), {
     className: className,
@@ -121,7 +122,7 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
     return addUserToClass(inviteId,
       {
         id: studentId,
-        email: email, 
+        email: email,
         name: name
       },
       role)
@@ -286,7 +287,35 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
     })
 }
 
-export { createClass, getInvites, acceptInvite, deleteInvite,
+async function setLectureFeedback(classId, user, reaction) {
+    const feedbackRef = collection(firestore, "classes",
+    classId, "feedback");
+    return setDoc(doc(feedbackRef, user.uid), {
+      name: user.displayName,
+      reaction: reaction,
+    }).catch((err) => {
+      throw new Error (`Error setting lecture feedback: ${err}`);
+    });
+}
+
+async function resetLectureFeedbacks(classId) {
+  const feedbackRef = collection(firestore, "classes",
+    classId, "feedback");
+  return getDocs(feedbackRef)
+    .then((snapshot) => {
+      snapshot.docs.forEach((docu) => {
+        const docRef = doc(feedbackRef, docu.id);
+        deleteDoc(docRef);
+      });
+    }).catch((err) => {
+      throw new Error(`Error reseting lecture feedbacks: ${err}`);
+    });
+}
+
+export {
+  createClass, getInvites, acceptInvite, deleteInvite,
   getClasses, addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,
-  togglePostEndorsement, togglePostvote };
+  togglePostEndorsement, togglePostvote,
+  setLectureFeedback, resetLectureFeedbacks
+};
