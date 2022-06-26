@@ -132,11 +132,11 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
 }
 
 async function getStudents(classId) {
+  console.log("Retrieving students");
   const studentsRef = collection(firestore, "classes",
     classId, "students");
   return getDocs(studentsRef)
     .then((snapshot) => {
-      console.log(snapshot.docs)
       return (snapshot.docs.map((doc) => {
         return doc.data();
       }));
@@ -146,6 +146,7 @@ async function getStudents(classId) {
 }
 
 async function getTutors(classId) {
+  console.log("Retrieving tutors");
   const tutorsRef = collection(firestore, "classes",
     classId, "tutors");
   return getDocs(tutorsRef)

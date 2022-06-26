@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom"
 import { Card } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { getTutors } from "../database";
 import WebPage from "../components/WebPage";
+import Button from "../components/Button";
 
 const Tutors = () => {
   const { currentUser } = useAuth();
@@ -28,8 +30,15 @@ const Tutors = () => {
   return (
     <>
       <WebPage>
-        <br></br>
-        <div>
+        <div className="p-4 slate-800 d-flex flex-column align-items-center gap-2">
+          <div className="align-self-stretch text-slate-200 d-flex justify-content-between">
+            <h1>Tutors</h1>
+            <Link to="/class-dashboard">
+              <Button className="align-self-start light-button">
+                Back to class dashboard
+              </Button>
+            </Link>
+          </div>
           {currentClass ? (
             tutorList.map((name) => {
               return (
