@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { getDocs, collection } from "firebase/firestore";
 import { Card } from "react-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { firestore } from "../firebase";
 import WebPage from "../components/WebPage";
 
 const Students = () => {
+  const { currentUser } = useAuth();
   const { currentClass } = useClass();
   const [studentList, setStudentList] = useState([]);
 
@@ -17,14 +19,20 @@ const Students = () => {
   );
 
   useEffect(() => {
-    getDocs(studentsRef).then((snapshot) => {
-      setStudentList(
-        snapshot.docs.map((doc) => {
-          return doc.data().name;
-        })
-      );
-    });
-  }, [studentsRef]);
+    populateStudents();
+  }, []);
+
+  function populateStudents() {
+    if (currentUser && currentClass) {
+      getDocs(studentsRef).then((snapshot) => {
+        setStudentList(
+          snapshot.docs.map((doc) => {
+            return doc.data().name;
+          })
+        );
+      });
+    }
+  }
 
   return (
     <>

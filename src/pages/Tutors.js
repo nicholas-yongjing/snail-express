@@ -1,25 +1,34 @@
 import { useEffect, useState } from "react";
 import { getDocs, collection } from "firebase/firestore";
 import { Card } from "react-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { firestore } from "../firebase";
 import WebPage from "../components/WebPage";
 
 const Tutors = () => {
+  const { currentUser } = useAuth();
   const { currentClass } = useClass();
   const [tutorList, setTutorList] = useState([]);
 
   const tutorsRef = collection(firestore, "classes", currentClass.id, "tutors");
 
   useEffect(() => {
-    getDocs(tutorsRef).then((snapshot) => {
-      setTutorList(
-        snapshot.docs.map((doc) => {
-          return doc.data().name;
-        })
-      );
-    });
-  }, [tutorsRef]);
+    populateTutors();
+  }, []);
+
+  function populateTutors() {
+    if (currentUser && currentClass) {
+      console.log(currentUser);
+      getDocs(tutorsRef).then((snapshot) => {
+        setTutorList(
+          snapshot.docs.map((doc) => {
+            return doc.data().name;
+          })
+        );
+      });
+    }
+  }
 
   return (
     <>

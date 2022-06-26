@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { useClass } from '../contexts/ClassContext';
 import { getForumPosts } from "../database";
 import AddPost from '../components/AddPost';
 import Post from "../components/Post"
 import Button from './Button';
 
-
 export default function ForumPosts(props) {
   const { currentClass } = useClass();
+  const { currentUser } = useAuth;
   const currentThread = props.currentThread;
   const [posts, setPosts] = useState([]);
   const [expandForm, setExpandForm] = useState(false);
@@ -18,7 +19,7 @@ export default function ForumPosts(props) {
   }, [currentThread]);
 
   function populatePosts() {
-    if (currentClass && currentThread) {
+    if (currentUser && currentClass && currentThread) {
       getForumPosts(currentClass.id, currentThread.id).then((retrievedPosts) => {
         setPosts(retrievedPosts);
       });
