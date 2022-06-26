@@ -147,7 +147,10 @@ export default function ReactionBar(props) {
           ? <AddReply
             currentThread={currentThread}
             currentPost={content}
-            populatePosts={populatePosts}
+            populatePosts={() => {
+              setExpandForm(false);
+              populatePosts();
+            }}
           />
           : <></>
       }

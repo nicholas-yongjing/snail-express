@@ -62,7 +62,10 @@ export default function ForumPosts(props) {
               expandForm
                 ? <AddPost
                   currentThread={currentThread}
-                  populatePosts={populatePosts}
+                  populatePosts={() => {
+                    setExpandForm(false);
+                    populatePosts();
+                  }}
                 />
                 : <></>
             }
