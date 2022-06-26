@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { togglePostEndorsement, togglePostvote } from "../database";
 import AddReply from "./AddReply";
+import Button from "./Button";
 
 export default function ReactionBar(props) {
   const currentThread = props.currentThread;
@@ -102,40 +103,39 @@ export default function ReactionBar(props) {
         <div className="d-flex justify-content-end align-items-center gap-2">
           {
             contentType === 'post'
-              ? <button
-                className="btn generic-button"
+              ? <Button className="fs-6"
                 onClick={() => setExpandForm(!expandForm)}
               >
                 Reply
-              </button>
+              </Button>
               : <></>
           }
           {
             isTutor()
-              ? <button
-                className="btn generic-button"
+              ? <Button
+                className="fs-6"
                 onClick={(e) => handleEndorse(e)}
               >
                 Endorse
-              </button>
+              </Button>
               : <></>
           }
-          <button
-            className={"btn" + (currentVote === 'upvote'
-              ? " btn-success"
-              : " generic-button")}
+          <Button
+            className={"fs-6" + (currentVote === 'upvote'
+              ? " create-button"
+              : "")}
             onClick={(e) => handleUpvote(e)}
           >
             ▲
-          </button>
-          <button
-            className={"btn" + (currentVote === 'downvote'
-              ? " btn-danger"
-              : " generic-button")}
+          </Button>
+          <Button
+            className={"fs-6" + (currentVote === 'downvote'
+              ? " delete-button"
+              : "")}
             onClick={(e) => handleDownvote(e)}
           >
             ▼
-          </button>
+          </Button>
           <div>
             {getVotes('upvotes')} Upvotes • {getVotes('downvotes')} Downvotes
           </div>

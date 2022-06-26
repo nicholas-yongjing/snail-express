@@ -121,7 +121,7 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
     return addUserToClass(inviteId,
       {
         id: studentId,
-        email: email, 
+        email: email,
         name: name
       },
       role)
@@ -129,6 +129,34 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
   } else {
     throw new Error('User is not invited to class and cannot accept invite');
   }
+}
+
+async function getStudents(classId) {
+  console.log("Retrieving students");
+  const studentsRef = collection(firestore, "classes",
+    classId, "students");
+  return getDocs(studentsRef)
+    .then((snapshot) => {
+      return (snapshot.docs.map((doc) => {
+        return doc.data();
+      }));
+    }).catch((err) => {
+      throw new Error(`Error retrieving students: ${err}`)
+    });
+}
+
+async function getTutors(classId) {
+  console.log("Retrieving tutors");
+  const tutorsRef = collection(firestore, "classes",
+    classId, "tutors");
+  return getDocs(tutorsRef)
+    .then((snapshot) => {
+      return (snapshot.docs.map((doc) => {
+          return doc.data();
+      }));
+    }).catch((err) => {
+      throw new Error(`Error retrieving tutors: ${err}`)
+    });
 }
 
 async function addForumThread(classId, threadName) {
@@ -286,7 +314,10 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
     })
 }
 
-export { createClass, getInvites, acceptInvite, deleteInvite,
-  getClasses, addForumThread, getForumThreads, addForumPost,
+export {
+  createClass, getInvites, acceptInvite, deleteInvite,
+  getClasses, getStudents, getTutors,
+  addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,
-  togglePostEndorsement, togglePostvote };
+  togglePostEndorsement, togglePostvote
+};

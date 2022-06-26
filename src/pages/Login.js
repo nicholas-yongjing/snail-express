@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
 import WebPage from "../components/WebPage";
+import Button from "../components/Button";
 
 export default function Login() {
   const emailRef = useRef();
@@ -46,9 +47,9 @@ export default function Login() {
                 <Form.Control className="fs-4" type="password" ref={passwordRef} required />
               </Form.Group>
               <br></br>
-              <button disabled={loading} className="fs-4 p-1 generic-button" type="submit">
+              <Button disabled={loading} className="" type="submit">
                 Login
-              </button>
+              </Button>
             </Form>
             <div className="w-100 text-center mt-3">
               <Link className="generic-link" to="/forgot-password">Forgot password?</Link>

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useClass } from '../contexts/ClassContext';
 import SideBar from "../components/SideBar"
 import WebPage from '../components/WebPage';
+import Button from '../components/Button';
 
 export default function ClassDashBoard() {
   const { currentClass, setCurrentClass } = useClass();
@@ -38,9 +39,9 @@ export default function ClassDashBoard() {
           </span>
           <span>
             <Link to='/dashboard'>
-              <button className='btn generic-button-light fs-4' onClick={handleClick}>
+              <Button className="light-button" onClick={handleClick}>
                 Back to dashboard
-              </button>
+              </Button>
             </Link>
           </span>
         </div>

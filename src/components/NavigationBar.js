@@ -1,6 +1,8 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { Link, useNavigate } from "react-router-dom";
+import SnailLogo from "../images/snail-logo.png"
+import Button from "./Button";
 
 export default function NavigationBar() {
   const { currentUser, logout } = useAuth();
@@ -113,10 +115,16 @@ export default function NavigationBar() {
   return (
     <nav className="navbar navbar-expand-lg p-3 justify-content-between slate-900">
       <div className="d-flex align-items-center">
+
         <Link
-          className="nav-link text-slate-200 text-slate-200 hover-text-slate-300 fs-3"
+          className="d-flex gap-4 align-items-center nav-link text-slate-200 text-slate-200 hover-text-slate-200 fs-3"
           to="/dashboard"
         >
+          <img
+            src={SnailLogo}
+            alt="snail express"
+            style={{ width: '40px' }}
+          />
           snail-express
         </Link>
         {getLinks()}

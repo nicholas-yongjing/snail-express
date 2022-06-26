@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import { Container, Form, Button, Alert } from "react-bootstrap";
+import { Container, Form, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-
 import WebPage from "../components/WebPage";
+import Button from "../components/Button";
 
 function SignUp() {
   const nameRef = useRef();
@@ -25,9 +25,9 @@ function SignUp() {
     try {
       setError("");
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
-      setName(nameRef.current.value);
-      navigate("/dashboard");
+      signup(emailRef.current.value, passwordRef.current.value)
+        .then(() => setName(nameRef.current.value))
+        .then(() => navigate("/dashboard"));
     } catch {
       setError("Failed to create an account");
     }
@@ -38,7 +38,7 @@ function SignUp() {
     <WebPage>
       <div className="slate-800">
         <br />
-        <Container className="d-flex justify-content-center">
+        <Container className="rounded d-flex justify-content-center">
           <div
             className="p-4 d-flex flex-column w-100 slate-700 text-slate-200 fs-4"
             style={{ maxWidth: "600px" }}
@@ -82,10 +82,9 @@ function SignUp() {
                   required
                 />
               </Form.Group>
-              <br />
               <Button
                 disabled={loading}
-                className="w-100 fs-4 generic-button"
+                className="w-100"
                 type="submit"
               >
                 Sign Up
