@@ -1,8 +1,9 @@
 import { useAuth } from "../contexts/AuthContext"
 import { useClass } from "../contexts/ClassContext";
 import { addForumReply } from "../database";
-import { Alert, Button, Card, Form } from "react-bootstrap";
+import { Alert, Card, Form } from "react-bootstrap";
 import { useState, useRef } from "react";
+import Button from "./Button";
 
 export default function AddReply(props) {
     const { currentUser } = useAuth();
@@ -59,7 +60,7 @@ export default function AddReply(props) {
                         className="generic-field-light"
                     />
                 </Form.Group>
-                <Button disabled={loading} className="w-25" type="submit">
+                <Button disabled={loading} className="w-25 create-button" type="submit">
                     Create Reply
                 </Button>
             </Form>

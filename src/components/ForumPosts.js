@@ -4,6 +4,7 @@ import { useClass } from '../contexts/ClassContext';
 import { getForumPosts } from "../database";
 import AddPost from '../components/AddPost';
 import Post from "../components/Post"
+import Button from './Button';
 
 
 export default function ForumPosts(props) {
@@ -32,7 +33,11 @@ export default function ForumPosts(props) {
             {currentClass ? currentClass.className : ''}
           </strong>
         </h1>
-        <Link className="generic-link fs-4" to='/class-dashboard'>Back to dashboard</Link>
+        <Link to='/class-dashboard'>
+          <Button className="light-button">
+            Back to dashboard
+          </Button>
+        </Link>
       </div>
       <br />
       {
@@ -42,15 +47,15 @@ export default function ForumPosts(props) {
               <h2>
                 {currentThread.name}
               </h2>
-              <button
-                className={'btn' + (expandForm ? ' generic-button-light' : ' btn-success')}
+              <Button
+                className={expandForm ? 'light-button' : 'create-button'}
                 onClick={() => setExpandForm(!expandForm)}
               >
                 {expandForm
                   ? "Hide Form"
                   : "New Post"
                 }
-              </button>
+              </Button>
             </div>
             {
               expandForm

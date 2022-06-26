@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { addForumThread, getForumThreads } from "../database";
-import { Alert, Button, Card, Form } from "react-bootstrap";
+import { Alert, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import SideBar from "../components/SideBar";
+import Button from "../components/Button"
 
 export default function SettingsForums() {
   const { currentUser } = useAuth();
@@ -73,7 +74,11 @@ export default function SettingsForums() {
               />
             </Form.Group>
             <br></br>
-            <Button disabled={loading} className="w-25 btn btn-success" type="submit">
+            <Button
+              disabled={loading}
+              className="create-button"
+              type="submit"
+            >
               Create Thread
             </Button>
           </Form>
@@ -127,9 +132,9 @@ export default function SettingsForums() {
               Forums Settings
             </h1>
             <Link to="/class-dashboard">
-              <button className='btn generic-button-light fs-4'>
+              <Button className="light-button">
                 Back to class dashboard
-              </button>
+              </Button>
             </Link>
           </div>
           {

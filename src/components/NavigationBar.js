@@ -2,6 +2,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { Link, useNavigate } from "react-router-dom";
 import SnailLogo from "../images/snail-logo.png"
+import Button from "./Button";
 
 export default function NavigationBar() {
   const { currentUser, logout } = useAuth();

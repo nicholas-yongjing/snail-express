@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import SideBar from "../components/SideBar";
+import Button from "../components/Button";
 
 export default function SettingsGeneral() {
   const sidebarLinks = [['/settings-general', 'General'],
@@ -29,9 +30,9 @@ export default function SettingsGeneral() {
               General Settings
             </h1>
             <Link to="/class-dashboard">
-              <button className='btn generic-button-light fs-4'>
+              <Button className="light-button"> 
                 Back to class dashboard
-              </button>
+              </Button>
             </Link>
           </div>
           No settings available
