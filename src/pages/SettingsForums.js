@@ -13,6 +13,7 @@ export default function SettingsForums() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [threads, setThreads] = useState([]);
+  const formRef = useRef();
   const newThreadNameRef = useRef();
   const sidebarLinks = [['/settings-general', 'General'],
   ['/settings-forums', 'Forum']];
@@ -47,7 +48,8 @@ export default function SettingsForums() {
       setError('');
       setLoading(true);
       await addForumThread(currentClass.id, newThreadNameRef.current.value)
-        .then(() => populateThreads());
+      .then(() => formRef.current.reset())
+      .then(() => populateThreads());
     } catch {
       setError('Failed to create forum thread');
     }
@@ -61,6 +63,7 @@ export default function SettingsForums() {
           <h2>Create new thread</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form
+            ref={formRef}
             onSubmit={handleCreateThread}
           >
             <Form.Group id="thread-name">
