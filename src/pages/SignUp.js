@@ -25,9 +25,9 @@ function SignUp() {
     try {
       setError("");
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
-      setName(nameRef.current.value);
-      navigate("/dashboard");
+      signup(emailRef.current.value, passwordRef.current.value)
+        .then(() => setName(nameRef.current.value))
+        .then(() => navigate("/dashboard"));
     } catch {
       setError("Failed to create an account");
     }
