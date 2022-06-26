@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { getDocs, collection } from "firebase/firestore";
 import { Card } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
-import { firestore } from "../firebase";
+import { getStudents } from "../database";
 import WebPage from "../components/WebPage";
 
 const Students = () => {
@@ -11,26 +10,18 @@ const Students = () => {
   const { currentClass } = useClass();
   const [studentList, setStudentList] = useState([]);
 
-  const studentsRef = collection(
-    firestore,
-    "classes",
-    currentClass.id,
-    "students"
-  );
-
   useEffect(() => {
     populateStudents();
   }, []);
 
   function populateStudents() {
     if (currentUser && currentClass) {
-      getDocs(studentsRef).then((snapshot) => {
-        setStudentList(
-          snapshot.docs.map((doc) => {
-            return doc.data().name;
-          })
-        );
-      });
+      getStudents(currentClass.id)
+        .then((students) => {
+          setStudentList(students.map((student) => {
+            return student.name;
+          }));
+        })
     }
   }
 
