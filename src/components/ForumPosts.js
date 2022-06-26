@@ -9,14 +9,14 @@ import Button from './Button';
 
 export default function ForumPosts(props) {
   const { currentClass } = useClass();
-  const { currentUser } = useAuth;
+  const { currentUser } = useAuth();
   const currentThread = props.currentThread;
   const [posts, setPosts] = useState([]);
   const [expandForm, setExpandForm] = useState(false);
 
   useEffect(() => {
     populatePosts();
-  }, [currentThread]);
+  }, [currentUser, currentClass, currentThread]);
 
   function populatePosts() {
     if (currentUser && currentClass && currentThread) {
