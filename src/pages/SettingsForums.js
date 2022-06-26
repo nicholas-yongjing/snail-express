@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { addForumThread, getForumThreads } from "../database";
-import { Alert, Button, Card, Form } from "react-bootstrap";
+import { Alert, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import SideBar from "../components/SideBar";
+import Button from "../components/Button"
 
 export default function SettingsForums() {
   const { currentUser } = useAuth();
@@ -13,6 +14,7 @@ export default function SettingsForums() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [threads, setThreads] = useState([]);
+  const formRef = useRef();
   const newThreadNameRef = useRef();
   const sidebarLinks = [['/settings-general', 'General'],
   ['/settings-forums', 'Forum']];
@@ -47,7 +49,8 @@ export default function SettingsForums() {
       setError('');
       setLoading(true);
       await addForumThread(currentClass.id, newThreadNameRef.current.value)
-        .then(() => populateThreads());
+      .then(() => formRef.current.reset())
+      .then(() => populateThreads());
     } catch {
       setError('Failed to create forum thread');
     }
@@ -61,6 +64,7 @@ export default function SettingsForums() {
           <h2>Create new thread</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form
+            ref={formRef}
             onSubmit={handleCreateThread}
           >
             <Form.Group id="thread-name">
@@ -73,7 +77,11 @@ export default function SettingsForums() {
               />
             </Form.Group>
             <br></br>
-            <Button disabled={loading} className="w-25 btn btn-success" type="submit">
+            <Button
+              disabled={loading}
+              className="create-button"
+              type="submit"
+            >
               Create Thread
             </Button>
           </Form>
@@ -127,9 +135,9 @@ export default function SettingsForums() {
               Forums Settings
             </h1>
             <Link to="/class-dashboard">
-              <button className='btn generic-button-light fs-4'>
+              <Button className="light-button">
                 Back to class dashboard
-              </button>
+              </Button>
             </Link>
           </div>
           {

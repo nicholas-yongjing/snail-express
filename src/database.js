@@ -132,6 +132,34 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
   }
 }
 
+async function getStudents(classId) {
+  console.log("Retrieving students");
+  const studentsRef = collection(firestore, "classes",
+    classId, "students");
+  return getDocs(studentsRef)
+    .then((snapshot) => {
+      return (snapshot.docs.map((doc) => {
+        return doc.data();
+      }));
+    }).catch((err) => {
+      throw new Error(`Error retrieving students: ${err}`)
+    });
+}
+
+async function getTutors(classId) {
+  console.log("Retrieving tutors");
+  const tutorsRef = collection(firestore, "classes",
+    classId, "tutors");
+  return getDocs(tutorsRef)
+    .then((snapshot) => {
+      return (snapshot.docs.map((doc) => {
+          return doc.data();
+      }));
+    }).catch((err) => {
+      throw new Error(`Error retrieving tutors: ${err}`)
+    });
+}
+
 async function addForumThread(classId, threadName) {
   const threadsRef = collection(firestore, "classes", classId, "forumThreads");
   return (
@@ -314,7 +342,8 @@ async function resetLectureFeedbacks(classId) {
 
 export {
   createClass, getInvites, acceptInvite, deleteInvite,
-  getClasses, addForumThread, getForumThreads, addForumPost,
+  getClasses, getStudents, getTutors,
+  addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,
   togglePostEndorsement, togglePostvote,
   setLectureFeedback, resetLectureFeedbacks

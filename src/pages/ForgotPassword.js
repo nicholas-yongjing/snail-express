@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import { Container, Form, Button, Alert } from "react-bootstrap";
+import { Container, Form, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
-
 import WebPage from "../components/WebPage";
+import Button from "../components/Button";
 
 export default function ForgotPassword() {
   const emailRef = useRef();
@@ -45,7 +45,7 @@ export default function ForgotPassword() {
                 <Form.Control className="fs-4" type="email" ref={emailRef} required />
               </Form.Group>
               <br></br>
-              <Button disabled={loading} className="w-100 generic-button fs-4" type="submit">
+              <Button disabled={loading} className="w-100" type="submit">
                 Reset password
               </Button>
             </Form>
