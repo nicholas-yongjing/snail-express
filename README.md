@@ -220,6 +220,10 @@ We used the following backend services from Firebase to complete our project.
 - Firebase Authentication
 - Firebase Hosting
 
+**Overview**:
+
+![Tech stack overview](images/techStackOverview.svg)
+
 ## Evaluation
 
 **Software engineering practices**
