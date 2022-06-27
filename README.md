@@ -258,7 +258,7 @@ https://snail-development.firebaseapp.com
 https://github.com/gohyongjing/snail-express 
 
 **Project Poster**
-https://drive.google.com/file/d/1FNZ5tc_ZzDNdcdMH6RDpL5Udgjm-6KCq/view?usp=sharing 
+https://drive.google.com/file/d/1xuJKjne-r_cwYtZWXec5YW2JHnFFBK2B/view?usp=sharing
 
 **Project Video**
 https://drive.google.com/file/d/1pp_tOW5yXLT3RU5yPML0iV54jDwtIwrI/view?usp=sharing
