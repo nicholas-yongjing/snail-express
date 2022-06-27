@@ -152,7 +152,11 @@ Class pages are shown in yellow. Users can access these pages when they are logg
 
 **React Component Tree**
 
+![React component tree](images/reactComponentTree.svg)
+
 **Activity Diagram**
+
+![React component tree](images/activityDiagram.svg)
 
 If a user attempts to visit a page without meeting the necessary requirements, they get redirected to their proper webpages. This is done using React’s context providers, which allows every single webpage to see and change the authentication and class context as necessary.
 
