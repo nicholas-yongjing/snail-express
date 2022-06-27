@@ -43,21 +43,21 @@ CS2040S uses Archipelago for almost every lecture, but we find it lacking in fea
 
 **Students’ perspective**
 
-- As a student, I want to be able to ask questions during the lecture and get quick replies from either the lecturer or other students. I also want to indicate that I have a similar question to another student so that the lecturer can prioritise the common questions. I want to indicate that someone's answer is good because it answered my queries.
+1. As a student, I want to be able to ask questions during the lecture and get quick replies from either the lecturer or other students. I also want to indicate that I have a similar question to another student so that the lecturer can prioritise the common questions. I want to indicate that someone's answer is good because it answered my queries.
 
-- As a student, I want to be able to indicate to the lecturer in real time that they are going too fast or too slow, or that I am unable to understand what has been taught in the past ten minutes.
+2. As a student, I want to be able to indicate to the lecturer in real time that they are going too fast or too slow, or that I am unable to understand what has been taught in the past ten minutes.
 
-- As a student, I want to feel appreciated when I answer another student’s questions.
+3. As a student, I want to feel appreciated when I answer another student’s questions.
 
 **Lecturer’s perspective**
 
-- As a lecturer, I want to make sure my students are following the lecture content so that I know when to stop and clarify doubts before moving on. I hope this can be done by surveying students passively (in the background) without the need to open a new poll during the lecture. 
+1. As a lecturer, I want to make sure my students are following the lecture content so that I know when to stop and clarify doubts before moving on. I hope this can be done by surveying students passively (in the background) without the need to open a new poll during the lecture. 
 
-- As a lecturer, I hope to be able to quantify my students’ participation without having to micromanage the chat. I want a platform which can store students’ responses and report them to me after the lecture so I can award participation points in a hassle-free manner.
+2. As a lecturer, I hope to be able to quantify my students’ participation without having to micromanage the chat. I want a platform which can store students’ responses and report them to me after the lecture so I can award participation points in a hassle-free manner.
 
-- As a lecturer, it is stressful to answer the students’ questions while conducting the lecture. I hope to be able to refer to these questions after the lecture and answer them offline. 
+3. As a lecturer, it is stressful to answer the students’ questions while conducting the lecture. I hope to be able to refer to these questions after the lecture and answer them offline. 
 
-- As a lecturer, I also hope that students can aid in answering the questions submitted by other students because I value their input as well. I hope to be able to remove erroneous responses and endorse good responses.
+4. As a lecturer, I also hope that students can aid in answering the questions submitted by other students because I value their input as well. I hope to be able to remove erroneous responses and endorse good responses.
 
 ## Features
 
@@ -123,117 +123,119 @@ A **Class** has a set of features for lecturers, teaching assistants and student
 
 ## Plans
 
-Liftoff
+**Liftoff**
 - Ideation: Sketch and design of website
-Milestone 1
+**Milestone 1**
 - User account: Basic account creation, login and logout system
-Milestone 2
+**Milestone 2**
 - Classes: Create classes and send, accept and delete invitations to classes
 - Forums: View and create threads, posts and replies, as well as react to them using upvotes, downvotes and endorsements.
 - Lecture Feedback: Send and view lecture feedback
-Milestone 3
+**Milestone 3**
 - Classes: Complete remaining features - delete users, leave class, delete class
 - Forums: Complete remaining features - edit and delete threads, posts and replies
 - Quizzes: create quiz questions, answers and attend quizzes
 - Gamification: gain exp through using any features of the platform, level up and gain titles
-Splashdown
+**Splashdown**
 - Additional Forum Features: React to other students’ questions and answers by upvoting or reacting with an emoji. Format text in bold, underline and italics
 - Additional Quiz Features: Add MRQ and open ended questions
 - Additional Gamification features: Customise the rank titles of students, number of questions each student can ask to prevent spam, experience points awarded per question, maximum upvotes per day.
 
-
-
 ## Tech Stack
 
-Frontend: ReactJS
+**Frontend**: ReactJS
 
 ReactJS is a framework to structure web pages using reusable components such as forum posts, navigation bars and buttons. The Snail Express website layout is shown below
 Public pages are shown in green. Users can access these pages when they are not logged in.
 Authenticated pages are shown in blue. Users can access these pages when they are logged in but do not need to have a specific class selected.
 Class pages are shown in yellow. Users can access these pages when they are logged in and have selected a specific class to interact with.
 
-React Component Tree
+**React Component Tree**
 
-Activity Diagram
+**Activity Diagram**
 
 If a user attempts to visit a page without meeting the necessary requirements, they get redirected to their proper webpages. This is done using React’s context providers, which allows every single webpage to see and change the authentication and class context as necessary.
 
-Database: Firebase Cloud Firestore
+**Database**: Firebase Cloud Firestore
 
 Cloud Firestore uses the “Collections and Documents” data model to store information. Collections store 1 or more different documents and documents are simple JSON-like objects that store key value pairs for simple data structures such as strings, numbers, simple non-nested arrays as well as other subcollections. This simple nesting of collections and documents allow for a complex database structure for Snail Express as shown below, with collections labelled 📁 and documents labelled 📄.
 
 📁 Classes
-📄 Class
-Class name (string)
-Head Tutor Id (string)
-Head Tutor Email (string)
-Student Invites (array<string>)
-Tutor Invites (array<string>)
-Student Ids (array<string>)
-Tutor Ids (array<string>)
-📁 Students
-📄 Student
-Student Email (string)
-Student Id (string)
-📁 Tutors
-📄 Tutor
-Tutor Email (string)
-Tutor Id (string)
-📁 Forum Threads
-📄 Forum Thread
-Thread Name (string)
-📁 Forum Posts
-📄 Forum Post
-Post Title (string)
-Post Body (string)
-Post Author Email (string)
-Post Author Id (string)
-Post Endorsed (boolean)
-Post Upvoters (array<string>)
-Post Downvoters (array<string>)
-📁 Forum Post Replies
-📄 Forum Post Reply
-Reply Body (string)
-Reply Author Email (string)
-Reply Author Id (string)
-Reply Endorsed (boolean)
-Reply Upvoters (array<string>)
-Reply Downvoters (array<string>)
+- 📄 Class
+  - Class name (string)
+  - Head Tutor Id (string)
+  - Head Tutor Email (string)
+  - Student Invites (array<string>)
+  - Tutor Invites (array<string>)
+  - Student Ids (array<string>)
+  - Tutor Ids (array<string>)
+  - 📁 Students
+    - 📄 Student
+      - Student Email (string)
+      - Student Id (string)
+  - 📁 Tutors
+    - 📄 Tutor
+      - Tutor Email (string)
+      - Tutor Id (string)
+  - 📁 Forum Threads
+    - 📄 Forum Thread
+      - Thread Name (string)
+      - 📁 Forum Posts
+        - 📄 Forum Post
+          - Post Title (string)
+          - Post Body (string)
+          - Post Author Email (string)
+          - Post Author Id (string)
+          - Post Endorsed (boolean)
+          - Post Upvoters (array<string>)
+          - Post Downvoters (array<string>)
+          - 📁 Forum Post Replies
+             - 📄 Forum Post Reply
+              - Reply Body (string)
+              - Reply Author Email (string)
+              - Reply Author Id (string)
+              - Reply Endorsed (boolean)
+              - Reply Upvoters (array<string>)
+              - Reply Downvoters (array<string>)
 
 In Cloud Firestore, usage limits and billing are tabulated per document read, write and delete where only part of a collection is retrieved based on some condition instead of retrieving the entire collection. Subcollections within a document are also not automatically retrieved and require explicit query to read, write or delete. Cloud Firestore also uses the philosophy that reads happen much more often than writes and therefore optimises reading over writing.
 
 With this in mind, we made the following design decisions:
+
 In a class document, invites are shallow arrays of emails. This allows for tutors to invite students that have not created their account yet. When a user creates an account or logs in, we do a simple query for classes where the array of invites contains the user’s ID. Newly created user accounts with no invites incur 0 reads, even if Snail Express contains hundreds of classes.
+
 In contrast, saving invites as a subcollection incurs many reads as the user needs to query all subcollections of all classes to check if their id exists in any of the subcollections.
 
 In a post or reply document, upvoters, downvoters are shallow arrays of user ids. When a post is retrieved, the user incurs 1 read to view the post contents as well as number of upvotes and downvotes by simply using the length of the array.
+
 In contrast, saving the upvotes and downvotes as a collection of documents incurs reads based on the total number of votes.
 
-Backend: Firebase (Backend-as-a-Service)
+**Backend**: Firebase (Backend-as-a-Service)
 
 We used the following backend services from Firebase to complete our project.
-Firebase Authentication
-Firebase Hosting
+- Firebase Authentication
+- Firebase Hosting
 
 ## Evaluation
 
-Software engineering practices
+**Software engineering practices**
 
- Incremental development using atomic commits
- Version control and feature branching
- Using pull requests and resolving merge conflicts as a team
- Using issues tracker and milestones on GitHub
- Modular components in code base
- Abstraction and separation of concerns of frontend and backend via utility functions
+- Incremental development using atomic commits
+- Version control and feature branching
+- Using pull requests and resolving merge conflicts as a team
+- Using issues tracker and milestones on GitHub
+- Modular components in code base
+- Abstraction and separation of concerns of frontend and backend via utility functions
 
-Testing
+**Testing**
 
 Before deploying the application, we performed some user testing and fixed minor bugs and styling issues. We then conducted some simple user testing and sought feedback from our peers.
+  
 Our web application generally received positive feedback -- the frontend is clean and the backend is able to consistently persist data between page refreshes and log outs. However, the application does not look as clean for mobile users, owing to styling issues which can easily be fixed.
-One user mentioned that form validation was insufficient, allowing incorrect data to enter. This will be a priority issue to be fixed.
-There were asynchronous issues where the user's name has not been updated before the page tries to render it, as well as attempts to query the database even after the user has logged out. More checks need to be carried out.
-Minor styling consistency issues and quality of life improvements were suggested, such as collapsing a form once the user submits it.
-Storing links for profile pictures in Firebase seems to cause errors for certain image URLs. We will explore file-based systems for storing and retrieving profile pictures.
+- One user mentioned that form validation was insufficient, allowing incorrect data to enter. This will be a priority issue to be fixed.
+- There were asynchronous issues where the user's name has not been updated before the page tries to render it, as well as attempts to query the database even after the user has logged out. More checks need to be carried out.
+- Minor styling consistency issues and quality of life improvements were suggested, such as collapsing a form once the user submits it.
+- Storing links for profile pictures in Firebase seems to cause errors for certain image URLs. We will explore file-based systems for storing and retrieving profile pictures.
 
 ## Conclusion
 
@@ -241,20 +243,20 @@ Our application definitely has much room for improvement, as there were some bug
 
 ## Links
 
-Snail Express
+**Snail Express**
 https://snail-development.firebaseapp.com
 
-Github Repository
+**Github Repository**
 https://github.com/gohyongjing/snail-express 
 
-Project Poster
+**Project Poster**
 https://drive.google.com/file/d/1FNZ5tc_ZzDNdcdMH6RDpL5Udgjm-6KCq/view?usp=sharing 
 
-Project Video
-https://drive.google.com/file/d/1MeOF-cnqC1AzoXoX8e65BPDw3wjIi8M0/view?usp=sharing 
+**Project Video**
+https://drive.google.com/file/d/1pp_tOW5yXLT3RU5yPML0iV54jDwtIwrI/view?usp=sharing
 
-Project Log
+**Project Log**
 https://docs.google.com/spreadsheets/d/1FVq-X5LiwxegWNH8CFDZG4TTdpNZskBeQjSvQOi2WE4/edit?usp=sharing 
 
-Technical Proof of Concept
+**Technical Proof of Concept**
 https://drive.google.com/file/d/1K_oX5cx4eZyCk_Dpc7ExWVLJ8bfCAiAD/view?usp=sharing 
