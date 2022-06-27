@@ -163,7 +163,10 @@ async function getTutors(classId) {
 async function addForumThread(classId, threadName) {
   const threadsRef = collection(firestore, "classes", classId, "forumThreads");
   return (
-    addDoc(threadsRef, { name: threadName })
+    addDoc(threadsRef, {
+        name: threadName,
+        timestamp: serverTimestamp()
+      })
       .catch((err) => {
         throw new Error(`Error adding forum thread: ${err}`);
       })
@@ -173,7 +176,7 @@ async function addForumThread(classId, threadName) {
 async function getForumThreads(classId) {
   console.log("Retrieving forum threads");
   const threadsRef = collection(firestore, "classes", classId, "forumThreads");
-  return (getDocs(threadsRef)
+  return (getDocs(query(threadsRef, orderBy('timestamp')))
     .then((querySnapshot) => {
       return querySnapshot.docs.map((docSnapshot) => {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
@@ -190,7 +193,8 @@ async function addForumPost(classId, threadId, postTitle, postBody, author) {
     author: author,
     endorsed: false,
     upvoters: [],
-    downvoters: []
+    downvoters: [],
+    timestamp: serverTimestamp()
   };
   const postsRef = collection(firestore, "classes",
     classId, "forumThreads", threadId, "forumPosts");
@@ -203,7 +207,7 @@ async function getForumPosts(classId, threadId) {
   console.log("Retrieving forum posts")
   const postsRef = collection(firestore, "classes",
     classId, "forumThreads", threadId, "forumPosts");
-  return (getDocs(postsRef)
+  return (getDocs(query(postsRef, orderBy('timestamp')))
     .then((querySnapshot) => {
       return querySnapshot.docs.map((docSnapshot) => {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
@@ -219,7 +223,8 @@ async function addForumReply(classId, threadId, postId, postBody, author) {
     author: author,
     endorsed: false,
     upvoters: [],
-    downvoters: []
+    downvoters: [],
+    timestamp: serverTimestamp()
   };
   const repliesRef = collection(firestore, "classes", classId,
     "forumThreads", threadId, "forumPosts", postId, "forumReplies");
@@ -232,7 +237,7 @@ async function getForumReplies(classId, threadId, postId) {
   console.log("Retrieving forum replies");
   const repliesRef = collection(firestore, "classes",
     classId, "forumThreads", threadId, "forumPosts", postId, "forumReplies");
-  return (getDocs(repliesRef)
+  return (getDocs(query(repliesRef, orderBy('timestamp')))
     .then((querySnapshot) => {
       return querySnapshot.docs.map((docSnapshot) => {
         return { ...(docSnapshot.data()), id: docSnapshot.id };
