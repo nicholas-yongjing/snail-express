@@ -30,10 +30,9 @@ export default function ForgotPassword() {
 
   return (
     <WebPage>
-      <div className="slate-800">
         <br />
-        <Container
-          className="flex-grow-1 d-flex align-items-center justify-content-center"
+        <div
+          className="w-100 d-flex align-items-center justify-content-center"
         >
           <div className="w-100 rounded p-4 slate-700 text-slate-200 fs-4" style={{ maxWidth: "500px" }}>
             <h2 className="text-center mb-4">Password reset</h2>
@@ -42,7 +41,7 @@ export default function ForgotPassword() {
             <Form onSubmit={handleSubmit}>
               <Form.Group id="email">
                 <Form.Label>Email address</Form.Label>
-                <Form.Control className="fs-4" type="email" ref={emailRef} required />
+                <Form.Control size="lg" type="email" ref={emailRef} required />
               </Form.Group>
               <br></br>
               <Button disabled={loading} className="w-100" type="submit">
@@ -53,9 +52,8 @@ export default function ForgotPassword() {
               <Link className="generic-link" to="/login">Return to login</Link>
             </div>
           </div>
-        </Container>
+        </div>
         <br />
-      </div>
     </WebPage>
   );
 }

@@ -94,20 +94,18 @@ export default function NavigationBar() {
       </div>
     ) : (
       <div className="d-flex gap-3">
-        <a
-          href="/login"
+        <Link to="/login"
           className="btn border-slate-200 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
           role="button"
         >
           Login
-        </a>
-        <a
-          href="/signup"
+        </Link>
+        <Link to="/signup"
           className="btn border-slate-200 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
           role="button"
         >
           Sign Up
-        </a>
+        </Link>
       </div>
     );
   }

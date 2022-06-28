@@ -31,9 +31,12 @@ export default function Login() {
 
   return (
     <WebPage>
-        <Container className="p-5 d-flex align-items-center justify-content-center">
-          <div className="d-flex flex-column rounded p-4 slate-700 text-slate-200 gap-2 fs-4">
-            <h2 className="text-center mb-4">Login</h2>
+        <br />
+        <Container className="rounded w-75 p-4 fs-4 d-flex flex-column gap-4 justify-content-center slate-700 text-slate-200">
+            <div className="d-flex justify-content-between">
+              <h1 className="text-center">Login</h1>
+              <Link to="/"><Button>Back</Button></Link>
+            </div>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form className="d-flex flex-column gap-3" onSubmit={handleSubmit}>
               <Form.Group id="email">
@@ -55,10 +58,6 @@ export default function Login() {
             <div className="text-center">
               New to our website? Create an account <Link className="generic-link" to="/signup">here</Link>
             </div>
-            <div className="text-center">
-              Back to <Link className="generic-link" to="/">home</Link>
-            </div>
-          </div>
         </Container>
     </WebPage>
   );
