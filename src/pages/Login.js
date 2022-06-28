@@ -31,20 +31,21 @@ export default function Login() {
 
   return (
     <WebPage>
-      <br />
-      <div className="slate-800">
-        <Container className="flex-grow-1 d-flex align-items-center justify-content-center">
-          <div className="d-flex flex-column rounded p-4 w-100 slate-700 text-slate-200 gap-2 fs-4" style={{ maxWidth: "600px" }}>
-            <h2 className="text-center mb-4">Login</h2>
+        <br />
+        <Container className="rounded w-75 p-4 fs-4 d-flex flex-column gap-4 justify-content-center slate-700 text-slate-200">
+            <div className="d-flex justify-content-between">
+              <h1 className="text-center">Login</h1>
+              <Link to="/"><Button>Back</Button></Link>
+            </div>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form className="d-flex flex-column gap-3" onSubmit={handleSubmit}>
               <Form.Group id="email">
                 <Form.Label>Email address</Form.Label>
-                <Form.Control className="fs-4" type="email" ref={emailRef} required />
+                <Form.Control size='lg' type="email" ref={emailRef} required />
               </Form.Group>
               <Form.Group id="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control className="fs-4" type="password" ref={passwordRef} required />
+                <Form.Control size="lg" type="password" ref={passwordRef} required />
               </Form.Group>
               <br></br>
               <Button disabled={loading} className="" type="submit">
@@ -57,15 +58,8 @@ export default function Login() {
             <div className="text-center">
               New to our website? Create an account <Link className="generic-link" to="/signup">here</Link>
             </div>
-            <div className="text-center">
-              Back to <Link className="generic-link" to="/">home</Link>
-            </div>
-          </div>
         </Container>
-        <br />
-      </div>
     </WebPage>
-
   );
 }
 

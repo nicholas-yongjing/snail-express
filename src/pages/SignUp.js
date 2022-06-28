@@ -17,66 +17,74 @@ function SignUp() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+    const pwdRequirement = /^(?=.*\d)(?=.*[a-zA-z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,20}$/;
+    if (!passwordRef.current.value.match(pwdRequirement)) {
+      return setError(`Password should be 6 to 20 characters long and contain at least 1 digit, letter and special character`);
+    } if (passwordRef.current.value !== passwordConfirmRef.current.value) {
       return setError("Passwords do not match");
     }
-
-    try {
-      setError("");
-      setLoading(true);
-      signup(emailRef.current.value, passwordRef.current.value)
-        .then(() => setName(nameRef.current.value))
-        .then(() => navigate("/dashboard"));
-    } catch {
-      setError("Failed to create an account");
-    }
+    setError("");
+    setLoading(true);
+    signup(emailRef.current.value, passwordRef.current.value)
+      .then(() => setName(nameRef.current.value))
+      .then(() => navigate("/dashboard"))
+      .catch((err) => {
+        if (err.code === 'auth/email-already-in-use') {
+          setError('Failed to create an account, email already in use!')
+        } else {
+          setError("Failed to create an account. Please try again later!");
+        }
+      });
     setLoading(false);
   }
 
   return (
     <WebPage>
-      <div className="slate-800">
-        <br />
-        <Container className="rounded d-flex justify-content-center">
+        <Container className="p-4 d-flex justify-content-center gap-4">
           <div
-            className="p-4 d-flex flex-column w-100 slate-700 text-slate-200 fs-4"
-            style={{ maxWidth: "600px" }}
+            className="p-4 d-flex flex-column w-100 gap-4 slate-700 text-slate-200 fs-4"
           >
-            <h2 className="text-center mb-4">Sign Up</h2>
+            <div className="d-flex justify-content-between">
+              <h1 className="text-center">Sign Up</h1>
+              <Link to="/"><Button>Back</Button></Link>
+            </div>
+            
             {error && <Alert variant="danger">{error}</Alert>}
-            <Form className="d-flex flex-column gap-4" onSubmit={handleSubmit}>
-              <Form.Group id="full-name">
+            <Form
+              className="d-flex flex-column gap-4"
+              onSubmit={handleSubmit}
+              >
+              <Form.Group>
                 <Form.Label>Full name</Form.Label>
                 <Form.Control
-                  className="fs-4"
+                  size='lg'
                   type="name"
                   ref={nameRef}
                   required
                 />
               </Form.Group>
-              <Form.Group id="email">
+              <Form.Group >
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
-                  className="fs-4"
+                  size='lg'
                   type="email"
                   ref={emailRef}
                   required
                 />
               </Form.Group>
-              <Form.Group id="password">
+              <Form.Group>
                 <Form.Label>Password</Form.Label>
                 <Form.Control
-                  className="fs-4"
+                  size='lg'
                   type="password"
                   ref={passwordRef}
                   required
                 />
               </Form.Group>
-              <Form.Group id="password-confirm">
+              <Form.Group>
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control
-                  className="fs-4"
+                  size='lg'
                   type="password"
                   ref={passwordConfirmRef}
                   required
@@ -84,31 +92,20 @@ function SignUp() {
               </Form.Group>
               <Button
                 disabled={loading}
-                className="w-100"
+                className="w-50 align-self-center"
                 type="submit"
               >
                 Sign Up
               </Button>
             </Form>
-            <br />
             <div className="text-center">
-              Already have an account? Proceed to{" "}
+              Already have an account? Proceed to {' '}
               <Link className="generic-link" to="/Login">
                 login
               </Link>
             </div>
-            <div className="text-center">
-              Back to{" "}
-              <Link className="generic-link" to="/">
-                {" "}
-                home
-              </Link>
-            </div>
-            <br />
           </div>
         </Container>
-        <br />
-      </div>
     </WebPage>
   );
 }
