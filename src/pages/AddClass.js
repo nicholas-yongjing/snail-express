@@ -16,36 +16,53 @@ export default function AddClass() {
   const studentsRef = useRef();
   const tutorsRef = useRef();
 
+  function validateEmails(emails) {
+    const emailRequirement = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    for (const email of emails) {
+      if (!email.match(emailRequirement)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
-    try {
-      setMessage('');
-      setError('');
-      setLoading(true);
+    setMessage('');
+    setError('');
+    setLoading(true);
+    const studentEmails = studentsRef.current.value.trim().split(/\s+/);
+    const tutorEmails = tutorsRef.current.value.trim().split(/\s+/);
+    if (!validateEmails(studentEmails)) {
+      setError('Invalid student emails! Please enter valid emails separated by whitespace');
+    } else if (!validateEmails(tutorEmails)) {
+      setError('Invalid tutor emails! Please enter valid emails separated by whitespace');
+    } else {
       createClass(
         classNameRef.current.value,
         {
           id: currentUser.uid,
           email: currentUser.email
         },
-        studentsRef.current.value.trim().split(/\s+/),
-        tutorsRef.current.value.trim().split(/\s+/))
-      formRef.current.reset();
-      setMessage('Class successfully created!')
-    } catch {
-      setError('Failed to sign in');
+        studentEmails,
+        tutorEmails
+      ).then(() => {
+        formRef.current.reset();
+        setMessage('Class successfully created!');
+      }).catch((err) => {
+        setError('Failed to create class, try again later!');
+      })
     }
     setLoading(false);
   }
 
   return (
     <WebPage>
-      <div className="slate-800">
-        <Container className="rounded">
+        <Container>
           <Form
             ref={formRef}
             onSubmit={handleSubmit}
-            className='rounded d-grid m-5 p-4 gap-3 text-slate-200 slate-700 d-flex flex-column'
+            className='rounded fs-4 d-grid m-5 p-4 gap-3 text-slate-200 slate-700 d-flex flex-column'
           >
             <div className="d-flex justify-content-between">
               <h1>Create Class</h1>
@@ -55,10 +72,10 @@ export default function AddClass() {
                 </Button>
               </Link>
             </div>
-            
+
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
-            <Form.Group id="class-name" className="fs-3">
+            <Form.Group>
               <Form.Label>Class Name</Form.Label>
               <Form.Control
                 type="text"
@@ -67,37 +84,36 @@ export default function AddClass() {
                 className="generic-field"
               />
             </Form.Group>
-            <Form.Group id="students">
+            <Form.Group>
               <Form.Label>Students</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={5}
                 ref={studentsRef}
                 required
-                placeholder="Enter students email separated by new lines"
+                placeholder="Enter students email separated by whitespace"
                 className="generic-field"
               />
             </Form.Group>
-            <Form.Group id="tutors">
+            <Form.Group>
               <Form.Label>Tutors</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={5}
                 ref={tutorsRef}
-                placeholder="Enter tutors email separated by new lines"
+                placeholder="Enter tutors email separated by whitespace"
                 className="generic-field"
               />
             </Form.Group>
             <Button
               disabled={loading}
               className="w-25 align-self-center create-button"
-              type="submit"  
+              type="submit"
             >
               Create Class
             </Button>
           </Form>
         </Container>
-      </div>
     </WebPage>
   );
 }
