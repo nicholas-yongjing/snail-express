@@ -31,20 +31,18 @@ export default function Login() {
 
   return (
     <WebPage>
-      <br />
-      <div className="slate-800">
-        <Container className="flex-grow-1 d-flex align-items-center justify-content-center">
-          <div className="d-flex flex-column rounded p-4 w-100 slate-700 text-slate-200 gap-2 fs-4" style={{ maxWidth: "600px" }}>
+        <Container className="p-5 d-flex align-items-center justify-content-center">
+          <div className="d-flex flex-column rounded p-4 slate-700 text-slate-200 gap-2 fs-4">
             <h2 className="text-center mb-4">Login</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form className="d-flex flex-column gap-3" onSubmit={handleSubmit}>
               <Form.Group id="email">
                 <Form.Label>Email address</Form.Label>
-                <Form.Control className="fs-4" type="email" ref={emailRef} required />
+                <Form.Control size='lg' type="email" ref={emailRef} required />
               </Form.Group>
               <Form.Group id="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control className="fs-4" type="password" ref={passwordRef} required />
+                <Form.Control size="lg" type="password" ref={passwordRef} required />
               </Form.Group>
               <br></br>
               <Button disabled={loading} className="" type="submit">
@@ -62,10 +60,7 @@ export default function Login() {
             </div>
           </div>
         </Container>
-        <br />
-      </div>
     </WebPage>
-
   );
 }
 

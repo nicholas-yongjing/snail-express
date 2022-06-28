@@ -5,7 +5,9 @@ export default function WebPage(props) {
   return (<div
     className="vh-100 d-flex flex-column slate-800">
       <NavigationBar />
-      {children}
+      <div className="slate-800">
+        {children}
+      </div>
     </div>
   );
 }
