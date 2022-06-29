@@ -4,21 +4,6 @@ import {
   query, where, orderBy, serverTimestamp
 } from "firebase/firestore";
 
-async function createDefaultSettings(classRef) {
-  const expRequirements = [];
-  for (let i = 1; i < 101; i++) {
-    expRequirements.push(10 * i * i);
-  }
-
-  setDoc(
-    doc(firestore, "classes", classRef.id, "settings", "levelling"),
-    {
-      expRequirements: expRequirements
-    }
-  )
-
-}
-
 async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   return await addDoc(collection(firestore, "classes"), {
     className: className,
@@ -29,7 +14,7 @@ async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
     tutorIds: [],
     timestamp: serverTimestamp()
   }).then((classSnaphot) =>
-    createDefaultSettings(classSnaphot)
+    _createDefaultSettings(classSnaphot.id)
   ).catch((err) => {
     console.log(err)
     throw new Error(`Error creating class: ${err}`);
@@ -178,6 +163,34 @@ async function getTutors(classId) {
     }).catch((err) => {
       throw new Error(`Error retrieving tutors: ${err}`)
     });
+}
+
+async function _createDefaultSettings(classId) {
+  const expRequirements = [];
+  for (let i = 1; i < 101; i++) {
+    expRequirements.push(10 * i * i);
+  }
+
+  setDoc(
+    doc(firestore, "classes", classId, "settings", "levelling"),
+    {
+      expRequirements: expRequirements
+    }
+  )
+}
+
+async function getLevellingSettings(classId) {
+  console.log('Retrieving Levelling Settings')
+  return getDoc(doc(firestore, 'classes', classId, 'settings', 'levelling'))
+    .then((snapshot) => {
+      return snapshot.data();
+    }).catch((err) => {
+      throw new Error(`Error retrieving levelling settings: ${err}`);
+  });
+}
+
+async function changeLevellingSettings(classId, newSettings) {
+  
 }
 
 async function addForumThread(classId, threadName) {
@@ -368,6 +381,7 @@ async function resetLectureFeedbacks(classId) {
 export {
   createClass, getInvites, acceptInvite, deleteInvite,
   getClasses, getStudents, getTutors,
+  getLevellingSettings,
   addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,
   togglePostEndorsement, togglePostvote,

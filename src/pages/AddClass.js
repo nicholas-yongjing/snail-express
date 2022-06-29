@@ -74,7 +74,6 @@ export default function AddClass() {
                 </Button>
               </Link>
             </div>
-
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
             <Form.Group>
