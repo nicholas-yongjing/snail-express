@@ -9,7 +9,7 @@ export default function SettingsGeneral() {
   ['/settings-forums', 'Forum']];
   return (
     <WebPage>
-      <div className="flex-grow-1 d-flex slate-800">
+      <div className="flex-grow-1 d-flex">
         <SettingsSideBar /> 
         <div className="w-100 p-4 text-slate-200 fs-5">
           <div className="d-flex justify-content-between">

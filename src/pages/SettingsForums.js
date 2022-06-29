@@ -111,7 +111,7 @@ export default function SettingsForums() {
 
   return (
     <WebPage>
-      <div className="flex-grow-1 d-flex slate-800">
+      <div className="flex-grow-1 d-flex">
         <SettingsSideBar />
         <div className="w-100 p-4 text-slate-200 fs-5 d-flex flex-column gap-4">
           <div className="d-flex justify-content-between">
