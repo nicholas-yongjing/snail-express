@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { getLevellingSettings } from "../database";
+import { changeLevellingSettings, getLevellingSettings } from "../database";
 import WebPage from "../components/WebPage";
 import SettingsSideBar from "../components/SettingsSideBar";
 import Button from "../components/Button";
@@ -47,8 +47,15 @@ export default function SettingsLevelling() {
     if (!validateRequirements(newExpRequirements)) {
       setError('Invalid exp requirements! Please enter integers separated by whitespace');
     } else {
-      console.log(newExpRequirements);
-      setMessage('Settings saved')
+      changeLevellingSettings(
+        currentClass.id,
+        {'expRequirements': newExpRequirements}
+      ).then(() => {
+        populateExpRequirements();
+        setMessage('Settings saved')
+      }).catch(() => {
+        setError('Error updating settings. Please try again later');
+      });
     }
     setLoading(false);
   }

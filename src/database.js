@@ -181,7 +181,8 @@ async function _createDefaultSettings(classId) {
 
 async function getLevellingSettings(classId) {
   console.log('Retrieving Levelling Settings')
-  return getDoc(doc(firestore, 'classes', classId, 'settings', 'levelling'))
+  const settingsRef = doc(firestore, 'classes', classId, 'settings', 'levelling');
+  return getDoc(settingsRef)
     .then((snapshot) => {
       return snapshot.data();
     }).catch((err) => {
@@ -190,7 +191,11 @@ async function getLevellingSettings(classId) {
 }
 
 async function changeLevellingSettings(classId, newSettings) {
-  
+  const settingsRef = doc(firestore, 'classes', classId, 'settings', 'levelling');
+  return setDoc(settingsRef, newSettings)
+    .catch((err) => {
+      throw new Error(`Error changing levelling settings: ${err}`);
+    });
 }
 
 async function addForumThread(classId, threadName) {
@@ -381,7 +386,7 @@ async function resetLectureFeedbacks(classId) {
 export {
   createClass, getInvites, acceptInvite, deleteInvite,
   getClasses, getStudents, getTutors,
-  getLevellingSettings,
+  getLevellingSettings, changeLevellingSettings,
   addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,
   togglePostEndorsement, togglePostvote,
