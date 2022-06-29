@@ -1,7 +1,24 @@
 import { firestore } from "./firebase";
-import { doc, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc,
-  query, where, orderBy, serverTimestamp } from "firebase/firestore";
-  
+import {
+  doc, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc,
+  query, where, orderBy, serverTimestamp
+} from "firebase/firestore";
+
+async function createDefaultSettings(classRef) {
+  const expRequirements = [];
+  for (let i = 1; i < 101; i++) {
+    expRequirements.push(10 * i * i);
+  }
+
+  setDoc(
+    doc(firestore, "classes", classRef.id, "settings", "levelling"),
+    {
+      expRequirements: expRequirements
+    }
+  )
+
+}
+
 async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   return await addDoc(collection(firestore, "classes"), {
     className: className,
@@ -11,7 +28,10 @@ async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
     studentIds: [],
     tutorIds: [],
     timestamp: serverTimestamp()
-  }).catch((err) => {
+  }).then((classSnaphot) =>
+    createDefaultSettings(classSnaphot)
+  ).catch((err) => {
+    console.log(err)
     throw new Error(`Error creating class: ${err}`);
   })
 }
@@ -153,7 +173,7 @@ async function getTutors(classId) {
   return getDocs(tutorsRef)
     .then((snapshot) => {
       return (snapshot.docs.map((doc) => {
-          return doc.data();
+        return doc.data();
       }));
     }).catch((err) => {
       throw new Error(`Error retrieving tutors: ${err}`)
@@ -164,9 +184,9 @@ async function addForumThread(classId, threadName) {
   const threadsRef = collection(firestore, "classes", classId, "forumThreads");
   return (
     addDoc(threadsRef, {
-        name: threadName,
-        timestamp: serverTimestamp()
-      })
+      name: threadName,
+      timestamp: serverTimestamp()
+    })
       .catch((err) => {
         throw new Error(`Error adding forum thread: ${err}`);
       })
@@ -321,14 +341,14 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
 }
 
 async function setLectureFeedback(classId, user, reaction) {
-    const feedbackRef = collection(firestore, "classes",
+  const feedbackRef = collection(firestore, "classes",
     classId, "feedback");
-    return setDoc(doc(feedbackRef, user.uid), {
-      name: user.displayName,
-      reaction: reaction,
-    }).catch((err) => {
-      throw new Error (`Error setting lecture feedback: ${err}`);
-    });
+  return setDoc(doc(feedbackRef, user.uid), {
+    name: user.displayName,
+    reaction: reaction,
+  }).catch((err) => {
+    throw new Error(`Error setting lecture feedback: ${err}`);
+  });
 }
 
 async function resetLectureFeedbacks(classId) {

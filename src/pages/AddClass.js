@@ -32,7 +32,9 @@ export default function AddClass() {
     setError('');
     setLoading(true);
     const studentEmails = studentsRef.current.value.trim().split(/\s+/);
-    const tutorEmails = tutorsRef.current.value.trim().split(/\s+/);
+    const tutorEmails = tutorsRef.current.value
+      ? tutorsRef.current.value.trim().split(/\s+/)
+      : [];
     if (!validateEmails(studentEmails)) {
       setError('Invalid student emails! Please enter valid emails separated by whitespace');
     } else if (!validateEmails(tutorEmails)) {
