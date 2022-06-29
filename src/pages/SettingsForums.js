@@ -5,7 +5,7 @@ import { addForumThread, getForumThreads } from "../database";
 import { Alert, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import WebPage from "../components/WebPage";
-import SideBar from "../components/SideBar";
+import SettingsSideBar from "../components/SettingsSideBar";
 import Button from "../components/Button"
 
 export default function SettingsForums() {
@@ -16,8 +16,6 @@ export default function SettingsForums() {
   const [threads, setThreads] = useState([]);
   const formRef = useRef();
   const newThreadNameRef = useRef();
-  const sidebarLinks = [['/settings-general', 'General'],
-  ['/settings-forums', 'Forum']];
 
   useEffect(() => {
     populateThreads()
@@ -114,21 +112,7 @@ export default function SettingsForums() {
   return (
     <WebPage>
       <div className="flex-grow-1 d-flex slate-800">
-        <SideBar>
-          {
-            sidebarLinks.map(([link, text]) => {
-              return (
-                <Link
-                  to={link}
-                  key={text}
-                  className='btn fs-4 w-100 generic-button d-flex justify-content-center'
-                >
-                  {text}
-                </Link>
-              );
-            })
-          }
-        </SideBar>
+        <SettingsSideBar />
         <div className="w-100 p-4 text-slate-200 fs-5 d-flex flex-column gap-4">
           <div className="d-flex justify-content-between">
             <h1>
