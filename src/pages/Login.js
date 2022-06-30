@@ -47,16 +47,16 @@ export default function Login() {
             </div>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form className="d-flex flex-column gap-3" onSubmit={handleSubmit}>
-              <Form.Group id="email">
+              <Form.Group>
                 <Form.Label>Email address</Form.Label>
                 <Form.Control size='lg' type="email" ref={emailRef} required />
               </Form.Group>
-              <Form.Group id="password">
+              <Form.Group>
                 <Form.Label>Password</Form.Label>
                 <Form.Control size="lg" type="password" ref={passwordRef} required />
               </Form.Group>
               <br></br>
-              <Button disabled={loading} className="" type="submit">
+              <Button disabled={loading} type="submit">
                 Login
               </Button>
             </Form>

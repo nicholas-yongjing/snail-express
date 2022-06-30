@@ -384,8 +384,8 @@ async function resetLectureFeedbacks(classId) {
 }
 
 export {
-  createClass, getInvites, acceptInvite, deleteInvite,
-  getClasses, getStudents, getTutors,
+  createClass, getInvites, acceptInvite,
+  deleteInvite, getClasses, getStudents, getTutors,
   getLevellingSettings, changeLevellingSettings,
   addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,

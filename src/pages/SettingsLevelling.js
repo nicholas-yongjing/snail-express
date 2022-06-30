@@ -112,7 +112,6 @@ export default function SettingsLevelling() {
                     ref={expRequirementsRef}
                     required
                     className="generic-field"
-
                     defaultValue={expRequirements.join("\n")}
                   />
                 </Form.Group>
