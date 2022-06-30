@@ -4,12 +4,16 @@ import {
   query, where, orderBy, serverTimestamp
 } from "firebase/firestore";
 
+function _removeDuplicates(arr) {
+  return [... new Set(arr)];
+}
+
 async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   return await addDoc(collection(firestore, "classes"), {
     className: className,
     headTutor: headTutor,
-    studentInvites: studentsEmail,
-    tutorInvites: tutorsEmail,
+    studentInvites: _removeDuplicates(studentsEmail),
+    tutorInvites: _removeDuplicates(tutorsEmail),
     studentIds: [],
     tutorIds: [],
     timestamp: serverTimestamp()
