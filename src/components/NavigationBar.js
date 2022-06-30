@@ -6,11 +6,12 @@ import Button from "./Button";
 
 export default function NavigationBar() {
   const { currentUser, logout } = useAuth();
-  const { currentClass } = useClass();
+  const { currentClass, setCurrentClass } = useClass();
   const navigate = useNavigate();
 
   async function handleLogout() {
     try {
+      setCurrentClass(null);
       await logout();
       navigate("/login", { replace: true });
     } catch {
