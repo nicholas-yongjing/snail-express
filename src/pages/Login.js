@@ -33,8 +33,8 @@ export default function Login() {
         } else {
           setError("Failed to sign in. Please try again later!");
         }
+      setLoading(false);
     });
-    setLoading(false);
   }
 
   return (

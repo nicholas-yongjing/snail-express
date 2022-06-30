@@ -5,10 +5,20 @@ import {
 } from "firebase/firestore";
 
 function _removeDuplicates(arr) {
-  return [... new Set(arr)];
+  return [...(new Set(arr))];
 }
 
-async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
+function validateEmails(emails) {
+    const emailRequirement = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    for (const email of emails) {
+      if (!email.match(emailRequirement)) {
+        return false;
+      }
+    }
+    return true;
+}
+
+  async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   return await addDoc(collection(firestore, "classes"), {
     className: className,
     headTutor: headTutor,
@@ -22,6 +32,27 @@ async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   ).catch((err) => {
     console.log(err)
     throw new Error(`Error creating class: ${err}`);
+  })
+}
+
+async function addInvites(classId, emails, role) {
+  let field;
+  if (role === 'student') {
+    field = 'studentInvites';
+  } else if (role === 'tutor') {
+    field = 'tutorInvites';
+  } else {
+    throw new Error(`Unknown role: ${role}`);
+  }
+
+  const classRef = doc(firestore, "classes", classId);
+  return getDoc(classRef).then((snapshot) => {
+    const newInvites = _removeDuplicates(snapshot.data()[field].concat(emails));
+    const newData = {...snapshot.data()};
+    newData[field] = newInvites;
+    return setDoc(classRef, newData);
+  }).catch((err) => {
+    throw new Error(`Error sending invites: ${err}`);
   })
 }
 
@@ -388,8 +419,9 @@ async function resetLectureFeedbacks(classId) {
 }
 
 export {
-  createClass, getInvites, acceptInvite,
-  deleteInvite, getClasses, getStudents, getTutors,
+  validateEmails, createClass, addInvites,
+  getInvites, acceptInvite, deleteInvite,
+  getClasses, getStudents, getTutors,
   getLevellingSettings, changeLevellingSettings,
   addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,

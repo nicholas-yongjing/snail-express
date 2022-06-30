@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Form, Alert, Container } from "react-bootstrap";
-import { createClass } from "../database";
+import { validateEmails, createClass } from "../database";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
 
@@ -15,16 +15,6 @@ export default function AddClass() {
   const classNameRef = useRef();
   const studentsRef = useRef();
   const tutorsRef = useRef();
-
-  function validateEmails(emails) {
-    const emailRequirement = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    for (const email of emails) {
-      if (!email.match(emailRequirement)) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -52,6 +42,7 @@ export default function AddClass() {
         formRef.current.reset();
         setMessage('Class successfully created!');
       }).catch((err) => {
+        console.log(err)
         setError('Failed to create class, try again later!');
       })
     }

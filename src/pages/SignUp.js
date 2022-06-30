@@ -34,8 +34,8 @@ function SignUp() {
         } else {
           setError("Failed to create an account. Please try again later!");
         }
+        setLoading(false);
       });
-    setLoading(false);
   }
 
   return (
