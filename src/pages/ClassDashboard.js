@@ -35,12 +35,8 @@ export default function ClassDashBoard() {
   async function populateClassUser() {
     if (currentUser.uid && currentClass.id) {
       const role = getRole();
-      if (role === 'headTutor') {
+      if (role === 'headTutor' || role === 'tutor') {
         setClassUser({ id: currentUser.uid, name: currentUser.displayName });
-      } else if (role === 'tutor') {
-        getUser(currentClass.id, 'tutors', currentUser.uid).then((user) => {
-          setClassUser(user);
-        });
       } else if (role === 'student') {
         getUser(currentClass.id, 'students', currentUser.uid).then((user) => {
           setClassUser(user);

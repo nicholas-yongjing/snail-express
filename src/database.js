@@ -1,7 +1,7 @@
 import { firestore } from "./firebase";
 import {
   doc, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc,
-  query, where, orderBy, serverTimestamp, FirestoreError,
+  query, where, orderBy, serverTimestamp, updateDoc, arrayUnion, arrayRemove,
 } from "firebase/firestore";
 
 function _removeDuplicates(arr) {
@@ -58,14 +58,11 @@ async function addInvites(classId, emails, role) {
 
 async function _addUserToClass(classId, user, role) {
   async function addUserToArray() {
-    const field = role === 'student' ? 'studentIds' : 'tutorIds';
     const classDocRef = doc(firestore, "classes", classId);
-    return await getDoc(classDocRef)
-      .then((snapshot) => {
-        const newData = {};
-        newData[field] = [...((snapshot.data())[field]), user.id]
-        setDoc(classDocRef, newData, { merge: true })
-      });
+    const newData = {};
+    const field = role === 'student' ? 'studentIds' : 'tutorIds';
+    newData[field] = arrayUnion(user.id);
+    return await updateDoc(classDocRef, newData);
   }
 
   async function addUserDoc() {
@@ -140,12 +137,9 @@ async function deleteInvite(inviteId, role, email) {
   } else {
     throw new Error(`Invalid role for invitation type: ${role}`)
   }
-  const clss = await getDoc(doc(firestore, "classes", inviteId));
   const newData = {};
-  newData[field] = clss.data()[field].filter((invite) => invite !== email);
-  return await setDoc(doc(firestore, "classes", inviteId),
-    newData,
-    { merge: true });
+  newData[field] = arrayRemove(email);
+  return await updateDoc(doc(firestore, "classes", inviteId), newData);
 }
 
 async function acceptInvite(inviteId, studentId, role, email, name) {
@@ -314,30 +308,32 @@ async function _incrementActivityCount(classId, userId, field) {
     "students", userId);
   return getDoc(studentRef)
     .then((snapshot) => {
-      const oldDailyCounts = snapshot.data().dailyCounts;
-      const newDailyCounts = {...oldDailyCounts};
-      if (oldDailyCounts.lastUpdated.toDate().getDate() !== (new Date().getDate())) {
-        resetDailyCounts(newDailyCounts);
-      }
-      newDailyCounts[field] += 1;
-      newDailyCounts.lastUpdated = serverTimestamp();
-      const newOverallCounts = {...snapshot.data().overallCounts};
-      newOverallCounts[field] += 1;
+      if (snapshot.exists()) {
+        const oldDailyCounts = snapshot.data().dailyCounts;
+        const newDailyCounts = {...oldDailyCounts};
+        if (oldDailyCounts.lastUpdated.toDate().getDate() !== (new Date().getDate())) {
+          resetDailyCounts(newDailyCounts);
+        }
+        newDailyCounts[field] += 1;
+        newDailyCounts.lastUpdated = serverTimestamp();
+        const newOverallCounts = {...snapshot.data().overallCounts};
+        newOverallCounts[field] += 1;
 
-
-      const newStudentData = {
-        ...snapshot.data(),
-        dailyCounts: newDailyCounts,
-        overallCounts: newOverallCounts
-      };
-      const activityLimit = field === 'posts' ? 3 : 1;
-      if (newDailyCounts[field] <= activityLimit) {
-        return _addExp(field, classId, newStudentData);
-      } else {
-        return newStudentData;
+        const newStudentData = {
+          ...snapshot.data(),
+          dailyCounts: newDailyCounts,
+          overallCounts: newOverallCounts
+        };
+        const activityLimit = field === 'posts' ? 3 : 1;
+        if (newDailyCounts[field] <= activityLimit) {
+          return _addExp(field, classId, newStudentData)
+            .then((finalStudentData) => {
+              setDoc(studentRef, finalStudentData);
+            });
+        } else {
+          return setDoc(studentRef, newStudentData);
+        }
       }
-    }).then((newStudentData) => {
-      setDoc(studentRef, newStudentData)
     }).catch((err) => {
       throw new Error(`Error increasing post count: ${err}`);
     });
@@ -445,32 +441,20 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
   async function updateUpvoters(snapshot) {
     const upvoters = snapshot.data().upvoters;
     if (upvoters.includes(userId)) {
-      return await setDoc(docRef,
-        { upvoters: upvoters.filter((id) => id !== userId) },
-        { merge: true }
-      );
+      return await updateDoc(docRef, { upvoters: arrayRemove(userId) });
     } else if (voteType === 'upvote') {
       _incrementActivityCount(classId, userId, 'votes')
-      return await setDoc(docRef,
-        { upvoters: [...upvoters, userId] },
-        { merge: true }
-      );
+      return await updateDoc(docRef, { upvoters: arrayUnion(userId) });
     }
   }
 
   async function updateDownvoters(snapshot) {
     const downvoters = snapshot.data().downvoters;
     if (downvoters.includes(userId)) {
-      return await setDoc(docRef,
-        { downvoters: downvoters.filter((id) => id !== userId) },
-        { merge: true }
-      );
+      return await updateDoc(docRef, { downvoters: arrayRemove(userId) });
     } else if (voteType === 'downvote') {
       _incrementActivityCount(classId, userId, 'votes')
-      return await setDoc(docRef,
-        { downvoters: [...downvoters, userId] },
-        { merge: true }
-      );
+      return await updateDoc(docRef, { downvoters: arrayUnion(userId) });
     }
   }
 
