@@ -1,7 +1,7 @@
 import { firestore } from "./firebase";
 import {
   doc, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc,
-  query, where, orderBy, serverTimestamp
+  query, where, orderBy, serverTimestamp,
 } from "firebase/firestore";
 
 function _removeDuplicates(arr) {
@@ -56,7 +56,7 @@ async function addInvites(classId, emails, role) {
   })
 }
 
-async function addUserToClass(classId, user, role) {
+async function _addUserToClass(classId, user, role) {
   async function addUserToArray() {
     const field = role === 'student' ? 'studentIds' : 'tutorIds';
     const classDocRef = doc(firestore, "classes", classId);
@@ -159,11 +159,28 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
   }
   const snapshot = await getDoc(doc(firestore, "classes", inviteId));
   if (snapshot.data()[field].includes(email)) {
-    return addUserToClass(inviteId,
+    return _addUserToClass(inviteId,
       {
         id: studentId,
         email: email,
-        name: name
+        name: name,
+        level: 0,
+        exp: 0,
+        dailyCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+          lastUpdated: serverTimestamp()
+        },
+        overallCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+        }
       },
       role)
       .then(deleteInvite(inviteId, role, email));
@@ -259,6 +276,53 @@ async function getForumThreads(classId) {
     }));
 }
 
+async function _addExp(expType, classId, studentData) {
+  const settingsRef = doc(firestore, "classes", classId, "settings", "levelling")
+  const expGain = expType === 'posts' ? 50 : 10;
+  studentData.exp += expGain;
+  return getDoc(settingsRef).then((snapshot) => {
+    const expRequirements = snapshot.data().expRequirements;
+    while (studentData.level < expRequirements.length
+      && studentData.exp >= expRequirements[studentData.level]) {
+      studentData.level += 1;
+    }
+    return studentData;
+  })
+}
+
+function resetDailyCounts(dailyCounts) {
+  for (const field of dailyCounts.keys()) {
+    dailyCounts[field] = 0;
+  }
+}
+
+async function _incrementActivityCount(classId, userId, field) {
+  const studentRef = doc(firestore, "classes", classId,
+    "students", userId);
+  return getDoc(studentRef)
+    .then((snapshot) => {
+      const oldDailyCounts = snapshot.data().dailyCounts;
+      const newDailyCounts = {...oldDailyCounts};
+      if (oldDailyCounts.lastUpdated.toDate().getDate() !== (new Date().getDate())) {
+        resetDailyCounts(newDailyCounts);
+      }
+      newDailyCounts[field] += 1;
+      newDailyCounts.lastUpdated = serverTimestamp();
+      const newOverallCounts = {...snapshot.data().overallCounts};
+      newOverallCounts[field] += 1;
+      return _addExp(field, classId, {
+        ...snapshot.data(),
+        dailyCounts: newDailyCounts,
+        overallCounts: newOverallCounts
+      });
+    }).then((newStudentData) => {
+      console.log(newStudentData)
+      setDoc(studentRef, newStudentData)
+    }).catch((err) => {
+      throw new Error(`Error increasing post count: ${err}`);
+    });
+}
+
 async function addForumPost(classId, threadId, postTitle, postBody, author) {
   const post = {
     title: postTitle,
@@ -271,7 +335,10 @@ async function addForumPost(classId, threadId, postTitle, postBody, author) {
   };
   const postsRef = collection(firestore, "classes",
     classId, "forumThreads", threadId, "forumPosts");
-  return await addDoc(postsRef, post).catch((err) => {
+
+  return await addDoc(postsRef, post).then(() => {
+    _incrementActivityCount(classId, author.id, "posts")
+  }).catch((err) => {
     throw new Error(`Error creating post: ${err}`);
   });
 }
@@ -301,7 +368,9 @@ async function addForumReply(classId, threadId, postId, postBody, author) {
   };
   const repliesRef = collection(firestore, "classes", classId,
     "forumThreads", threadId, "forumPosts", postId, "forumReplies");
-  return await addDoc(repliesRef, reply).catch((err) => {
+  return await addDoc(repliesRef, reply).then(() => {
+    _incrementActivityCount(classId, author.id, "posts")
+  }).catch((err) => {
     throw new Error(`Error creating post: ${err}`);
   });
 }
