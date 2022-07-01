@@ -1,7 +1,7 @@
 import { firestore } from "./firebase";
 import {
   doc, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc,
-  query, where, orderBy, serverTimestamp,
+  query, where, orderBy, serverTimestamp, FirestoreError,
 } from "firebase/firestore";
 
 function _removeDuplicates(arr) {
@@ -187,6 +187,19 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
   } else {
     throw new Error('User is not invited to class and cannot accept invite');
   }
+}
+
+async function getUser(classId, userGroup, userId) {
+  console.log("Retrieving user");
+  if (userGroup !== 'students' && userGroup !== 'tutors') {
+    throw new Error(`Invalid user group: ${userGroup}`)
+  }
+  const userRef = doc(firestore, "classes", classId, userGroup, userId);
+  return getDoc(userRef).then((snapshot) => {
+    return snapshot.data();
+  }).catch((err) => {
+    throw new Error(`Error retrieving user: ${err}`);
+  });
 }
 
 async function getStudents(classId) {
@@ -499,7 +512,7 @@ async function resetLectureFeedbacks(classId) {
 export {
   validateEmails, createClass, addInvites,
   getInvites, acceptInvite, deleteInvite,
-  getClasses, getStudents, getTutors,
+  getClasses, getUser, getStudents, getTutors,
   getLevellingSettings, changeLevellingSettings,
   addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,
