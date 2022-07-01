@@ -310,13 +310,20 @@ async function _incrementActivityCount(classId, userId, field) {
       newDailyCounts.lastUpdated = serverTimestamp();
       const newOverallCounts = {...snapshot.data().overallCounts};
       newOverallCounts[field] += 1;
-      return _addExp(field, classId, {
+
+
+      const newStudentData = {
         ...snapshot.data(),
         dailyCounts: newDailyCounts,
         overallCounts: newOverallCounts
-      });
+      };
+      const activityLimit = field === 'posts' ? 3 : 1;
+      if (newDailyCounts[field] <= activityLimit) {
+        return _addExp(field, classId, newStudentData);
+      } else {
+        return newStudentData;
+      }
     }).then((newStudentData) => {
-      console.log(newStudentData)
       setDoc(studentRef, newStudentData)
     }).catch((err) => {
       throw new Error(`Error increasing post count: ${err}`);
@@ -430,6 +437,7 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
         { merge: true }
       );
     } else if (voteType === 'upvote') {
+      _incrementActivityCount(classId, userId, 'votes')
       return await setDoc(docRef,
         { upvoters: [...upvoters, userId] },
         { merge: true }
@@ -445,6 +453,7 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
         { merge: true }
       );
     } else if (voteType === 'downvote') {
+      _incrementActivityCount(classId, userId, 'votes')
       return await setDoc(docRef,
         { downvoters: [...downvoters, userId] },
         { merge: true }
