@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"
-import { Card } from "react-bootstrap";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { getTutors } from "../database";
+import { Card } from "react-bootstrap";
 import WebPage from "../components/WebPage";
-import Button from "../components/Button";
 import Header from "../components/Header";
 
 const Tutors = () => {
@@ -13,11 +11,7 @@ const Tutors = () => {
   const { currentClass } = useClass();
   const [tutorList, setTutorList] = useState([]);
 
-  useEffect(() => {
-    populateTutors();
-  }, []);
-
-  function populateTutors() {
+  const populateTutors = useCallback(() => {
     if (currentUser && currentClass) {
       getTutors(currentClass.id)
         .then((tutors) => {
@@ -26,7 +20,11 @@ const Tutors = () => {
           }));
         })
     }
-  }
+  }, [currentUser, currentClass]);
+
+  useEffect(() => {
+    populateTutors();
+  }, [populateTutors]);
 
   return (
     <>

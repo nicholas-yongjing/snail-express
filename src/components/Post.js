@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Card } from 'react-bootstrap';
+import { useState, useEffect, useCallback } from 'react';
 import { useClass } from '../contexts/ClassContext';
 import { getForumReplies } from '../database';
+import { Card } from 'react-bootstrap';
 import ReactionBar from "../components/ReactionBar";
 import Reply from "../components/Reply"
 
@@ -12,18 +12,18 @@ export default function Post(props) {
   const populatePosts = props.populatePosts;
   const [replies, setReplies] = useState([]);
 
-  useEffect(() => {
-    populateReplies();
-  }, [populatePosts]);
-
-  function populateReplies() {
+  const populateReplies = useCallback(() => {
     if (currentClass && currentThread && currentPost) {
       getForumReplies(currentClass.id, currentThread.id, currentPost.id)
         .then((retrievedReplies) => {
           setReplies(retrievedReplies);
         });
     }
-  }
+  }, [currentClass, currentThread, currentPost]);
+
+  useEffect(() => {
+    populateReplies();
+  }, [populateReplies]);
 
   return (
     <div className='d-flex flex-column fs-5'>

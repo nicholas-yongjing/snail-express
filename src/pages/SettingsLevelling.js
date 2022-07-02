@@ -1,12 +1,11 @@
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useClass } from "../contexts/ClassContext";
 import { changeLevellingSettings, getLevellingSettings } from "../database";
+import { Form, Alert } from "react-bootstrap";
 import WebPage from "../components/WebPage";
 import SettingsSideBar from "../components/SettingsSideBar";
-import Button from "../components/Button";
-import { Form, Alert } from "react-bootstrap";
-import { useEffect, useRef, useState } from "react";
-import { useClass } from "../contexts/ClassContext";
 import Header from "../components/Header";
+import Button from "../components/Button";
 
 export default function SettingsLevelling() {
   const { currentClass } = useClass();
@@ -17,18 +16,18 @@ export default function SettingsLevelling() {
   const formRef = useRef();
   const expRequirementsRef = useRef();
 
-  useEffect(() => {
-    populateExpRequirements();
-  }, []);
-
-  function populateExpRequirements() {
+  const populateExpRequirements = useCallback(() => {
     if (currentClass) {
       getLevellingSettings(currentClass.id).then((requestedSettings) => {
         setExpRequirements(requestedSettings['expRequirements']);
       })
     }
-  }
+  }, [currentClass]);
 
+  useEffect(() => {
+    populateExpRequirements();
+  }, [populateExpRequirements]);
+ 
   function validateRequirements(requirements) {
     for (const exp of requirements) {
       if (isNaN(exp)) {

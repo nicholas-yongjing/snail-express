@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useClass } from "../contexts/ClassContext";
 import { getForumThreads } from "../database";
 import SideBar from "../components/SideBar";
@@ -10,11 +10,7 @@ export default function Forums() {
   const [threads, setThreads] = useState([]);
   const [currentThread, setCurrentThread] = useState(null);
 
-  useEffect(() => {
-    populateThreads()
-  }, [currentClass.id]);
-
-  async function populateThreads() {
+  const populateThreads = useCallback(() => {
     if (currentClass.id) {
       getForumThreads(currentClass.id).then((retrievedThreads) => {
         if (retrievedThreads) {
@@ -22,7 +18,11 @@ export default function Forums() {
         }
       });
     }
-  }
+  }, [currentClass.id])
+
+  useEffect(() => {
+    populateThreads()
+  }, [populateThreads]);
 
   function handleClick(newThread) {
     setCurrentThread(newThread)

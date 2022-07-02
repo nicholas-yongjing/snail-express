@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Form, Alert } from "react-bootstrap";
-import WebPage from "../components/WebPage";
-import Button from "../components/Button";
-import SettingsSideBar from "../components/SettingsSideBar";
 import { useClass } from "../contexts/ClassContext";
 import { addInvites, getStudents, getTutors, validateEmails } from "../database";
+import { Form, Alert } from "react-bootstrap";
+import WebPage from "../components/WebPage";
+import SettingsSideBar from "../components/SettingsSideBar";
 import Header from "../components/Header";
+import Button from "../components/Button";
 
 export default function SettingsGeneral() {
   const { currentClass, changeClassName } = useClass();

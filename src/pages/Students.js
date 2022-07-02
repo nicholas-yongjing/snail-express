@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"
-import { Card } from "react-bootstrap";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { getStudents } from "../database";
+import { Card } from "react-bootstrap";
 import WebPage from "../components/WebPage";
-import Button from "../components/Button";
 import Header from "../components/Header";
 
 const Students = () => {
@@ -13,11 +11,7 @@ const Students = () => {
   const { currentClass } = useClass();
   const [studentList, setStudentList] = useState([]);
 
-  useEffect(() => {
-    populateStudents();
-  }, []);
-
-  function populateStudents() {
+  const populateStudents = useCallback(() => {
     if (currentUser && currentClass) {
       getStudents(currentClass.id)
         .then((students) => {
@@ -26,7 +20,11 @@ const Students = () => {
           }));
         })
     }
-  }
+  }, [currentUser, currentClass]);
+
+  useEffect(() => {
+    populateStudents();
+  }, [populateStudents]);
 
   return (
     <WebPage>

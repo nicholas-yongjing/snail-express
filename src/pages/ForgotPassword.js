@@ -1,18 +1,16 @@
 import { useRef, useState } from "react";
 import { Container, Form, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
-import { Link } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
 import Header from "../components/Header";
 
 export default function ForgotPassword() {
-  const emailRef = useRef();
-
+  const { resetPassword } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const { resetPassword } = useAuth();
+  const emailRef = useRef();
 
   async function handleSubmit(event) {
     event.preventDefault();

@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
-import { getLevellingSettings, getUser } from '../database';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useClass } from '../contexts/ClassContext';
+import { getLevellingSettings, getUser } from '../database';
 import SideBar from "../components/SideBar"
 import WebPage from '../components/WebPage';
-import Button from '../components/Button';
 import Header from '../components/Header';
 
 export default function ClassDashBoard() {
@@ -17,11 +16,15 @@ export default function ClassDashBoard() {
   ['/tutors', 'Tutors'],
   ['/settings-general', 'Settings']];
 
-  useEffect(() => {
-    populateClassUser();
-  }, [currentUser, currentClass]);
+  const populateLevelUpExp = useCallback(() => {
+    if (currentClass) {
+      getLevellingSettings(currentClass.id).then((settings) => {
+        setlevelUpExp(settings.expRequirements)
+      })
+    }
+  }, [currentClass]);
 
-  function getRole() {
+  const getRole = useCallback(() => {
     if (currentUser && currentClass) {
       if (currentClass.headTutor.id === currentUser.uid) {
         return 'headTutor';
@@ -31,9 +34,9 @@ export default function ClassDashBoard() {
         return 'tutor';
       }
     }
-  }
+  }, [currentUser, currentClass]);
 
-  async function populateClassUser() {
+  const populateClassUser = useCallback(() => {
     if (currentUser.uid && currentClass.id) {
       const role = getRole();
       if (role === 'headTutor' || role === 'tutor') {
@@ -46,13 +49,11 @@ export default function ClassDashBoard() {
         });
       }
     }
-  }
+  }, [currentUser.uid, currentUser.displayName, currentClass.id, getRole, populateLevelUpExp]);
 
-  async function populateLevelUpExp() {
-    getLevellingSettings(currentClass.id).then((settings) => {
-      setlevelUpExp(settings.expRequirements)
-    })
-  }
+  useEffect(() => {
+    populateClassUser();
+  }, [populateClassUser]);
 
   function handleClick() {
     setCurrentClass(null);

@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { useAuth } from "../contexts/AuthContext";
-import { Card } from 'react-bootstrap';
 import { deleteInvite, acceptInvite } from '../database';
+import { Card } from 'react-bootstrap';
 
 export default function Invites(props) {
   const { currentUser } = useAuth();
@@ -9,10 +8,6 @@ export default function Invites(props) {
   const role = props.role;
   const populateClasses = props.populateClasses;
   const populateInvites = props.populateInvites;
-
-  useEffect(() => {
-    populateInvites();
-  }, [currentUser.email]);
 
   function handleAccept(inviteId) {
     acceptInvite(inviteId, currentUser.uid, role, currentUser.email, currentUser.displayName)

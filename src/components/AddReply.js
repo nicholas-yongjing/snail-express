@@ -1,8 +1,8 @@
+import { useState, useRef } from "react";
 import { useAuth } from "../contexts/AuthContext"
 import { useClass } from "../contexts/ClassContext";
 import { addForumReply } from "../database";
 import { Alert, Card, Form } from "react-bootstrap";
-import { useState, useRef } from "react";
 import Button from "./Button";
 
 export default function AddReply(props) {

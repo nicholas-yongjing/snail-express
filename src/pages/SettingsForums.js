@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { addForumThread, getForumThreads } from "../database";
 import { Alert, Card, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import SettingsSideBar from "../components/SettingsSideBar";
 import Button from "../components/Button"
@@ -18,20 +17,16 @@ export default function SettingsForums() {
   const formRef = useRef();
   const newThreadNameRef = useRef();
 
-  useEffect(() => {
-    populateThreads()
-  }, [currentClass.id]);
-
-  function isTutor() {
+  const isTutor = useCallback(() => {
     return (
       currentClass && (
         currentClass.headTutor.id === currentUser.uid ||
         currentClass.tutorIds.includes(currentUser.uid)
       )
     );
-  }
+  }, [currentClass, currentUser.uid])
 
-  function populateThreads() {
+  const populateThreads = useCallback(() => {
     if (isTutor() && currentClass.id) {
       getForumThreads(currentClass.id).then((retrievedThreads) => {
         if (retrievedThreads) {
@@ -39,7 +34,11 @@ export default function SettingsForums() {
         }
       });
     }
-  }
+  }, [currentClass.id, isTutor]);
+
+  useEffect(() => {
+    populateThreads()
+  }, [populateThreads]);
 
   async function handleCreateThread(event) {
     event.preventDefault();

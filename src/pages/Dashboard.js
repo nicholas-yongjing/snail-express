@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { getClasses, getInvites } from "../database";
 import WebPage from "../components/WebPage";
@@ -15,13 +15,7 @@ export default function Dashboard() {
   const [tutorInvites, setTutorInvites] = useState([]);
   const [studentInvites, setStudentInvites] = useState([]);
 
-  useEffect(() => {
-    populateClasses('head tutor', setCreatedClasses);
-    populateClasses('tutor', setTeachingClasses);
-    populateClasses('student', setEnrolledClasses);
-  }, [currentUser]);
-
-  function populateClasses(role, setter) {
+  const populateClasses = useCallback((role, setter) => {
     if (currentUser.email) {
       getClasses(currentUser.uid, role).then((classes) => {
         if (classes) {
@@ -31,9 +25,9 @@ export default function Dashboard() {
         }
       })
     }
-  }
+  }, [currentUser.uid, currentUser.email]);
 
-  function populateInvites() {
+  const populateInvites = useCallback(() => {
     if (currentUser.email) {
       for (const [role, setter] of [['tutor', setTutorInvites],
                               ['student', setStudentInvites]]) {
@@ -46,7 +40,14 @@ export default function Dashboard() {
         })
       }
     }
-  }
+  }, [currentUser.email]);
+
+  useEffect(() => {
+    populateClasses('head tutor', setCreatedClasses);
+    populateClasses('tutor', setTeachingClasses);
+    populateClasses('student', setEnrolledClasses);
+    populateInvites();
+  }, [populateClasses, populateInvites]);
 
   return (
     <WebPage>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Container,
@@ -20,10 +20,10 @@ export default function LiveFeedback() {
   const { currentUser } = useAuth();
   const [results, setResults] = useState([0, 0, 0, 0]);
   const [loading, setLoading] = useState(false);
-  const reactions = ["fast", "slow", "confusing", "good"];
   const variants = ["danger", "info", "warning", "success"];
-  const feedbackRef = collection(firestore, "classes",
-    currentClass.id, "feedback");
+  const reactions = useMemo(() => ["fast", "slow", "confusing", "good"], []);
+  const feedbackRef = useMemo(() => collection(firestore, "classes",
+    currentClass.id, "feedback"), [currentClass.id]);
 
   const handleSubmit = (reaction) => {
     setLoading(true);
@@ -39,8 +39,9 @@ export default function LiveFeedback() {
       })
       .then(() => setLoading(false));
   };
-
+ 
   useEffect(() => {
+    console.log('using effect')
     const unsubscribe = onSnapshot(feedbackRef, (snapshot) => {
       const arr = [0, 0, 0, 0];
       snapshot.docs.forEach((doc) => {
@@ -50,7 +51,7 @@ export default function LiveFeedback() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [feedbackRef, reactions]);
 
 
   const sum = (arr) => arr.reduce((x, y) => x + y, 0);

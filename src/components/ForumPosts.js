@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useClass } from '../contexts/ClassContext';
 import { getForumPosts } from "../database";
 import AddPost from '../components/AddPost';
-import Post from "../components/Post"
-import Button from './Button';
 import Header from './Header';
+import Post from "../components/Post"
 
 export default function ForumPosts(props) {
   const { currentClass } = useClass();
@@ -15,17 +13,17 @@ export default function ForumPosts(props) {
   const [posts, setPosts] = useState([]);
   const [expandForm, setExpandForm] = useState(false);
 
-  useEffect(() => {
-    populatePosts();
-  }, [currentUser, currentClass, currentThread]);
-
-  function populatePosts() {
+  const populatePosts = useCallback(() => {
     if (currentUser && currentClass && currentThread) {
       getForumPosts(currentClass.id, currentThread.id).then((retrievedPosts) => {
         setPosts(retrievedPosts);
       });
     }
-  }
+  }, [currentUser, currentClass, currentThread]);
+
+  useEffect(() => {
+    populatePosts();
+  }, [populatePosts]);
 
   return (
     <div className='d-flex flex-column align-items-stretch p-4 w-100 slate-800 text-slate-200'>
