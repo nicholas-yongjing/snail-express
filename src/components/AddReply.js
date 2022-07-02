@@ -61,7 +61,7 @@ export default function AddReply(props) {
             className="generic-field-light"
           />
         </Form.Group>
-        <Button disabled={loading} className="w-25 create-button" type="submit">
+        <Button disabled={loading} className="align-self-start create-button" type="submit">
           Create Reply
         </Button>
       </Form>

@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import SettingsSideBar from "../components/SettingsSideBar";
 import Button from "../components/Button"
+import Header from "../components/Header";
 
 export default function SettingsForums() {
   const { currentUser } = useAuth();
@@ -114,16 +115,12 @@ export default function SettingsForums() {
       <div className="flex-grow-1 d-flex">
         <SettingsSideBar />
         <div className="w-100 p-4 text-slate-200 fs-5 d-flex flex-column gap-4">
-          <div className="d-flex justify-content-between">
-            <h1>
-              Forums Settings
-            </h1>
-            <Link to="/class-dashboard">
-              <Button className="light-button">
-                Back to class dashboard
-              </Button>
-            </Link>
-          </div>
+          <Header
+            headerText="Forums Settings"
+            buttonText="Back to class dashboard"
+            linkTo="/class-dashboard"
+            buttonClass="light-button"
+          />
           {
             isTutor()
               ? getTheadsSettings()

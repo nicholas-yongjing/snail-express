@@ -1,8 +1,9 @@
 import { useAuth } from "../contexts/AuthContext"
 import { useClass } from "../contexts/ClassContext";
 import { addForumPost } from "../database";
-import { Alert, Button, Card, Form } from "react-bootstrap";
+import { Alert, Card, Form } from "react-bootstrap";
 import { useState, useRef } from "react";
+import Button from "./Button";
 
 export default function AddPost(props) {
   const { currentUser } = useAuth();
@@ -50,7 +51,7 @@ export default function AddPost(props) {
         onSubmit={handleSubmit}
         className="p-2 d-flex flex-column gap-3"
       >
-        <Form.Group id="post-title">
+        <Form.Group>
           <Form.Control
             type="text"
             ref={postTitleRef}
@@ -59,7 +60,7 @@ export default function AddPost(props) {
             className="generic-field"
           />
         </Form.Group>
-        <Form.Group id="post-body">
+        <Form.Group>
           <Form.Control
             as="textarea"
             rows={5}
@@ -69,8 +70,7 @@ export default function AddPost(props) {
             className="generic-field"
           />
         </Form.Group>
-        <br></br>
-        <Button disabled={loading} className="w-25 btn btn-success" type="submit">
+        <Button disabled={loading} className="create-button" type="submit">
           Create Post
         </Button>
       </Form>

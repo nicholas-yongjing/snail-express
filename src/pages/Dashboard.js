@@ -6,6 +6,7 @@ import WebPage from "../components/WebPage";
 import Classes from "../components/Classes";
 import Invites from "../components/Invites";
 import { Container } from "react-bootstrap";
+import Header from "../components/Header";
 
 export default function Dashboard() {
   const { currentUser } = useAuth();
@@ -31,20 +32,16 @@ export default function Dashboard() {
 
   return (
     <WebPage>
-      <div className='slate-800 d-flex justify-content-center'>
-        <Container className="m-5 d-flex flex-column gap-4 text-slate-200">
+        <Container fluid='md' className="p-5 d-flex flex-column gap-5 text-slate-200">
           <h1 className="fs-2">
             Welcome back, <strong>{currentUser.displayName}</strong>!
           </h1>
-          <div className="rounded p-4 d-flex flex-column gap-2 slate-700">
-            <div className='d-flex gap-3 justify-content-between'>
-              <h1><strong>My Classes</strong></h1>
-              <Link to="/add-class">
-                <button type="button" className="btn fs-4 generic-button">
-                  Add Class
-                </button>
-              </Link>
-            </div>
+          <div className="rounded p-4 d-flex flex-column gap-4 slate-700">
+            <Header
+              headerText="My Classes"
+              buttonText="AddClass"
+              linkTo="/add-class"
+            />
             <Classes classType={"Created"} classes={createdClasses} />
             <Classes classType={"Teaching"} classes={teachingClasses} />
             <Classes classType={"Enrolled"} classes={enrolledClasses} />
@@ -61,7 +58,6 @@ export default function Dashboard() {
             />
           </div>
         </Container>
-      </div>
     </WebPage>
   );
 }

@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import { Form, Alert } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import { useClass } from "../contexts/ClassContext";
+import Header from "../components/Header";
 
 export default function SettingsLevelling() {
   const { currentClass } = useClass();
@@ -65,16 +66,12 @@ export default function SettingsLevelling() {
       <div className="flex-grow-1 d-flex">
         <SettingsSideBar />
        <div className="w-100 p-4 text-slate-200 fs-5 d-flex flex-column gap-4">
-          <div className="d-flex justify-content-between">
-            <h1>
-              Levelling Settings
-            </h1>
-            <Link to="/class-dashboard">
-              <Button className="light-button">
-                Back to class dashboard
-              </Button>
-            </Link>
-          </div>
+          <Header
+            headerText="Levelling Settings"
+            buttonText="Back to class dashboard"
+            linkTo="/class-dashboard"
+            buttonClass="light-button"
+          />
           <div className="rounded p-4 d-flex flex-column slate-700">
           {error && <Alert variant="danger">{error}</Alert>}
           {message && <Alert variant="success">{message}</Alert>} 

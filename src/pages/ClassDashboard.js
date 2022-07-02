@@ -6,6 +6,7 @@ import { useClass } from '../contexts/ClassContext';
 import SideBar from "../components/SideBar"
 import WebPage from '../components/WebPage';
 import Button from '../components/Button';
+import Header from '../components/Header';
 
 export default function ClassDashBoard() {
   const { currentUser } = useAuth();
@@ -75,31 +76,22 @@ export default function ClassDashBoard() {
             })
           }
         </SideBar>
-        <div className='flex-grow-1'>
-          <div className='d-flex justify-content-between p-4 w-100 '>
-            <span className='fs-1'>
-              <strong>
-                {currentClass ? currentClass.className : ''}
-              </strong>
-            </span>
-            <span>
-              <Link to='/dashboard'>
-                <Button className="light-button" onClick={handleClick}>
-                  Back to dashboard
-                </Button>
-              </Link>
-            </span>
+        <div className='flex-grow-1 p-4'>
+          <Header
+            headerText={currentClass ? currentClass.className : ''}
+            buttonText="Back to dashboard"
+            linkTo="/dashboard"
+            handleClick={handleClick}
+            buttonClass="light-button"
+          />
+          <h2>
+            <strong>{classUser.name}</strong>
+          </h2>
+          <div>
+            {classUser.level !== undefined ? `Level: ${classUser.level}` : ''}
           </div>
-          <div className='p-4'>
-            <h2>
-              <strong>{classUser.name}</strong>
-            </h2>
-            <div>
-              {classUser.level !== undefined ? `Level: ${classUser.level}` : ''}
-            </div>
-            <div>
-              {classUser.exp !== undefined ? `EXP: ${classUser.exp} / ${levelUpExp[classUser.level]}` : ''}
-            </div>
+          <div>
+            {classUser.exp !== undefined ? `EXP: ${classUser.exp} / ${levelUpExp[classUser.level]}` : ''}
           </div>
         </div>
       </div>

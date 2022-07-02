@@ -5,6 +5,7 @@ import { Form, Alert, Container } from "react-bootstrap";
 import { validateEmails, createClass } from "../database";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
+import Header from "../components/Header";
 
 export default function AddClass() {
   const { currentUser } = useAuth();
@@ -51,20 +52,17 @@ export default function AddClass() {
 
   return (
     <WebPage>
-        <Container>
+        <Container fluid="md">
           <Form
             ref={formRef}
             onSubmit={handleSubmit}
             className='rounded fs-4 d-grid m-5 p-4 gap-3 text-slate-200 slate-700 d-flex flex-column'
           >
-            <div className="d-flex justify-content-between">
-              <h1>Create Class</h1>
-              <Link to="/class-dashboard">
-                <Button>
-                  Back to dashboard
-                </Button>
-              </Link>
-            </div>
+            <Header
+              headerText="Create Class"
+              buttonText="Back to dashboard"
+              linkTo="/class-dashboard"
+            />
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
             <Form.Group>
@@ -99,7 +97,7 @@ export default function AddClass() {
             </Form.Group>
             <Button
               disabled={loading}
-              className="w-25 align-self-center create-button"
+              className=" align-self-center create-button"
               type="submit"
             >
               Create Class

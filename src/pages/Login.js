@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
+import Header from "../components/Header";
 
 export default function Login() {
   const emailRef = useRef();
@@ -41,10 +42,11 @@ export default function Login() {
     <WebPage>
         <br />
         <Container className="rounded w-75 p-4 fs-4 d-flex flex-column gap-4 justify-content-center slate-700 text-slate-200">
-            <div className="d-flex justify-content-between">
-              <h1 className="text-center">Login</h1>
-              <Link to="/"><Button>Back</Button></Link>
-            </div>
+            <Header
+              headerText="Login"
+              buttonText="Back"
+              linkTo="/"
+            />
             {error && <Alert variant="danger">{error}</Alert>}
             <Form className="d-flex flex-column gap-3" onSubmit={handleSubmit}>
               <Form.Group>

@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import SettingsSideBar from "../components/SettingsSideBar";
 import { useClass } from "../contexts/ClassContext";
 import { addInvites, validateEmails } from "../database";
+import Header from "../components/Header";
 
 export default function SettingsGeneral() {
   const { currentClass, changeClassName } = useClass();
@@ -59,16 +60,12 @@ export default function SettingsGeneral() {
       <div className="flex-grow-1 d-flex">
         <SettingsSideBar />
         <div className="w-100 p-4 text-slate-200 fs-5 d-flex flex-column gap-4">
-          <div className="d-flex justify-content-between">
-            <h1>
-              General Settings
-            </h1>
-            <Link to="/class-dashboard">
-              <Button className="light-button">
-                Back to class dashboard
-              </Button>
-            </Link>
-          </div>
+          <Header
+            headerText="General Settings"
+            buttonText="Back to class dashboard"
+            linkTo="/class-dashboard"
+            buttonClass="light-button"
+          />
           {error && <Alert variant="danger">{error}</Alert>}
           <Form
             className="p-4 fs-4 d-flex align-items-end gap-2 slate-700"

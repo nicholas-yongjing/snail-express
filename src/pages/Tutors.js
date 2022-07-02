@@ -6,6 +6,7 @@ import { useClass } from "../contexts/ClassContext";
 import { getTutors } from "../database";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
+import Header from "../components/Header";
 
 const Tutors = () => {
   const { currentUser } = useAuth();
@@ -31,14 +32,12 @@ const Tutors = () => {
     <>
       <WebPage>
         <div className="p-4 slate-800 d-flex flex-column align-items-center gap-2">
-          <div className="align-self-stretch text-slate-200 d-flex justify-content-between">
-            <h1>Tutors</h1>
-            <Link to="/class-dashboard">
-              <Button className="align-self-start light-button">
-                Back to class dashboard
-              </Button>
-            </Link>
-          </div>
+        <Header
+          headerText="Tutors"
+          buttonText="Back to class dashboard"
+          linkTo="/class-dashboard"
+          buttonClass="light-button"
+        />
           {currentClass ? (
             tutorList.map((name) => {
               return (

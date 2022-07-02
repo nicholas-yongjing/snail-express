@@ -3,6 +3,7 @@ import { Container, Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import WebPage from "../components/WebPage";
+import Header from "../components/Header";
 
 export default function UpdateProfile() {
   const emailRef = useRef();
@@ -56,7 +57,11 @@ export default function UpdateProfile() {
           <div className="w-100 fs-4" style={{ maxWidth: "500px" }}>
             <Card className="slate-700 text-slate-200">
               <Card.Body>
-                <h2 className="text-center mb-4">Update profile</h2>
+                <Header
+                  headerText="Update Profile"
+                  buttonText="Cancel"
+                  linkTo="/profile"
+                />
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form className="d-flex flex-column gap-2" onSubmit={handleSubmit}>
                   <Form.Group id="email" className="mb-2">
@@ -84,25 +89,20 @@ export default function UpdateProfile() {
                       placeholder="Leave blank to keep the same"
                     />
                   </Form.Group>
-                <Form.Group id='photo' className="mb-3 mt-1">
-                  <Form.Label>Set profile picture</Form.Label>
-                  <Form.Control
-                    type="text"
-                    ref={displayPictureRef}
-                    placeholder="Enter the URL for your profile picture"
-                  />
-                </Form.Group>
-                  <br></br>
+                  <Form.Group id='photo' className="mb-3 mt-1">
+                    <Form.Label>Set profile picture</Form.Label>
+                    <Form.Control
+                      type="text"
+                      ref={displayPictureRef}
+                      placeholder="Enter the URL for your profile picture"
+                    />
+                  </Form.Group>
                   <Button disabled={loading} className="fs-5 generic-button w-100" type="submit">
                     Update profile
                   </Button>
                 </Form>
               </Card.Body>
             </Card>
-            <br></br>
-            <div className="text-center">
-              <Link className="generic-link" to="/profile">Cancel</Link>
-            </div>
           </div>
         </Container>
       </div>
