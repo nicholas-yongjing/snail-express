@@ -125,17 +125,21 @@ A **Class** has a set of features for lecturers, teaching assistants and student
 
 **Liftoff**
 - Ideation: Sketch and design of website
+
 **Milestone 1**
 - User account: Basic account creation, login and logout system
+
 **Milestone 2**
 - Classes: Create classes and send, accept and delete invitations to classes
 - Forums: View and create threads, posts and replies, as well as react to them using upvotes, downvotes and endorsements.
 - Lecture Feedback: Send and view lecture feedback
+
 **Milestone 3**
 - Classes: Complete remaining features - delete users, leave class, delete class
 - Forums: Complete remaining features - edit and delete threads, posts and replies
 - Quizzes: create quiz questions, answers and attend quizzes
 - Gamification: gain exp through using any features of the platform, level up and gain titles
+
 **Splashdown**
 - Additional Forum Features: React to other students’ questions and answers by upvoting or reacting with an emoji. Format text in bold, underline and italics
 - Additional Quiz Features: Add MRQ and open ended questions
@@ -146,9 +150,9 @@ A **Class** has a set of features for lecturers, teaching assistants and student
 **Frontend**: ReactJS
 
 ReactJS is a framework to structure web pages using reusable components such as forum posts, navigation bars and buttons. The Snail Express website layout is shown below
-Public pages are shown in green. Users can access these pages when they are not logged in.
-Authenticated pages are shown in blue. Users can access these pages when they are logged in but do not need to have a specific class selected.
-Class pages are shown in yellow. Users can access these pages when they are logged in and have selected a specific class to interact with.
+- Public pages are shown in green. Users can access these pages when they are not logged in.
+- Authenticated pages are shown in blue. Users can access these pages when they are logged in but do not need to have a specific class selected.
+- Class pages are shown in yellow. Users can access these pages when they are logged in and have selected a specific class to interact with.
 
 **React Component Tree**
 
