@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { Form, Alert } from "react-bootstrap";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
 import SettingsSideBar from "../components/SettingsSideBar";
 import { useClass } from "../contexts/ClassContext";
-import { addInvites, validateEmails } from "../database";
+import { addInvites, getStudents, getTutors, validateEmails } from "../database";
 import Header from "../components/Header";
 
 export default function SettingsGeneral() {
@@ -16,6 +15,29 @@ export default function SettingsGeneral() {
   const classNameRef = useRef();
   const studentFormRef = useRef();
   const studentsRef = useRef();
+
+  async function getStudentEmails() {
+    return getStudents(currentClass.id)
+      .then((students) => students.map(student => student.email));
+  }
+
+  async function getTutorEmails() {
+    return getTutors(currentClass.id)
+      .then((tutors) => tutors.map(tutor => tutor.email));
+  }
+
+  async function getExistingUsers(emails) {
+    return Promise.all([getStudentEmails(), getTutorEmails()])
+      .then(([studentEmails, tutorEmails]) => {
+        return emails.filter((email) => {
+          return (
+            email === currentClass.headTutor.email
+              || (studentEmails.includes(email))
+              || (tutorEmails.includes(email))
+          );
+        });
+      })
+  }
 
   useEffect(() => {
     setClassName(currentClass.className);
@@ -43,16 +65,23 @@ export default function SettingsGeneral() {
       setError('Invalid student emails! Please enter valid emails separated by whitespace');
       setLoading(false);
     } else {
-      addInvites(currentClass.id, emails, 'student')
-        .then(() => {
-          studentFormRef.current.reset();
-        }).catch(() => {
+      getExistingUsers(emails).then((existingEmails) => {
+        if (existingEmails.length > 0) {
+          setError('The following email(s) already belong to existing users in the class: '
+            + existingEmails.join(', '));
+        } else {
+          addInvites(currentClass.id, emails, 'student')
+            .then(() => {
+              studentFormRef.current.reset();
+            })
+        }
+      }).catch((err) => {
+        console.log(err);
         setError("Failed to invite students, please try again later");
       }).finally(() => {
         setLoading(false);
-      })
+      });
     }
-    
   }
 
   return (
@@ -81,7 +110,7 @@ export default function SettingsGeneral() {
                 required
                 defaultValue={className} />
             </Form.Group>
-            <Button  disabled={loading} type="submit">
+            <Button disabled={loading} type="submit">
               Update class name
             </Button>
           </Form>

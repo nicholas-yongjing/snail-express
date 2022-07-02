@@ -22,8 +22,8 @@ async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   return await addDoc(collection(firestore, "classes"), {
     className: className,
     headTutor: headTutor,
-    studentInvites: _removeDuplicates(studentsEmail),
-    tutorInvites: _removeDuplicates(tutorsEmail),
+    studentInvites: _removeDuplicates(studentsEmail).filter((email) => email !== headTutor.email),
+    tutorInvites: _removeDuplicates(tutorsEmail).filter((email) => email !== headTutor.email),
     studentIds: [],
     tutorIds: [],
     timestamp: serverTimestamp()
