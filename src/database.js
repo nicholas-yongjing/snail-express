@@ -9,16 +9,16 @@ function _removeDuplicates(arr) {
 }
 
 function validateEmails(emails) {
-    const emailRequirement = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    for (const email of emails) {
-      if (!email.match(emailRequirement)) {
-        return false;
-      }
+  const emailRequirement = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  for (const email of emails) {
+    if (!email.match(emailRequirement)) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
-  async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
+async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   return await addDoc(collection(firestore, "classes"), {
     className: className,
     headTutor: headTutor,
@@ -48,7 +48,7 @@ async function addInvites(classId, emails, role) {
   const classRef = doc(firestore, "classes", classId);
   return getDoc(classRef).then((snapshot) => {
     const newInvites = _removeDuplicates(snapshot.data()[field].concat(emails));
-    const newData = {...snapshot.data()};
+    const newData = { ...snapshot.data() };
     newData[field] = newInvites;
     return setDoc(classRef, newData);
   }).catch((err) => {
@@ -62,13 +62,13 @@ async function _addUserToClass(classId, user, role) {
     const newData = {};
     const field = role === 'student' ? 'studentIds' : 'tutorIds';
     newData[field] = arrayUnion(user.id);
-    return await updateDoc(classDocRef, newData);
+    return updateDoc(classDocRef, newData);
   }
 
   async function addUserDoc() {
     const field = role === 'student' ? 'students' : 'tutors';
     const userDocRef = doc(firestore, "classes", classId, field, user.id);
-    return await setDoc(userDocRef, user);
+    return setDoc(userDocRef, user);
   }
 
   if (role !== 'student' && role !== 'tutor') {
@@ -139,7 +139,7 @@ async function deleteInvite(inviteId, role, email) {
   }
   const newData = {};
   newData[field] = arrayRemove(email);
-  return await updateDoc(doc(firestore, "classes", inviteId), newData);
+  return updateDoc(doc(firestore, "classes", inviteId), newData);
 }
 
 async function acceptInvite(inviteId, studentId, role, email, name) {
@@ -151,36 +151,38 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
   } else {
     throw new Error(`Invalid role for invitation type: ${role}`)
   }
-  const snapshot = await getDoc(doc(firestore, "classes", inviteId));
-  if (snapshot.data()[field].includes(email)) {
-    return _addUserToClass(inviteId,
-      {
-        id: studentId,
-        email: email,
-        name: name,
-        level: 0,
-        exp: 0,
-        dailyCounts: {
-          posts: 0,
-          votes: 0,
-          feedbacks: 0,
-          quizzesAttended: 0,
-          quizCorrectAnswers: 0,
-          lastUpdated: serverTimestamp()
+  return getDoc(doc(firestore, "classes", inviteId)).then((snapshot) => {
+    if (snapshot.data()[field].includes(email)) {
+      return _addUserToClass(inviteId,
+        {
+          id: studentId,
+          email: email,
+          name: name,
+          level: 0,
+          exp: 0,
+          dailyCounts: {
+            posts: 0,
+            votes: 0,
+            feedbacks: 0,
+            quizzesAttended: 0,
+            quizCorrectAnswers: 0,
+            lastUpdated: serverTimestamp()
+          },
+          overallCounts: {
+            posts: 0,
+            votes: 0,
+            feedbacks: 0,
+            quizzesAttended: 0,
+            quizCorrectAnswers: 0,
+          }
         },
-        overallCounts: {
-          posts: 0,
-          votes: 0,
-          feedbacks: 0,
-          quizzesAttended: 0,
-          quizCorrectAnswers: 0,
-        }
-      },
-      role)
-      .then(deleteInvite(inviteId, role, email));
-  } else {
-    throw new Error('User is not invited to class and cannot accept invite');
-  }
+        role)
+        .then(() => deleteInvite(inviteId, 'student', email))
+        .then(() => deleteInvite(inviteId, 'tutor', email));
+    } else {
+      throw new Error('User is not invited to class and cannot accept invite');
+    }
+  })
 }
 
 async function getUser(classId, userGroup, userId) {
@@ -246,7 +248,7 @@ async function getLevellingSettings(classId) {
       return snapshot.data();
     }).catch((err) => {
       throw new Error(`Error retrieving levelling settings: ${err}`);
-  });
+    });
 }
 
 async function changeLevellingSettings(classId, newSettings) {
@@ -310,13 +312,13 @@ async function _incrementActivityCount(classId, userId, field) {
     .then((snapshot) => {
       if (snapshot.exists()) {
         const oldDailyCounts = snapshot.data().dailyCounts;
-        const newDailyCounts = {...oldDailyCounts};
+        const newDailyCounts = { ...oldDailyCounts };
         if (oldDailyCounts.lastUpdated.toDate().getDate() !== (new Date().getDate())) {
           resetDailyCounts(newDailyCounts);
         }
         newDailyCounts[field] += 1;
         newDailyCounts.lastUpdated = serverTimestamp();
-        const newOverallCounts = {...snapshot.data().overallCounts};
+        const newOverallCounts = { ...snapshot.data().overallCounts };
         newOverallCounts[field] += 1;
 
         const newStudentData = {
