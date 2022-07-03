@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Form, Alert, Container } from "react-bootstrap";
 import { validateEmails, createClass } from "../database";
@@ -35,6 +34,7 @@ export default function AddClass() {
         classNameRef.current.value,
         {
           id: currentUser.uid,
+          name: currentUser.displayName,
           email: currentUser.email
         },
         studentEmails,

@@ -142,20 +142,12 @@ async function deleteInvite(inviteId, role, email) {
   return updateDoc(doc(firestore, "classes", inviteId), newData);
 }
 
-async function acceptInvite(inviteId, studentId, role, email, name) {
-  let field;
-  if (role === 'student') {
-    field = 'studentInvites';
-  } else if (role === 'tutor') {
-    field = 'tutorInvites';
-  } else {
-    throw new Error(`Invalid role for invitation type: ${role}`)
-  }
-  return getDoc(doc(firestore, "classes", inviteId)).then((snapshot) => {
-    if (snapshot.data()[field].includes(email)) {
-      return _addUserToClass(inviteId,
+async function acceptInvite(inviteId, userId, role, email, name) {
+  function createUserData(role) {
+    if (role === 'student') {
+      return (
         {
-          id: studentId,
+          id: userId,
           email: email,
           name: name,
           level: 0,
@@ -175,7 +167,30 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
             quizzesAttended: 0,
             quizCorrectAnswers: 0,
           }
-        },
+        }
+      );
+    } else {
+      return (
+        {
+          id: userId,
+          email: email,
+          name: name,
+        }
+      );
+    }
+  }
+  let field;
+  if (role === 'student') {
+    field = 'studentInvites';
+  } else if (role === 'tutor') {
+    field = 'tutorInvites';
+  } else {
+    throw new Error(`Invalid role for invitation type: ${role}`)
+  }
+  return getDoc(doc(firestore, "classes", inviteId)).then((snapshot) => {
+    if (snapshot.data()[field].includes(email)) {
+      return _addUserToClass(inviteId,
+        createUserData(role),
         role)
         .then(() => deleteInvite(inviteId, 'student', email))
         .then(() => deleteInvite(inviteId, 'tutor', email));

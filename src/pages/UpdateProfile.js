@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Container, Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import Header from "../components/Header";
 
