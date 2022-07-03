@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { addInvites, getStudents, getTutors, validateEmails } from "../database";
 import { Form, Alert } from "react-bootstrap";
@@ -7,7 +8,9 @@ import SettingsSideBar from "../components/SettingsSideBar";
 import Header from "../components/Header";
 import Button from "../components/Button";
 
+
 export default function SettingsGeneral() {
+  const { currentUser } = useAuth();
   const { currentClass, changeClassName } = useClass();
   const [className, setClassName] = useState('');
   const [error, setError] = useState('');
@@ -15,6 +18,15 @@ export default function SettingsGeneral() {
   const classNameRef = useRef();
   const studentFormRef = useRef();
   const studentsRef = useRef();
+
+  const isTutor = useCallback(() => {
+    return (
+      currentClass && (
+        currentClass.headTutor.id === currentUser.uid ||
+        currentClass.tutorIds.includes(currentUser.uid)
+      )
+    );
+  }, [currentClass, currentUser.uid])
 
   async function getStudentEmails() {
     return getStudents(currentClass.id)
@@ -32,8 +44,8 @@ export default function SettingsGeneral() {
         return emails.filter((email) => {
           return (
             email === currentClass.headTutor.email
-              || (studentEmails.includes(email))
-              || (tutorEmails.includes(email))
+            || (studentEmails.includes(email))
+            || (tutorEmails.includes(email))
           );
         });
       })
@@ -95,45 +107,51 @@ export default function SettingsGeneral() {
             linkTo="/class-dashboard"
             buttonClass="light-button"
           />
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form
-            className="p-4 fs-4 d-flex align-items-end gap-2 slate-700"
-            onSubmit={handleUpdateClassName}
-          >
-            <Form.Group>
-              <Form.Label>Class Name</Form.Label>
-              <Form.Control
-                className="generic-field"
-                size='lg'
-                type="text"
-                ref={classNameRef}
-                required
-                defaultValue={className} />
-            </Form.Group>
-            <Button disabled={loading} type="submit">
-              Update class name
-            </Button>
-          </Form>
-          <Form
-            className="p-4 fs-4 d-flex flex-column gap-4 slate-700"
-            onSubmit={handleInviteStudents}
-            ref={studentFormRef}
-          >
-            <Form.Group>
-              <Form.Label>Students</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={5}
-                ref={studentsRef}
-                required
-                placeholder="Enter students email separated by whitespace"
-                className="generic-field"
-              />
-            </Form.Group>
-            <Button className="w-50 align-self-center" disabled={loading} type="submit">
-              Invite students
-            </Button>
-          </Form>
+          {
+            isTutor()
+              ? <>
+                {error && <Alert variant="danger">{error}</Alert>}
+                <Form
+                  className="p-4 fs-4 d-flex align-items-end gap-2 slate-700"
+                  onSubmit={handleUpdateClassName}
+                >
+                  <Form.Group>
+                    <Form.Label>Class Name</Form.Label>
+                    <Form.Control
+                      className="generic-field"
+                      size='lg'
+                      type="text"
+                      ref={classNameRef}
+                      required
+                      defaultValue={className} />
+                  </Form.Group>
+                  <Button disabled={loading} type="submit">
+                    Update class name
+                  </Button>
+                </Form>
+                <Form
+                  className="p-4 fs-4 d-flex flex-column gap-4 slate-700"
+                  onSubmit={handleInviteStudents}
+                  ref={studentFormRef}
+                >
+                  <Form.Group>
+                    <Form.Label>Students</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      ref={studentsRef}
+                      required
+                      placeholder="Enter students email separated by whitespace"
+                      className="generic-field"
+                    />
+                  </Form.Group>
+                  <Button className="w-50 align-self-center" disabled={loading} type="submit">
+                    Invite students
+                  </Button>
+                </Form>
+              </>
+              : "No settings available"
+          }
         </div>
       </div>
     </WebPage>

@@ -58,7 +58,7 @@ export default function Dashboard() {
         <div className="rounded p-4 d-flex flex-column gap-4 slate-700">
           <Header
             headerText="My Classes"
-            buttonText="AddClass"
+            buttonText="Add Class"
             linkTo="/add-class"
           />
           <Classes classType={"Created"} classes={createdClasses} />

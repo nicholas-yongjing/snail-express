@@ -38,7 +38,7 @@ export default function Reply(props) {
           });
       }
     }
-  }, [currentClass, currentThread, currentPost, getUserGroup]);
+  }, [currentClass, currentThread, currentReply, getUserGroup]);
 
   useEffect(() => {
     populateAuthor();
