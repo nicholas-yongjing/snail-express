@@ -31,13 +31,13 @@ export default function Post(props) {
     if (currentClass && currentThread && currentPost) {
       const userGroup = getUserGroup(currentPost.author);
       if (!userGroup) {
-        setAuthor({name: "[Deleted User]"});
+        setAuthor({name: "[Deleted User]", role: 'Unknown role'});
       } else if (userGroup === 'headTutor') {
-        setAuthor(currentClass.headTutor);
+        setAuthor({...currentClass.headTutor, role: 'Head Tutor'});
       } else {
         getUser(currentClass.id, userGroup, currentPost.author.id)
           .then((user) => {
-            setAuthor(user);
+            setAuthor({...user, role: (userGroup === 'students' ? 'Student' : 'Tutor')});
           });
       }
     }
@@ -64,6 +64,7 @@ export default function Post(props) {
           <h3><strong>{currentPost.title}</strong></h3>
           <h4 className='d-flex gap-4'>
             <strong>{author.name}</strong>
+            <span>{author.role}</span>
             <span>{author.level !== undefined ? `Level ${author.level}` : ''}</span>
           </h4>
           <p>{currentPost.body}</p>
