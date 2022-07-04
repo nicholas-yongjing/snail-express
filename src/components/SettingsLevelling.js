@@ -24,12 +24,15 @@ export default function SettingsLevelling(props) {
   }, [populateExpRequirements]);
 
   function validateRequirements(requirements) {
-    for (const exp of requirements) {
-      if (isNaN(exp)) {
+    if (requirements.length !== 100 || isNaN(requirements[0])) {
+      return false;
+    }
+    for (let i = 1; i < 100; i++) {
+      if (isNaN(requirements[i]) || requirements[i - 1] > requirements[i]) {
         return false;
       }
     }
-    return requirements.length === 100;
+    return true;
   }
 
   function handleSubmit(event) {
@@ -40,7 +43,7 @@ export default function SettingsLevelling(props) {
     const newExpRequirements = expRequirementsRef.current.value
       .split(/\s+/).map((num) => parseInt(num));
     if (!validateRequirements(newExpRequirements)) {
-      setError('Invalid exp requirements! Please enter 100 integers separated by whitespace');
+      setError('Invalid exp requirements! Please enter 100 non-decreasing integers separated by whitespace');
     } else {
       changeLevellingSettings(
         currentClass.id,
