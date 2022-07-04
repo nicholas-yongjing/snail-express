@@ -19,26 +19,23 @@ export default function AddReply(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    try {
-      setMessage('');
-      setError('');
-      setLoading(true);
-      addForumReply(currentClass.id,
-        currentThread.id,
-        currentPost.id,
-        postBodyRef.current.value,
-        {
-          id: currentUser.uid,
-          email: currentUser.email
-        });
+    setMessage('');
+    setError('');
+    setLoading(true);
+    addForumReply(currentClass.id,
+      currentThread.id,
+      currentPost.id,
+      postBodyRef.current.value,
+      {
+        id: currentUser.uid,
+        email: currentUser.email
+      }
+    ).then(() => {
       formRef.current.reset();
       setMessage('Reply successfully posted!')
       populatePosts();
-    } catch {
-      setError('Failed to send reply');
-    } finally {
-      setLoading(false);
-    }
+    }).catch(() => setError("Failed to create reply, please try again later"))
+    .finally(() => setLoading(false));
   }
 
   return (

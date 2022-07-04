@@ -250,7 +250,21 @@ async function _createDefaultSettings(classId) {
   setDoc(
     doc(firestore, "classes", classId, "settings", "levelling"),
     {
-      expRequirements: expRequirements
+      expRequirements: expRequirements,
+      limits: {
+        posts: 3,
+        votes: 1,
+        feedbacks: 1,
+        quizzesAttended: 3,
+        quizCorrectAnswers: 3
+      },
+      expGain: {
+        posts: 50,
+        votes: 10,
+        feedbacks: 100,
+        quizzesAttended: 50,
+        quizCorrectAnswers: 10
+      }
     }
   )
 }
@@ -300,56 +314,52 @@ async function getForumThreads(classId) {
     }));
 }
 
-async function _addExp(expType, classId, studentData) {
-  const settingsRef = doc(firestore, "classes", classId, "settings", "levelling")
-  const expGain = expType === 'posts' ? 50 : 10;
-  studentData.exp += expGain;
-  return getDoc(settingsRef).then((snapshot) => {
-    const expRequirements = snapshot.data().expRequirements;
+async function _incrementActivityCount(classId, userId, field) {
+  function resetDailyCounts(dailyCounts) {
+    for (const field of dailyCounts.keys()) {
+      dailyCounts[field] = 0;
+    }
+  }
+
+  function updateData(userData) {
+    const newDailyCounts = { ...userData.dailyCounts };
+    if (newDailyCounts.lastUpdated.toDate().getDate() !== (new Date().getDate())) {
+      resetDailyCounts(newDailyCounts);
+    }
+    newDailyCounts[field] += 1;
+    newDailyCounts.lastUpdated = serverTimestamp();
+
+    const newOverallCounts = { ...userData.overallCounts };
+    newOverallCounts[field] += 1;
+
+    return {
+      ...userData,
+      dailyCounts: newDailyCounts,
+      overallCounts: newOverallCounts
+    };
+  }
+
+  function updateLevel(studentData, expRequirements) {
     while (studentData.level < expRequirements.length
       && studentData.exp >= expRequirements[studentData.level]) {
       studentData.level += 1;
     }
-    return studentData;
-  })
-}
-
-function resetDailyCounts(dailyCounts) {
-  for (const field of dailyCounts.keys()) {
-    dailyCounts[field] = 0;
   }
-}
 
-async function _incrementActivityCount(classId, userId, field) {
   const studentRef = doc(firestore, "classes", classId,
     "students", userId);
   return getDoc(studentRef)
     .then((snapshot) => {
       if (snapshot.exists()) {
-        const oldDailyCounts = snapshot.data().dailyCounts;
-        const newDailyCounts = { ...oldDailyCounts };
-        if (oldDailyCounts.lastUpdated.toDate().getDate() !== (new Date().getDate())) {
-          resetDailyCounts(newDailyCounts);
-        }
-        newDailyCounts[field] += 1;
-        newDailyCounts.lastUpdated = serverTimestamp();
-        const newOverallCounts = { ...snapshot.data().overallCounts };
-        newOverallCounts[field] += 1;
-
-        const newStudentData = {
-          ...snapshot.data(),
-          dailyCounts: newDailyCounts,
-          overallCounts: newOverallCounts
-        };
-        const activityLimit = field === 'posts' ? 3 : 1;
-        if (newDailyCounts[field] <= activityLimit) {
-          return _addExp(field, classId, newStudentData)
-            .then((finalStudentData) => {
-              setDoc(studentRef, finalStudentData);
-            });
-        } else {
-          return setDoc(studentRef, newStudentData);
-        }
+        const newData = updateData(snapshot.data());
+        return getLevellingSettings(classId)
+          .then((settings) => {
+            if (newData.dailyCounts[field] <= settings.limits[field]) {
+              newData.exp += settings.expGain[field]; 
+            }
+            updateLevel(newData, settings.expRequirements);
+            return setDoc(studentRef, newData)
+          });
       }
     }).catch((err) => {
       throw new Error(`Error increasing post count: ${err}`);
@@ -370,7 +380,7 @@ async function addForumPost(classId, threadId, postTitle, postBody, author) {
     classId, "forumThreads", threadId, "forumPosts");
 
   return await addDoc(postsRef, post).then(() => {
-    _incrementActivityCount(classId, author.id, "posts")
+    return _incrementActivityCount(classId, author.id, "posts")
   }).catch((err) => {
     throw new Error(`Error creating post: ${err}`);
   });
@@ -460,8 +470,10 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
     if (upvoters.includes(userId)) {
       return await updateDoc(docRef, { upvoters: arrayRemove(userId) });
     } else if (voteType === 'upvote') {
-      _incrementActivityCount(classId, userId, 'votes')
-      return await updateDoc(docRef, { upvoters: arrayUnion(userId) });
+      return Promise.all(
+        [_incrementActivityCount(classId, userId, 'votes'),
+        updateDoc(docRef, { upvoters: arrayUnion(userId) })]
+      );
     }
   }
 
@@ -470,16 +482,20 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
     if (downvoters.includes(userId)) {
       return await updateDoc(docRef, { downvoters: arrayRemove(userId) });
     } else if (voteType === 'downvote') {
-      _incrementActivityCount(classId, userId, 'votes')
-      return await updateDoc(docRef, { downvoters: arrayUnion(userId) });
+      return Promise.all(
+        [_incrementActivityCount(classId, userId, 'votes'),
+        updateDoc(docRef, { downvoters: arrayUnion(userId) })]
+      );
     }
   }
 
   const docRef = getDocRef();
   return await getDoc(docRef)
     .then((snapshot) => {
-      updateUpvoters(snapshot);
-      updateDownvoters(snapshot);
+      return Promise.all(
+        [updateUpvoters(snapshot),
+        updateDownvoters(snapshot)]
+      );
     }).catch((err) => {
       throw new Error(`Error toggling post endorsement: ${err}`);
     })

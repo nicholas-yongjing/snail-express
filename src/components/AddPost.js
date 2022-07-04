@@ -19,26 +19,23 @@ export default function AddPost(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    try {
-      setMessage('');
-      setError('');
-      setLoading(true);
-      addForumPost(currentClass.id,
-        currentThread.id,
-        postTitleRef.current.value,
-        postBodyRef.current.value,
-        {
-          id: currentUser.uid,
-          email: currentUser.email
-        });
+    setMessage('');
+    setError('');
+    setLoading(true);
+    addForumPost(currentClass.id,
+      currentThread.id,
+      postTitleRef.current.value,
+      postBodyRef.current.value,
+      {
+        id: currentUser.uid,
+        email: currentUser.email
+      }
+    ).then(() => {
       formRef.current.reset();
       setMessage('Post successfully created!')
       populatePosts();
-    } catch {
-      setError('Failed to create post');
-    } finally {
-      setLoading(false);
-    }
+    }).catch(() => setError("Failed to create post, please try again later"))
+    .finally(() => setLoading(false));
   }
 
   return (
