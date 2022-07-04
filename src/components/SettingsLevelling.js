@@ -29,7 +29,7 @@ export default function SettingsLevelling(props) {
         return false;
       }
     }
-    return true;
+    return requirements.length === 100;
   }
 
   function handleSubmit(event) {
@@ -40,7 +40,7 @@ export default function SettingsLevelling(props) {
     const newExpRequirements = expRequirementsRef.current.value
       .split(/\s+/).map((num) => parseInt(num));
     if (!validateRequirements(newExpRequirements)) {
-      setError('Invalid exp requirements! Please enter integers separated by whitespace');
+      setError('Invalid exp requirements! Please enter 100 integers separated by whitespace');
     } else {
       changeLevellingSettings(
         currentClass.id,
@@ -56,12 +56,14 @@ export default function SettingsLevelling(props) {
   }
 
   return (
-    <Form
-      className="rounded p-4 slate-700 d-flex gap-4"
+    <div className="rounded slate-700">
+      <div className="fs-5 m-4">
+        * When EXP requirements change, students' level will only update after gaining EXP. Students' level does not decrease.
+      </div>
+    <Form className="p-4 d-flex gap-4"
       ref={formRef}
       onSubmit={handleSubmit}
     >
-
       <div>
         <div className="fs-4">
           Level
@@ -70,7 +72,7 @@ export default function SettingsLevelling(props) {
         {
           [...Array(100).keys()].map((index) => {
             return (
-              <div key={index} className="text-right">
+              <div key={index} className="fs-5">
                 {index + 1}
               </div>
             );
@@ -103,5 +105,7 @@ export default function SettingsLevelling(props) {
         </Form.Group>
       </div>
     </Form>
-  );
+ 
+    </div>
+ );
 }
