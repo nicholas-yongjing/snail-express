@@ -14,7 +14,7 @@ export default function ClassDashBoard() {
   const [levelUpExp, setlevelUpExp] = useState([]);
   const sidebarLinks = [['/students', 'Students'],
   ['/tutors', 'Tutors'],
-  ['/settings-general', 'Settings']];
+  ['/settings', 'Settings']];
 
   const populateLevelUpExp = useCallback(() => {
     if (currentClass) {
