@@ -282,7 +282,7 @@ async function getLevellingSettings(classId) {
 
 async function changeLevellingSettings(classId, newSettings) {
   const settingsRef = doc(firestore, 'classes', classId, 'settings', 'levelling');
-  return setDoc(settingsRef, newSettings)
+  return updateDoc(settingsRef, newSettings)
     .catch((err) => {
       throw new Error(`Error changing levelling settings: ${err}`);
     });
