@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Form, Alert, Container } from "react-bootstrap";
-import { createClass } from "../database";
+import { validateEmails, createClass } from "../database";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
+import Header from "../components/Header";
 
 export default function AddClass() {
   const { currentUser } = useAuth();
@@ -15,16 +15,6 @@ export default function AddClass() {
   const classNameRef = useRef();
   const studentsRef = useRef();
   const tutorsRef = useRef();
-
-  function validateEmails(emails) {
-    const emailRequirement = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    for (const email of emails) {
-      if (!email.match(emailRequirement)) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -44,6 +34,7 @@ export default function AddClass() {
         classNameRef.current.value,
         {
           id: currentUser.uid,
+          name: currentUser.displayName,
           email: currentUser.email
         },
         studentEmails,
@@ -52,6 +43,7 @@ export default function AddClass() {
         formRef.current.reset();
         setMessage('Class successfully created!');
       }).catch((err) => {
+        console.log(err)
         setError('Failed to create class, try again later!');
       })
     }
@@ -60,20 +52,17 @@ export default function AddClass() {
 
   return (
     <WebPage>
-        <Container>
+        <Container fluid="md">
           <Form
             ref={formRef}
             onSubmit={handleSubmit}
             className='rounded fs-4 d-grid m-5 p-4 gap-3 text-slate-200 slate-700 d-flex flex-column'
           >
-            <div className="d-flex justify-content-between">
-              <h1>Create Class</h1>
-              <Link to="/class-dashboard">
-                <Button>
-                  Back to dashboard
-                </Button>
-              </Link>
-            </div>
+            <Header
+              headerText="Create Class"
+              buttonText="Back to dashboard"
+              linkTo="/class-dashboard"
+            />
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
             <Form.Group>
@@ -108,7 +97,7 @@ export default function AddClass() {
             </Form.Group>
             <Button
               disabled={loading}
-              className="w-25 align-self-center create-button"
+              className=" align-self-center create-button"
               type="submit"
             >
               Create Class

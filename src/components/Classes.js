@@ -1,6 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import { useClass } from '../contexts/ClassContext';
 import { Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 
 export default function Classes(props) {
   const { setCurrentClass } = useClass();

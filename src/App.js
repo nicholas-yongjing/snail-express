@@ -11,10 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import UpdateProfile from "./pages/UpdateProfile";
 import AddClass from "./pages/AddClass";
-import ClassDashboard from "./pages/ClassDashboard"
-import SettingsGeneral from "./pages/SettingsGeneral";
-import SettingsLevelling from "./pages/SettingsLevelling";
-import SettingsForums from "./pages/SettingsForums";
+import ClassDashboard from "./pages/ClassDashboard";
+import Settings from "./pages/Settings";
 import Forums from "./pages/Forums";
 import LiveFeedback from "./pages/LiveFeedback";
 import Students from "./pages/Students";
@@ -51,9 +49,7 @@ function App() {
             <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>} />
             <Route path="/add-class" element={<PrivateRoute><AddClass /></PrivateRoute>} />
             <Route path="/class-dashboard" element={<ClassRoute><ClassDashboard /></ClassRoute>} />
-            <Route path="/settings-general" element={<ClassRoute><SettingsGeneral /></ClassRoute>} />
-            <Route path="/settings-levelling" element={<ClassRoute><SettingsLevelling /></ClassRoute>} />
-            <Route path="/settings-forums" element={<ClassRoute><SettingsForums /></ClassRoute>} />
+            <Route path="/settings" element={<ClassRoute><Settings /></ClassRoute>} />
             <Route path="/forums" element={<ClassRoute><Forums /></ClassRoute>} />
             <Route path="/livefeedback" element={<ClassRoute><LiveFeedback /></ClassRoute>} />
             <Route path="/students" element={<ClassRoute><Students /></ClassRoute>} />

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Button,
-  Card,
+  Container,
   Dropdown,
   DropdownButton,
   ProgressBar,
@@ -13,16 +13,17 @@ import { resetLectureFeedbacks, setLectureFeedback } from "../database";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import WebPage from "../components/WebPage";
+import Header from "../components/Header";
 
-const LiveFeedback = () => {
+export default function LiveFeedback() {
   const { currentClass, isTutor } = useClass();
   const { currentUser } = useAuth();
   const [results, setResults] = useState([0, 0, 0, 0]);
   const [loading, setLoading] = useState(false);
-  const reactions = ["fast", "slow", "confusing", "good"];
   const variants = ["danger", "info", "warning", "success"];
-  const feedbackRef = collection(firestore, "classes",
-    currentClass.id, "feedback");
+  const reactions = useMemo(() => ["fast", "slow", "confusing", "good"], []);
+  const feedbackRef = useMemo(() => collection(firestore, "classes",
+    currentClass.id, "feedback"), [currentClass.id]);
 
   const handleSubmit = (reaction) => {
     setLoading(true);
@@ -34,11 +35,13 @@ const LiveFeedback = () => {
     setLoading(true);
     resetLectureFeedbacks(currentClass.id)
       .then(() => {
-        setResults([0, 0, 0, 0])})
+        setResults([0, 0, 0, 0])
+      })
       .then(() => setLoading(false));
   };
-
+ 
   useEffect(() => {
+    console.log('using effect')
     const unsubscribe = onSnapshot(feedbackRef, (snapshot) => {
       const arr = [0, 0, 0, 0];
       snapshot.docs.forEach((doc) => {
@@ -48,7 +51,7 @@ const LiveFeedback = () => {
     });
 
     return unsubscribe;
-  }, []);
+  }, [feedbackRef, reactions]);
 
 
   const sum = (arr) => arr.reduce((x, y) => x + y, 0);
@@ -56,11 +59,16 @@ const LiveFeedback = () => {
   return (
     <>
       <WebPage>
-        <div className="slate-800">
-          <Card
-            className="d-flex align-items-center mt-5 p-4 slate-600 text-slate-200"
+        <Container fluid='xl'>
+          <Container
+            className="d-flex flex-column gap-4 align-items-center mt-5 p-4 slate-600 "
             style={{ margin: "auto", maxWidth: "900px", minHeight: "350px" }}
           >
+            <Header
+              headerText={currentClass ? currentClass.className : ""}
+              buttonText="Back to class dashboard"
+              linkTo="/class-dashboard"
+            />
             <DropdownButton
               title="Submit feedback"
               className="slate-800 btn-secondary"
@@ -76,7 +84,6 @@ const LiveFeedback = () => {
                 );
               })}
             </DropdownButton>
-            <br></br>
             <div>
               {!loading ? (
                 reactions.map((reaction) => {
@@ -129,12 +136,10 @@ const LiveFeedback = () => {
                 <div></div>
               )}
             </div>
-          </Card>
-          <br></br>
-        </div>
+          </Container>
+        </Container>
+
       </WebPage>
     </>
   );
 };
-
-export default LiveFeedback;

@@ -1,22 +1,17 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"
-import { Card } from "react-bootstrap";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import { getStudents } from "../database";
+import { Card } from "react-bootstrap";
 import WebPage from "../components/WebPage";
-import Button from "../components/Button";
+import Header from "../components/Header";
 
 const Students = () => {
   const { currentUser } = useAuth();
   const { currentClass } = useClass();
   const [studentList, setStudentList] = useState([]);
 
-  useEffect(() => {
-    populateStudents();
-  }, []);
-
-  function populateStudents() {
+  const populateStudents = useCallback(() => {
     if (currentUser && currentClass) {
       getStudents(currentClass.id)
         .then((students) => {
@@ -25,19 +20,21 @@ const Students = () => {
           }));
         })
     }
-  }
+  }, [currentUser, currentClass]);
+
+  useEffect(() => {
+    populateStudents();
+  }, [populateStudents]);
 
   return (
     <WebPage>
       <div className="p-4 slate-800 d-flex flex-column align-items-center gap-2">
-        <div className="align-self-stretch text-slate-200 d-flex justify-content-between">
-          <h1>Students</h1>
-            <Link to="/class-dashboard">
-              <Button className="align-self-start light-button">
-                Back to class dashboard
-              </Button>
-            </Link>
-        </div>
+        <Header
+          headerText="Students"
+          buttonText="Back to class dashboard"
+          linkTo="/class-dashboard"
+          buttonClass="light-button"
+        />
         {currentClass ? (
           studentList.map((email) => {
             return (

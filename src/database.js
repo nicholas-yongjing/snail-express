@@ -1,15 +1,29 @@
 import { firestore } from "./firebase";
 import {
   doc, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc,
-  query, where, orderBy, serverTimestamp
+  query, where, orderBy, serverTimestamp, updateDoc, arrayUnion, arrayRemove,
 } from "firebase/firestore";
+
+function _removeDuplicates(arr) {
+  return [...(new Set(arr))];
+}
+
+function validateEmails(emails) {
+  const emailRequirement = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  for (const email of emails) {
+    if (!email.match(emailRequirement)) {
+      return false;
+    }
+  }
+  return true;
+}
 
 async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   return await addDoc(collection(firestore, "classes"), {
     className: className,
     headTutor: headTutor,
-    studentInvites: studentsEmail,
-    tutorInvites: tutorsEmail,
+    studentInvites: _removeDuplicates(studentsEmail).filter((email) => email !== headTutor.email),
+    tutorInvites: _removeDuplicates(tutorsEmail).filter((email) => email !== headTutor.email),
     studentIds: [],
     tutorIds: [],
     timestamp: serverTimestamp()
@@ -21,22 +35,40 @@ async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
   })
 }
 
-async function addUserToClass(classId, user, role) {
+async function addInvites(classId, emails, role) {
+  let field;
+  if (role === 'student') {
+    field = 'studentInvites';
+  } else if (role === 'tutor') {
+    field = 'tutorInvites';
+  } else {
+    throw new Error(`Unknown role: ${role}`);
+  }
+
+  const classRef = doc(firestore, "classes", classId);
+  return getDoc(classRef).then((snapshot) => {
+    const newInvites = _removeDuplicates(snapshot.data()[field].concat(emails));
+    const newData = { ...snapshot.data() };
+    newData[field] = newInvites;
+    return setDoc(classRef, newData);
+  }).catch((err) => {
+    throw new Error(`Error sending invites: ${err}`);
+  })
+}
+
+async function _addUserToClass(classId, user, role) {
   async function addUserToArray() {
-    const field = role === 'student' ? 'studentIds' : 'tutorIds';
     const classDocRef = doc(firestore, "classes", classId);
-    return await getDoc(classDocRef)
-      .then((snapshot) => {
-        const newData = {};
-        newData[field] = [...((snapshot.data())[field]), user.id]
-        setDoc(classDocRef, newData, { merge: true })
-      });
+    const newData = {};
+    const field = role === 'student' ? 'studentIds' : 'tutorIds';
+    newData[field] = arrayUnion(user.id);
+    return updateDoc(classDocRef, newData);
   }
 
   async function addUserDoc() {
     const field = role === 'student' ? 'students' : 'tutors';
     const userDocRef = doc(firestore, "classes", classId, field, user.id);
-    return await setDoc(userDocRef, user);
+    return setDoc(userDocRef, user);
   }
 
   if (role !== 'student' && role !== 'tutor') {
@@ -105,15 +137,48 @@ async function deleteInvite(inviteId, role, email) {
   } else {
     throw new Error(`Invalid role for invitation type: ${role}`)
   }
-  const clss = await getDoc(doc(firestore, "classes", inviteId));
   const newData = {};
-  newData[field] = clss.data()[field].filter((invite) => invite !== email);
-  return await setDoc(doc(firestore, "classes", inviteId),
-    newData,
-    { merge: true });
+  newData[field] = arrayRemove(email);
+  return updateDoc(doc(firestore, "classes", inviteId), newData);
 }
 
-async function acceptInvite(inviteId, studentId, role, email, name) {
+async function acceptInvite(inviteId, userId, role, email, name) {
+  function createUserData(role) {
+    if (role === 'student') {
+      return (
+        {
+          id: userId,
+          email: email,
+          name: name,
+          level: 0,
+          exp: 0,
+          dailyCounts: {
+            posts: 0,
+            votes: 0,
+            feedbacks: 0,
+            quizzesAttended: 0,
+            quizCorrectAnswers: 0,
+            lastUpdated: serverTimestamp()
+          },
+          overallCounts: {
+            posts: 0,
+            votes: 0,
+            feedbacks: 0,
+            quizzesAttended: 0,
+            quizCorrectAnswers: 0,
+          }
+        }
+      );
+    } else {
+      return (
+        {
+          id: userId,
+          email: email,
+          name: name,
+        }
+      );
+    }
+  }
   let field;
   if (role === 'student') {
     field = 'studentInvites';
@@ -122,19 +187,30 @@ async function acceptInvite(inviteId, studentId, role, email, name) {
   } else {
     throw new Error(`Invalid role for invitation type: ${role}`)
   }
-  const snapshot = await getDoc(doc(firestore, "classes", inviteId));
-  if (snapshot.data()[field].includes(email)) {
-    return addUserToClass(inviteId,
-      {
-        id: studentId,
-        email: email,
-        name: name
-      },
-      role)
-      .then(deleteInvite(inviteId, role, email));
-  } else {
-    throw new Error('User is not invited to class and cannot accept invite');
+  return getDoc(doc(firestore, "classes", inviteId)).then((snapshot) => {
+    if (snapshot.data()[field].includes(email)) {
+      return _addUserToClass(inviteId,
+        createUserData(role),
+        role)
+        .then(() => deleteInvite(inviteId, 'student', email))
+        .then(() => deleteInvite(inviteId, 'tutor', email));
+    } else {
+      throw new Error('User is not invited to class and cannot accept invite');
+    }
+  })
+}
+
+async function getUser(classId, userGroup, userId) {
+  console.log("Retrieving user");
+  if (userGroup !== 'students' && userGroup !== 'tutors') {
+    throw new Error(`Invalid user group: ${userGroup}`)
   }
+  const userRef = doc(firestore, "classes", classId, userGroup, userId);
+  return getDoc(userRef).then((snapshot) => {
+    return snapshot.data();
+  }).catch((err) => {
+    throw new Error(`Error retrieving user: ${err}`);
+  });
 }
 
 async function getStudents(classId) {
@@ -174,7 +250,21 @@ async function _createDefaultSettings(classId) {
   setDoc(
     doc(firestore, "classes", classId, "settings", "levelling"),
     {
-      expRequirements: expRequirements
+      expRequirements: expRequirements,
+      limits: {
+        posts: 3,
+        votes: 1,
+        feedbacks: 1,
+        quizzesAttended: 3,
+        quizCorrectAnswers: 3
+      },
+      expGain: {
+        posts: 50,
+        votes: 10,
+        feedbacks: 100,
+        quizzesAttended: 50,
+        quizCorrectAnswers: 10
+      }
     }
   )
 }
@@ -187,12 +277,12 @@ async function getLevellingSettings(classId) {
       return snapshot.data();
     }).catch((err) => {
       throw new Error(`Error retrieving levelling settings: ${err}`);
-  });
+    });
 }
 
 async function changeLevellingSettings(classId, newSettings) {
   const settingsRef = doc(firestore, 'classes', classId, 'settings', 'levelling');
-  return setDoc(settingsRef, newSettings)
+  return updateDoc(settingsRef, newSettings)
     .catch((err) => {
       throw new Error(`Error changing levelling settings: ${err}`);
     });
@@ -224,6 +314,58 @@ async function getForumThreads(classId) {
     }));
 }
 
+async function _incrementActivityCount(classId, userId, field) {
+  function resetDailyCounts(dailyCounts) {
+    for (const field of dailyCounts.keys()) {
+      dailyCounts[field] = 0;
+    }
+  }
+
+  function updateData(userData) {
+    const newDailyCounts = { ...userData.dailyCounts };
+    if (newDailyCounts.lastUpdated.toDate().getDate() !== (new Date().getDate())) {
+      resetDailyCounts(newDailyCounts);
+    }
+    newDailyCounts[field] += 1;
+    newDailyCounts.lastUpdated = serverTimestamp();
+
+    const newOverallCounts = { ...userData.overallCounts };
+    newOverallCounts[field] += 1;
+
+    return {
+      ...userData,
+      dailyCounts: newDailyCounts,
+      overallCounts: newOverallCounts
+    };
+  }
+
+  function updateLevel(studentData, expRequirements) {
+    while (studentData.level < expRequirements.length
+      && studentData.exp >= expRequirements[studentData.level]) {
+      studentData.level += 1;
+    }
+  }
+
+  const studentRef = doc(firestore, "classes", classId,
+    "students", userId);
+  return getDoc(studentRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const newData = updateData(snapshot.data());
+        return getLevellingSettings(classId)
+          .then((settings) => {
+            if (newData.dailyCounts[field] <= settings.limits[field]) {
+              newData.exp += settings.expGain[field]; 
+            }
+            updateLevel(newData, settings.expRequirements);
+            return setDoc(studentRef, newData)
+          });
+      }
+    }).catch((err) => {
+      throw new Error(`Error increasing post count: ${err}`);
+    });
+}
+
 async function addForumPost(classId, threadId, postTitle, postBody, author) {
   const post = {
     title: postTitle,
@@ -236,7 +378,10 @@ async function addForumPost(classId, threadId, postTitle, postBody, author) {
   };
   const postsRef = collection(firestore, "classes",
     classId, "forumThreads", threadId, "forumPosts");
-  return await addDoc(postsRef, post).catch((err) => {
+
+  return await addDoc(postsRef, post).then(() => {
+    return _incrementActivityCount(classId, author.id, "posts")
+  }).catch((err) => {
     throw new Error(`Error creating post: ${err}`);
   });
 }
@@ -266,7 +411,9 @@ async function addForumReply(classId, threadId, postId, postBody, author) {
   };
   const repliesRef = collection(firestore, "classes", classId,
     "forumThreads", threadId, "forumPosts", postId, "forumReplies");
-  return await addDoc(repliesRef, reply).catch((err) => {
+  return await addDoc(repliesRef, reply).then(() => {
+    _incrementActivityCount(classId, author.id, "posts")
+  }).catch((err) => {
     throw new Error(`Error creating post: ${err}`);
   });
 }
@@ -321,14 +468,11 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
   async function updateUpvoters(snapshot) {
     const upvoters = snapshot.data().upvoters;
     if (upvoters.includes(userId)) {
-      return await setDoc(docRef,
-        { upvoters: upvoters.filter((id) => id !== userId) },
-        { merge: true }
-      );
+      return await updateDoc(docRef, { upvoters: arrayRemove(userId) });
     } else if (voteType === 'upvote') {
-      return await setDoc(docRef,
-        { upvoters: [...upvoters, userId] },
-        { merge: true }
+      return Promise.all(
+        [_incrementActivityCount(classId, userId, 'votes'),
+        updateDoc(docRef, { upvoters: arrayUnion(userId) })]
       );
     }
   }
@@ -336,14 +480,11 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
   async function updateDownvoters(snapshot) {
     const downvoters = snapshot.data().downvoters;
     if (downvoters.includes(userId)) {
-      return await setDoc(docRef,
-        { downvoters: downvoters.filter((id) => id !== userId) },
-        { merge: true }
-      );
+      return await updateDoc(docRef, { downvoters: arrayRemove(userId) });
     } else if (voteType === 'downvote') {
-      return await setDoc(docRef,
-        { downvoters: [...downvoters, userId] },
-        { merge: true }
+      return Promise.all(
+        [_incrementActivityCount(classId, userId, 'votes'),
+        updateDoc(docRef, { downvoters: arrayUnion(userId) })]
       );
     }
   }
@@ -351,8 +492,10 @@ async function togglePostvote(userId, voteType, classId, threadId, postId, reply
   const docRef = getDocRef();
   return await getDoc(docRef)
     .then((snapshot) => {
-      updateUpvoters(snapshot);
-      updateDownvoters(snapshot);
+      return Promise.all(
+        [updateUpvoters(snapshot),
+        updateDownvoters(snapshot)]
+      );
     }).catch((err) => {
       throw new Error(`Error toggling post endorsement: ${err}`);
     })
@@ -384,8 +527,9 @@ async function resetLectureFeedbacks(classId) {
 }
 
 export {
-  createClass, getInvites, acceptInvite, deleteInvite,
-  getClasses, getStudents, getTutors,
+  validateEmails, createClass, addInvites,
+  getInvites, acceptInvite, deleteInvite,
+  getClasses, getUser, getStudents, getTutors,
   getLevellingSettings, changeLevellingSettings,
   addForumThread, getForumThreads, addForumPost,
   getForumPosts, addForumReply, getForumReplies,

@@ -1,17 +1,16 @@
 import { useRef, useState } from "react";
 import { Container, Form, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
-import { Link } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
+import Header from "../components/Header";
 
 export default function ForgotPassword() {
-  const emailRef = useRef();
-
+  const { resetPassword } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const { resetPassword } = useAuth();
+  const emailRef = useRef();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -30,30 +29,25 @@ export default function ForgotPassword() {
 
   return (
     <WebPage>
-        <br />
-        <div
-          className="w-100 d-flex align-items-center justify-content-center"
-        >
-          <div className="w-100 rounded p-4 slate-700 text-slate-200 fs-4" style={{ maxWidth: "500px" }}>
-            <h2 className="text-center mb-4">Password reset</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            {message && <Alert variant="success">{message}</Alert>}
-            <Form onSubmit={handleSubmit}>
-              <Form.Group id="email">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control size="lg" type="email" ref={emailRef} required />
-              </Form.Group>
-              <br></br>
-              <Button disabled={loading} className="w-100" type="submit">
-                Reset password
-              </Button>
-            </Form>
-            <div className="w-100 text-center mt-3">
-              <Link className="generic-link" to="/login">Return to login</Link>
-            </div>
-          </div>
-        </div>
-        <br />
+      <Container fluid='xl' className="p-5 d-flex flex-column gap-5">
+        <Form onSubmit={handleSubmit} className="slate-700 p-4">
+          <Header
+            headerText="Reset Password"
+            buttonText="Return to login"
+            linkTo="/login"
+          />
+          {error && <Alert variant="danger">{error}</Alert>}
+          {message && <Alert variant="success">{message}</Alert>}
+          <Form.Group id="email">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control size="lg" type="email" ref={emailRef} required />
+          </Form.Group>
+          <br></br>
+          <Button disabled={loading} className="w-100" type="submit">
+            Reset password
+          </Button>
+        </Form>
+      </Container>
     </WebPage>
   );
 }

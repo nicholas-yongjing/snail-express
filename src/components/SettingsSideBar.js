@@ -5,7 +5,7 @@ export default function SettingsSideBar() {
   const sidebarLinks = [
     ['/settings-general', 'General'],
     ['/settings-levelling', 'Levelling'],
-    ['/settings-forums', 'Forum']];
+    ['/settings-forums', 'Forums']];
 
   return (
     <SideBar>

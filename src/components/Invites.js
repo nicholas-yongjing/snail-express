@@ -1,33 +1,20 @@
-import { useEffect, useState } from 'react';
 import { useAuth } from "../contexts/AuthContext";
+import { deleteInvite, acceptInvite } from '../database';
 import { Card } from 'react-bootstrap';
-import { getInvites, deleteInvite, acceptInvite } from '../database';
 
 export default function Invites(props) {
   const { currentUser } = useAuth();
-  const [invites, setInvites] = useState([]);
+  const invites = props.invites;
   const role = props.role;
   const populateClasses = props.populateClasses;
-
-  useEffect(() => {
-    populateInvites();
-  }, [currentUser.email]);
-
-  function populateInvites() {
-    if (currentUser.email) {
-      getInvites(currentUser.email, role).then((invites) => {
-        if (invites) {
-          setInvites(invites);
-        }
-      })
-    }
-  }
+  const populateInvites = props.populateInvites;
 
   function handleAccept(inviteId) {
     acceptInvite(inviteId, currentUser.uid, role, currentUser.email, currentUser.displayName)
       .then(() => {
-        populateInvites();
         populateClasses();
+      }).then(() => {
+        populateInvites();
       });
   }
 

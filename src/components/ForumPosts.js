@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useClass } from '../contexts/ClassContext';
 import { getForumPosts } from "../database";
 import AddPost from '../components/AddPost';
+import Header from './Header';
 import Post from "../components/Post"
-import Button from './Button';
 
 export default function ForumPosts(props) {
   const { currentClass } = useClass();
@@ -14,50 +13,37 @@ export default function ForumPosts(props) {
   const [posts, setPosts] = useState([]);
   const [expandForm, setExpandForm] = useState(false);
 
-  useEffect(() => {
-    populatePosts();
-  }, [currentUser, currentClass, currentThread]);
-
-  function populatePosts() {
+  const populatePosts = useCallback(() => {
     if (currentUser && currentClass && currentThread) {
       getForumPosts(currentClass.id, currentThread.id).then((retrievedPosts) => {
         setPosts(retrievedPosts);
       });
     }
-  }
+  }, [currentUser, currentClass, currentThread]);
+
+  useEffect(() => {
+    populatePosts();
+  }, [populatePosts]);
 
   return (
     <div className='d-flex flex-column align-items-stretch p-4 w-100 slate-800 text-slate-200'>
-      <div className='d-flex justify-content-between'>
-        <h1>
-          <strong>
-            {currentClass ? currentClass.className : ''}
-          </strong>
-        </h1>
-        <Link to='/class-dashboard'>
-          <Button className="light-button">
-            Back to dashboard
-          </Button>
-        </Link>
-      </div>
-      <br />
+      <Header
+        headerText={currentClass ? currentClass.className : ''}
+        buttonText="Back to dashboard"
+        linkTo="/class-dashboard"
+        buttonClass="light-button"
+      />
+
       {
-        (currentThread != null)
-          ? <div className='d-flex flex-column gap-2'>
-            <div className='d-flex justify-content-between align-items-center'>
-              <h2>
-                {currentThread.name}
-              </h2>
-              <Button
-                className={expandForm ? 'light-button' : 'create-button'}
-                onClick={() => setExpandForm(!expandForm)}
-              >
-                {expandForm
-                  ? "Hide Form"
-                  : "New Post"
-                }
-              </Button>
-            </div>
+        (currentThread === null)
+          ? <div>No Threads Selected</div>
+          : <div className='d-flex flex-column gap-2'>
+            <Header
+              headerText={currentThread.name}
+              buttonText={expandForm ? "Hide Form" : "New Post"}
+              handleClick={() => setExpandForm(!expandForm)}
+              buttonClass={expandForm ? 'light-button' : 'create-button'}
+            />
             {
               expandForm
                 ? <AddPost
@@ -69,8 +55,6 @@ export default function ForumPosts(props) {
                 />
                 : <></>
             }
-
-            <br />
             {
               (posts.length > 0)
                 ? posts.map((post) => <Post
@@ -82,7 +66,6 @@ export default function ForumPosts(props) {
                 : "No posts in this thread"
             }
           </div>
-          : <div>No Threads Selected</div>
       }
     </div>
   );

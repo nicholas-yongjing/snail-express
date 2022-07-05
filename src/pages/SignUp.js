@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
+import Header from "../components/Header";
 
 function SignUp() {
   const nameRef = useRef();
@@ -34,8 +35,8 @@ function SignUp() {
         } else {
           setError("Failed to create an account. Please try again later!");
         }
+        setLoading(false);
       });
-    setLoading(false);
   }
 
   return (
@@ -44,11 +45,11 @@ function SignUp() {
           <div
             className="p-4 d-flex flex-column w-100 gap-4 slate-700 text-slate-200 fs-4"
           >
-            <div className="d-flex justify-content-between">
-              <h1 className="text-center">Sign Up</h1>
-              <Link to="/"><Button>Back</Button></Link>
-            </div>
-            
+          <Header
+            headerText="Sign Up"
+            buttonText="Back"
+            linkTo="/"
+          />
             {error && <Alert variant="danger">{error}</Alert>}
             <Form
               className="d-flex flex-column gap-4"
