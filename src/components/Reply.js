@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useClass } from "../contexts/ClassContext";
-import { getUser } from "../database";
+import firestore from "../firestore";
 import ReactionBar from "../components/ReactionBar";
 
 export default function Reply(props) {
   const {currentClass} = useClass();
+  const { getUser } = firestore;
   const currentThread = props.thread;
   const currentPost = props.post;
   const currentReply = props.reply;

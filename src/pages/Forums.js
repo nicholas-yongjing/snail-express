@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useClass } from "../contexts/ClassContext";
-import { getForumThreads } from "../database";
+import firestore from '../firestore';
 import SideBar from "../components/SideBar";
 import ForumPosts from "../components/ForumPosts";
 import WebPage from '../components/WebPage';
 
 export default function Forums() {
   const { currentClass } = useClass();
+  const { getForumThreads } = firestore;
   const [threads, setThreads] = useState([]);
   const [currentThread, setCurrentThread] = useState(null);
 

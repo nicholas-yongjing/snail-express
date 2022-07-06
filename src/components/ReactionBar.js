@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
-import { togglePostEndorsement, togglePostvote } from "../database";
+import firestore from "../firestore";
 import AddReply from "./AddReply";
 import Button from "./Button";
 
@@ -13,6 +13,7 @@ export default function ReactionBar(props) {
   const populatePosts = props.populatePosts;
   const { currentUser } = useAuth();
   const { currentClass } = useClass();
+  const { togglePostvote, togglePostEndorsement } = firestore;
   const [endorsed, setEndorsed] = useState(content.endorsed);
   const [currentVote, setCurrentVote] = useState(getInitialVote());
   const [expandForm, setExpandForm] = useState(false);

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
-import { getTutors } from "../database";
+import firestore from "../firestore";
 import { Card } from "react-bootstrap";
 import WebPage from "../components/WebPage";
 import Header from "../components/Header";
@@ -9,6 +9,7 @@ import Header from "../components/Header";
 const Tutors = () => {
   const { currentUser } = useAuth();
   const { currentClass } = useClass();
+  const { getTutors } = firestore;
   const [tutorList, setTutorList] = useState([]);
 
   const populateTutors = useCallback(() => {

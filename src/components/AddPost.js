@@ -1,13 +1,14 @@
 import { useState, useRef } from "react";
+import firestore from "../firestore";
 import { useAuth } from "../contexts/AuthContext"
 import { useClass } from "../contexts/ClassContext";
-import { addForumPost } from "../database";
 import { Alert, Card, Form } from "react-bootstrap";
 import Button from "./Button";
 
 export default function AddPost(props) {
   const { currentUser } = useAuth();
   const { currentClass } = useClass();
+  const { addForumPost } = firestore;
   const currentThread = props.currentThread;
   const populatePosts = props.populatePosts;
   const [error, setError] = useState('');

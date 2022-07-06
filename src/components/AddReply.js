@@ -1,13 +1,14 @@
 import { useState, useRef } from "react";
+import firestore from "../firestore";
 import { useAuth } from "../contexts/AuthContext"
 import { useClass } from "../contexts/ClassContext";
-import { addForumReply } from "../database";
 import { Alert, Card, Form } from "react-bootstrap";
 import Button from "./Button";
 
 export default function AddReply(props) {
   const { currentUser } = useAuth();
   const { currentClass } = useClass();
+  const { addForumReply } = firestore;
   const currentThread = props.currentThread;
   const currentPost = props.currentPost;
   const populatePosts = props.populatePosts;

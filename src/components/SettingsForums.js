@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useClass } from "../contexts/ClassContext";
-import { addForumThread, getForumThreads } from "../database";
+import firestore from "../firestore";
 import { Card, Form } from "react-bootstrap";
 import Button from "../components/Button"
 
 export default function SettingsForums(props) {
   const { currentClass } = useClass();
+  const { addForumThread, getForumThreads } = firestore;
   const { setMessage, setError, loading, setLoading, role } = props;
   const [threads, setThreads] = useState([]);
   const formRef = useRef();
