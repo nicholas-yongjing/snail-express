@@ -17,6 +17,9 @@ import Forums from "./pages/Forums";
 import LiveFeedback from "./pages/LiveFeedback";
 import Students from "./pages/Students";
 import Tutors from "./pages/Tutors";
+import Quiz from "./pages/QuizDashboard";
+import AllQuizzes from "./components/AllQuizzes";
+import CreateQuiz from "./components/CreateQuiz";
 
 
 function PrivateRoute({ children }) {
@@ -54,6 +57,9 @@ function App() {
             <Route path="/livefeedback" element={<ClassRoute><LiveFeedback /></ClassRoute>} />
             <Route path="/students" element={<ClassRoute><Students /></ClassRoute>} />
             <Route path="/tutors" element={<ClassRoute><Tutors/></ClassRoute>} />
+            <Route path="/quiz" element={<ClassRoute><Quiz/></ClassRoute>} />
+            <Route path="/allquizzes" element={<ClassRoute><AllQuizzes/></ClassRoute>} />
+            <Route path="/createquiz" element={<ClassRoute><CreateQuiz/></ClassRoute>} />
           </Routes>
         </ClassProvider>
       </AuthProvider>
