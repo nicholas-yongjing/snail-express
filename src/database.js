@@ -19,6 +19,34 @@ export default function getDatabase(firestore) {
     return true;
   }
 
+  async function _createDefaultSettings(classId) {
+    const expRequirements = [];
+    for (let i = 1; i < 101; i++) {
+      expRequirements.push(10 * i * i);
+    }
+
+    return setDoc(
+      doc(firestore, "classes", classId, "settings", "levelling"),
+      {
+        expRequirements: expRequirements,
+        limits: {
+          posts: 3,
+          votes: 1,
+          feedbacks: 1,
+          quizzesAttended: 3,
+          quizCorrectAnswers: 3
+        },
+        expGain: {
+          posts: 50,
+          votes: 10,
+          feedbacks: 100,
+          quizzesAttended: 50,
+          quizCorrectAnswers: 10
+        }
+      }
+    )
+  }
+
   async function createClass(className, headTutor, studentsEmail, tutorsEmail) {
     return await addDoc(collection(firestore, "classes"), {
       className: className,
@@ -28,11 +56,8 @@ export default function getDatabase(firestore) {
       studentIds: [],
       tutorIds: [],
       timestamp: serverTimestamp()
-    }).then((classSnaphot) =>
-      _createDefaultSettings(classSnaphot.id)
-    ).catch((err) => {
-      console.log(err)
-      throw new Error(`Error creating class: ${err}`);
+    }).then( async (classSnaphot) => {
+      return _createDefaultSettings(classSnaphot.id).then(() => classSnaphot);
     })
   }
 
@@ -242,34 +267,6 @@ export default function getDatabase(firestore) {
       });
   }
 
-  async function _createDefaultSettings(classId) {
-    const expRequirements = [];
-    for (let i = 1; i < 101; i++) {
-      expRequirements.push(10 * i * i);
-    }
-
-    setDoc(
-      doc(firestore, "classes", classId, "settings", "levelling"),
-      {
-        expRequirements: expRequirements,
-        limits: {
-          posts: 3,
-          votes: 1,
-          feedbacks: 1,
-          quizzesAttended: 3,
-          quizCorrectAnswers: 3
-        },
-        expGain: {
-          posts: 50,
-          votes: 10,
-          feedbacks: 100,
-          quizzesAttended: 50,
-          quizCorrectAnswers: 10
-        }
-      }
-    )
-  }
-
   async function getLevellingSettings(classId) {
     console.log('Retrieving Levelling Settings')
     const settingsRef = doc(firestore, 'classes', classId, 'settings', 'levelling');
@@ -380,7 +377,7 @@ export default function getDatabase(firestore) {
     const postsRef = collection(firestore, "classes",
       classId, "forumThreads", threadId, "forumPosts");
 
-    return await addDoc(postsRef, post).then(() => {
+    return addDoc(postsRef, post).then(() => {
       return _incrementActivityCount(classId, author.id, "posts")
     }).catch((err) => {
       throw new Error(`Error creating post: ${err}`);
@@ -412,8 +409,8 @@ export default function getDatabase(firestore) {
     };
     const repliesRef = collection(firestore, "classes", classId,
       "forumThreads", threadId, "forumPosts", postId, "forumReplies");
-    return await addDoc(repliesRef, reply).then(() => {
-      _incrementActivityCount(classId, author.id, "posts")
+    return addDoc(repliesRef, reply).then(() => {
+      return _incrementActivityCount(classId, author.id, "posts")
     }).catch((err) => {
       throw new Error(`Error creating post: ${err}`);
     });
@@ -443,9 +440,9 @@ export default function getDatabase(firestore) {
         "forumThreads", threadId, "forumPosts", postId,
         "forumReplies", replyId);
     }
-    return await getDoc(docRef)
+    return getDoc(docRef)
       .then((snapshot) => {
-        setDoc(docRef,
+        return setDoc(docRef,
           { endorsed: !snapshot.data().endorsed },
           { merge: true }
         )
@@ -469,7 +466,7 @@ export default function getDatabase(firestore) {
     async function updateUpvoters(snapshot) {
       const upvoters = snapshot.data().upvoters;
       if (upvoters.includes(userId)) {
-        return await updateDoc(docRef, { upvoters: arrayRemove(userId) });
+        return updateDoc(docRef, { upvoters: arrayRemove(userId) });
       } else if (voteType === 'upvote') {
         return Promise.all(
           [_incrementActivityCount(classId, userId, 'votes'),
@@ -491,7 +488,7 @@ export default function getDatabase(firestore) {
     }
 
     const docRef = getDocRef();
-    return await getDoc(docRef)
+    return getDoc(docRef)
       .then((snapshot) => {
         return Promise.all(
           [updateUpvoters(snapshot),
@@ -518,9 +515,9 @@ export default function getDatabase(firestore) {
       classId, "feedback");
     return getDocs(feedbackRef)
       .then((snapshot) => {
-        snapshot.docs.forEach((docu) => {
+        return snapshot.docs.forEach((docu) => {
           const docRef = doc(feedbackRef, docu.id);
-          deleteDoc(docRef);
+          return deleteDoc(docRef);
         });
       }).catch((err) => {
         throw new Error(`Error reseting lecture feedbacks: ${err}`);
