@@ -1,7 +1,4 @@
 /**
- * To run the tests, enter into the terminal:
- * firebase emulators:exec --only firestore "npm run test"
- * 
  * Make sure all async functions complete within each test case
  * to avoid errors "spilling over" to other test cases.
  */
@@ -78,6 +75,35 @@ describe('Class creation', () => {
     ));
   });
 
+  it('should not let users add class with missing fields', async () => {
+    const bobDb = testEnv.authenticatedContext('bob').firestore();
+    const firestore = getDatabase(bobDb);
+    return await assertFails(firestore.createClass("CS1234",
+      {
+        name: "bob",
+        id: "bob",
+        //missing email
+      },
+      ["student@email.com"],
+      []
+    ));
+  });
+
+  it('should not let users add class with extra fields', async () => {
+    const bobDb = testEnv.authenticatedContext('bob').firestore();
+    const firestore = getDatabase(bobDb);
+    return await assertFails(firestore.createClass("CS1234",
+      {
+        name: "bob",
+        id: "bob",
+        email: "bob@email.com",
+        extraField: "this field should not be allowed"
+      },
+      ["student@email.com"],
+      []
+    ));
+  });
+
   it('should let authenticated users add class with themselves as head tutor', async () => {
     const aliceDb = testEnv.authenticatedContext('alice').firestore();
     const firestore = getDatabase(aliceDb);
@@ -132,7 +158,7 @@ describe("Class invitation", () => {
     );
 
     return await assertSucceeds(firestore.addInvites(
-      classSnapshot.id, [], "student")
+      classSnapshot.id, ["student2@email.com"], "student")
     );
   });
 
@@ -170,7 +196,7 @@ describe("Class invitation", () => {
       ["charlie@email.com"],
       ["tutor@email.com"]
     ).then(async () => {
-      const charlieFirestore = testEnv.authenticatedContext('charlie', {email: "charlie@email.com"}).firestore();
+      const charlieFirestore = testEnv.authenticatedContext('charlie', { email: "charlie@email.com" }).firestore();
       const charlieDatabase = getDatabase(charlieFirestore);
       const invites = await charlieDatabase.getInvites("charlie@email.com", "student");
       expect(invites.length).toBe(1);
@@ -194,7 +220,7 @@ describe("Class invitation", () => {
       ["charlie@email.com"],
       ["denny@email.com", "ella@gmail.com"]
     ).then(async () => {
-      const dennyFirestore = testEnv.authenticatedContext('denny', {email: "denny@email.com"}).firestore();
+      const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
       const dennyDatabase = getDatabase(dennyFirestore);
       const invites = await dennyDatabase.getInvites("denny@email.com", "tutor");
       expect(invites.length).toBe(1);
@@ -214,9 +240,59 @@ describe("Class invitation", () => {
       ["charlie@email.com"],
       ["denny@email.com", "ella@gmail.com"]
     ).then(async () => {
-      const dennyFirestore = testEnv.authenticatedContext('denny', {email: "denny@email.com"}).firestore();
+      const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
       const dennyDatabase = getDatabase(dennyFirestore);
       return await assertFails(dennyDatabase.getInvites("ella@gmail.com", "tutor"));
+    });
+  });
+
+  it('should let users delete student invites', async () => {
+    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
+    const aliceDb = getDatabase(aliceFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDatabase = getDatabase(dennyFirestore);
+
+    return aliceDb.createClass("CS1234",
+      {
+        name: "alice tan",
+        id: "alice",
+        email: "alicetan@email.com"
+      },
+      ["denny@email.com"],
+      []
+    ).then(() => {
+      return dennyDatabase.getInvites("denny@email.com", "student");
+    }).then((invites) => {
+      return dennyDatabase.deleteInvite(invites[0].id, "student", "denny@email.com");
+    }).then(() => {
+      return dennyDatabase.getInvites("denny@email.com", "student");
+    }).then((invites) => {
+      expect(invites.length).toBe(0);
+    });
+  });
+
+  it('should let users delete tutor invites', async () => {
+    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
+    const aliceDb = getDatabase(aliceFirestore);
+    const ginaFirestore = testEnv.authenticatedContext('gina', { email: "gina@gmail.com" }).firestore();
+    const ginaDatabase = getDatabase(ginaFirestore);
+
+    return aliceDb.createClass("CS1234",
+      {
+        name: "alice tan",
+        id: "alice",
+        email: "alicetan@email.com"
+      },
+      ["denny@email.com"],
+      ["gina@gmail.com"]
+    ).then(() => {
+      return ginaDatabase.getInvites("gina@gmail.com", "tutor");
+    }).then((invites) => {
+      return ginaDatabase.deleteInvite(invites[0].id, "tutor", "gina@gmail.com");
+    }).then(() => {
+      return ginaDatabase.getInvites("gina@gmail.com", "tutor");
+    }).then((invites) => {
+      expect(invites.length).toBe(0);
     });
   });
 })
