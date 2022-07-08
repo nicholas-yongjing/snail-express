@@ -77,8 +77,6 @@ export default function getDatabase(firestore) {
       const newData = { ...snapshot.data() };
       newData[field] = newInvites;
       return setDoc(classRef, newData);
-    }).catch((err) => {
-      throw new Error(`Error sending invites: ${err}`);
     })
   }
 
@@ -100,11 +98,8 @@ export default function getDatabase(firestore) {
     if (role !== 'student' && role !== 'tutor') {
       throw new Error(`Invalid user role: ${role}`);
     }
-    return addUserToArray()
-      .then(() => addUserDoc())
-      .catch((err) => {
-        throw new Error(`Error adding user to class: ${err}`);
-      });
+    return (addUserToArray()
+      .then(() => addUserDoc()));
   }
 
   async function getClasses(userId, role) {
@@ -127,8 +122,6 @@ export default function getDatabase(firestore) {
         return querySnapshot.docs.map((docSnapshot) => {
           return { ...(docSnapshot.data()), id: docSnapshot.id };
         });
-      }).catch((err) => {
-        throw new Error(`Error retrieving classes: ${err}`)
       }));
   }
 
@@ -149,8 +142,6 @@ export default function getDatabase(firestore) {
         return querySnapshot.docs.map((docSnapshot) => {
           return { ...(docSnapshot.data()), id: docSnapshot.id };
         });
-      }).catch((err) => {
-        throw new Error(`Error retrieving invites: ${err}`)
       }));
   }
 
@@ -234,8 +225,6 @@ export default function getDatabase(firestore) {
     const userRef = doc(firestore, "classes", classId, userGroup, userId);
     return getDoc(userRef).then((snapshot) => {
       return snapshot.data();
-    }).catch((err) => {
-      throw new Error(`Error retrieving user: ${err}`);
     });
   }
 
@@ -248,8 +237,6 @@ export default function getDatabase(firestore) {
         return (snapshot.docs.map((doc) => {
           return doc.data();
         }));
-      }).catch((err) => {
-        throw new Error(`Error retrieving students: ${err}`)
       });
   }
 
@@ -262,8 +249,6 @@ export default function getDatabase(firestore) {
         return (snapshot.docs.map((doc) => {
           return doc.data();
         }));
-      }).catch((err) => {
-        throw new Error(`Error retrieving tutors: ${err}`)
       });
   }
 
@@ -273,17 +258,12 @@ export default function getDatabase(firestore) {
     return getDoc(settingsRef)
       .then((snapshot) => {
         return snapshot.data();
-      }).catch((err) => {
-        throw new Error(`Error retrieving levelling settings: ${err}`);
       });
   }
 
   async function changeLevellingSettings(classId, newSettings) {
     const settingsRef = doc(firestore, 'classes', classId, 'settings', 'levelling');
-    return updateDoc(settingsRef, newSettings)
-      .catch((err) => {
-        throw new Error(`Error changing levelling settings: ${err}`);
-      });
+    return updateDoc(settingsRef, newSettings);
   }
 
   async function addForumThread(classId, threadName) {
@@ -293,9 +273,6 @@ export default function getDatabase(firestore) {
         name: threadName,
         timestamp: serverTimestamp()
       })
-        .catch((err) => {
-          throw new Error(`Error adding forum thread: ${err}`);
-        })
     );
   }
 
@@ -307,9 +284,8 @@ export default function getDatabase(firestore) {
         return querySnapshot.docs.map((docSnapshot) => {
           return { ...(docSnapshot.data()), id: docSnapshot.id };
         });
-      }).catch((err) => {
-        throw new Error(`Error retrieving forum threads: ${err}`)
-      }));
+      })
+    );
   }
 
   async function _incrementActivityCount(classId, userId, field) {
@@ -359,8 +335,6 @@ export default function getDatabase(firestore) {
               return setDoc(studentRef, newData)
             });
         }
-      }).catch((err) => {
-        throw new Error(`Error increasing post count: ${err}`);
       });
   }
 
@@ -379,8 +353,6 @@ export default function getDatabase(firestore) {
 
     return addDoc(postsRef, post).then(() => {
       return _incrementActivityCount(classId, author.id, "posts")
-    }).catch((err) => {
-      throw new Error(`Error creating post: ${err}`);
     });
   }
 
@@ -393,9 +365,8 @@ export default function getDatabase(firestore) {
         return querySnapshot.docs.map((docSnapshot) => {
           return { ...(docSnapshot.data()), id: docSnapshot.id };
         });
-      }).catch((err) => {
-        console.log(`Error retrieving forum posts: ${err}`)
-      }));
+      })
+    );
   }
 
   async function addForumReply(classId, threadId, postId, postBody, author) {
@@ -411,8 +382,6 @@ export default function getDatabase(firestore) {
       "forumThreads", threadId, "forumPosts", postId, "forumReplies");
     return addDoc(repliesRef, reply).then(() => {
       return _incrementActivityCount(classId, author.id, "posts")
-    }).catch((err) => {
-      throw new Error(`Error creating post: ${err}`);
     });
   }
 
@@ -425,9 +394,8 @@ export default function getDatabase(firestore) {
         return querySnapshot.docs.map((docSnapshot) => {
           return { ...(docSnapshot.data()), id: docSnapshot.id };
         });
-      }).catch((err) => {
-        throw new Error(`Error retrieving forum replies: ${err}`)
-      }));
+      })
+    );
   }
 
   async function togglePostEndorsement(classId, threadId, postId, replyId = null) {
@@ -446,9 +414,7 @@ export default function getDatabase(firestore) {
           { endorsed: !snapshot.data().endorsed },
           { merge: true }
         )
-      }).catch((err) => {
-        throw new Error(`Error toggling post endorsement: ${err}`);
-      })
+      });
   }
 
   async function togglePostvote(userId, voteType, classId, threadId, postId, replyId = null) {
@@ -494,9 +460,7 @@ export default function getDatabase(firestore) {
           [updateUpvoters(snapshot),
           updateDownvoters(snapshot)]
         );
-      }).catch((err) => {
-        throw new Error(`Error toggling post endorsement: ${err}`);
-      })
+      });
   }
 
   async function setLectureFeedback(classId, user, reaction) {
@@ -505,8 +469,6 @@ export default function getDatabase(firestore) {
     return setDoc(doc(feedbackRef, user.uid), {
       name: user.displayName,
       reaction: reaction,
-    }).catch((err) => {
-      throw new Error(`Error setting lecture feedback: ${err}`);
     });
   }
 
@@ -519,8 +481,6 @@ export default function getDatabase(firestore) {
           const docRef = doc(feedbackRef, docu.id);
           return deleteDoc(docRef);
         });
-      }).catch((err) => {
-        throw new Error(`Error reseting lecture feedbacks: ${err}`);
       });
   }
 
