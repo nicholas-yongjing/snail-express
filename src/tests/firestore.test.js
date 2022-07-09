@@ -48,9 +48,9 @@ beforeEach(async () => {
 
 describe('Class creation', () => {
   it('should not let unauthenticated users add class', async () => {
-    const unauthedDb = testEnv.unauthenticatedContext().firestore();
-    const firestore = getDatabase(unauthedDb);
-    return await assertFails(firestore.createClass("CS1234",
+    const unauthedFirestore = testEnv.unauthenticatedContext().firestore();
+    const db = getDatabase(unauthedFirestore);
+    return await assertFails(db.createClass("CS1234",
       {
         name: "unknown user",
         id: 123,
@@ -62,9 +62,9 @@ describe('Class creation', () => {
   });
 
   it('should not let users add class with someone else as head tutor', async () => {
-    const aliceDb = testEnv.authenticatedContext('alice').firestore();
-    const firestore = getDatabase(aliceDb);
-    return await assertFails(firestore.createClass("CS1234",
+    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
+    const db = getDatabase(aliceFirestore);
+    return await assertFails(db.createClass("CS1234",
       {
         name: "bob",
         id: "bob",
@@ -76,9 +76,9 @@ describe('Class creation', () => {
   });
 
   it('should not let users add class with missing fields', async () => {
-    const bobDb = testEnv.authenticatedContext('bob').firestore();
-    const firestore = getDatabase(bobDb);
-    return await assertFails(firestore.createClass("CS1234",
+    const bobFirestore = testEnv.authenticatedContext('bob').firestore();
+    const db = getDatabase(bobFirestore);
+    return await assertFails(db.createClass("CS1234",
       {
         name: "bob",
         id: "bob",
@@ -90,9 +90,9 @@ describe('Class creation', () => {
   });
 
   it('should not let users add class with extra fields', async () => {
-    const bobDb = testEnv.authenticatedContext('bob').firestore();
-    const firestore = getDatabase(bobDb);
-    return await assertFails(firestore.createClass("CS1234",
+    const bobFirestore = testEnv.authenticatedContext('bob').firestore();
+    const db = getDatabase(bobFirestore);
+    return await assertFails(db.createClass("CS1234",
       {
         name: "bob",
         id: "bob",
@@ -105,9 +105,9 @@ describe('Class creation', () => {
   });
 
   it('should let authenticated users add class with themselves as head tutor', async () => {
-    const aliceDb = testEnv.authenticatedContext('alice').firestore();
-    const firestore = getDatabase(aliceDb);
-    return await assertSucceeds(firestore.createClass("CS1234",
+    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
+    const db = getDatabase(aliceFirestore);
+    return await assertSucceeds(db.createClass("CS1234",
       {
         name: "alice tan",
         id: "alice",
@@ -119,9 +119,9 @@ describe('Class creation', () => {
   });
 
   it('should let users add multiple classes', async () => {
-    const aliceDb = testEnv.authenticatedContext('alice').firestore();
-    const firestore = getDatabase(aliceDb);
-    const class1 = await assertSucceeds(firestore.createClass("CS1234",
+    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
+    const db = getDatabase(aliceFirestore);
+    const class1 = await assertSucceeds(db.createClass("CS1234",
       {
         name: "alice tan",
         id: "alice",
@@ -130,7 +130,7 @@ describe('Class creation', () => {
       ["student@email.com"],
       []
     ));
-    const class2 = await assertSucceeds(firestore.createClass("CS2234",
+    const class2 = await assertSucceeds(db.createClass("CS2234",
       {
         name: "alice tan",
         id: "alice",
@@ -145,9 +145,9 @@ describe('Class creation', () => {
 
 describe("Class invitation", () => {
   it('should let head tutors invite students', async () => {
-    const aliceDb = testEnv.authenticatedContext('alice').firestore();
-    const firestore = getDatabase(aliceDb);
-    const classSnapshot = await firestore.createClass("CS1234",
+    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
+    const db = getDatabase(aliceFirestore);
+    const classSnapshot = await db.createClass("CS1234",
       {
         name: "alice tan",
         id: "alice",
@@ -157,15 +157,15 @@ describe("Class invitation", () => {
       []
     );
 
-    return await assertSucceeds(firestore.addInvites(
+    return await assertSucceeds(db.addInvites(
       classSnapshot.id, ["student2@email.com"], "student")
     );
   });
 
   it("should let users retrieve created class", async () => {
-    const aliceDb = testEnv.authenticatedContext('alice').firestore();
-    const firestore = getDatabase(aliceDb);
-    return firestore.createClass("MA2234",
+    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
+    const db = getDatabase(aliceFirestore);
+    return db.createClass("MA2234",
       {
         name: "alice tan",
         id: "alice",
@@ -174,7 +174,7 @@ describe("Class invitation", () => {
       ["bob@email.com"],
       []
     ).then(async () => {
-      const classes = await firestore.getClasses("alice", "head tutor");
+      const classes = await db.getClasses("alice", "head tutor");
       expect(classes.length).toBe(1);
       expect(classes[0].className).toBe("MA2234");
     });
@@ -186,8 +186,8 @@ describe("Class invitation", () => {
      *  when one tries to retrieve invites for other emails
      */
     const bobFirestore = testEnv.authenticatedContext('bob').firestore();
-    const bobDatabase = getDatabase(bobFirestore);
-    await bobDatabase.createClass("CS5656",
+    const bobDb = getDatabase(bobFirestore);
+    await bobDb.createClass("CS5656",
       {
         name: "bobby lim",
         id: "bob",
@@ -197,8 +197,8 @@ describe("Class invitation", () => {
       ["tutor@email.com"]
     ).then(async () => {
       const charlieFirestore = testEnv.authenticatedContext('charlie', { email: "charlie@email.com" }).firestore();
-      const charlieDatabase = getDatabase(charlieFirestore);
-      const invites = await charlieDatabase.getInvites("charlie@email.com", "student");
+      const charlieDb = getDatabase(charlieFirestore);
+      const invites = await charlieDb.getInvites("charlie@email.com", "student");
       expect(invites.length).toBe(1);
       expect(invites[0].className).toBe("CS5656");
     });
@@ -210,8 +210,8 @@ describe("Class invitation", () => {
      *  when one tries to retrieve invites for other emails
      */
     const bobFirestore = testEnv.authenticatedContext('bob').firestore();
-    const bobDatabase = getDatabase(bobFirestore);
-    await bobDatabase.createClass("CS1526",
+    const bobDb = getDatabase(bobFirestore);
+    await bobDb.createClass("CS1526",
       {
         name: "bobby lim",
         id: "bob",
@@ -221,8 +221,8 @@ describe("Class invitation", () => {
       ["denny@email.com", "ella@gmail.com"]
     ).then(async () => {
       const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
-      const dennyDatabase = getDatabase(dennyFirestore);
-      const invites = await dennyDatabase.getInvites("denny@email.com", "tutor");
+      const dennyDb = getDatabase(dennyFirestore);
+      const invites = await dennyDb.getInvites("denny@email.com", "tutor");
       expect(invites.length).toBe(1);
       expect(invites[0].className).toBe("CS1526");
     });
@@ -230,8 +230,8 @@ describe("Class invitation", () => {
 
   it("should not let users see other users' invites", async () => {
     const bobFirestore = testEnv.authenticatedContext('bob').firestore();
-    const bobDatabase = getDatabase(bobFirestore);
-    await bobDatabase.createClass("CS1260",
+    const bobDb = getDatabase(bobFirestore);
+    await bobDb.createClass("CS1260",
       {
         name: "bobby lim",
         id: "bob",
@@ -241,8 +241,8 @@ describe("Class invitation", () => {
       ["denny@email.com", "ella@gmail.com"]
     ).then(async () => {
       const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
-      const dennyDatabase = getDatabase(dennyFirestore);
-      return await assertFails(dennyDatabase.getInvites("ella@gmail.com", "tutor"));
+      const dennyDb = getDatabase(dennyFirestore);
+      return await assertFails(dennyDb.getInvites("ella@gmail.com", "tutor"));
     });
   });
 
@@ -250,7 +250,7 @@ describe("Class invitation", () => {
     const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
     const aliceDb = getDatabase(aliceFirestore);
     const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
-    const dennyDatabase = getDatabase(dennyFirestore);
+    const dennyDb = getDatabase(dennyFirestore);
 
     return aliceDb.createClass("CS1234",
       {
@@ -261,11 +261,11 @@ describe("Class invitation", () => {
       ["denny@email.com"],
       []
     ).then(() => {
-      return dennyDatabase.getInvites("denny@email.com", "student");
+      return dennyDb.getInvites("denny@email.com", "student");
     }).then((invites) => {
-      return dennyDatabase.deleteInvite(invites[0].id, "student", "denny@email.com");
+      return dennyDb.deleteInvite(invites[0].id, "student", "denny@email.com");
     }).then(() => {
-      return dennyDatabase.getInvites("denny@email.com", "student");
+      return dennyDb.getInvites("denny@email.com", "student");
     }).then((invites) => {
       expect(invites.length).toBe(0);
     });
@@ -275,7 +275,7 @@ describe("Class invitation", () => {
     const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
     const aliceDb = getDatabase(aliceFirestore);
     const ginaFirestore = testEnv.authenticatedContext('gina', { email: "gina@gmail.com" }).firestore();
-    const ginaDatabase = getDatabase(ginaFirestore);
+    const ginaDb = getDatabase(ginaFirestore);
 
     return aliceDb.createClass("CS1234",
       {
@@ -286,13 +286,40 @@ describe("Class invitation", () => {
       ["denny@email.com"],
       ["gina@gmail.com"]
     ).then(() => {
-      return ginaDatabase.getInvites("gina@gmail.com", "tutor");
+      return ginaDb.getInvites("gina@gmail.com", "tutor");
     }).then((invites) => {
-      return ginaDatabase.deleteInvite(invites[0].id, "tutor", "gina@gmail.com");
+      return ginaDb.deleteInvite(invites[0].id, "tutor", "gina@gmail.com");
     }).then(() => {
-      return ginaDatabase.getInvites("gina@gmail.com", "tutor");
+      return ginaDb.getInvites("gina@gmail.com", "tutor");
     }).then((invites) => {
       expect(invites.length).toBe(0);
+    });
+  });
+
+  it('should let users accept student invites', async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      []
+    ).then(() => {
+      return dennyDb.getInvites("denny@email.com", "student");
+    }).then((invites) => {
+      return dennyDb.acceptInvite(invites[0].id, 'denny', "student", "denny@email.com", "denny tan");
+    }).then(() => {
+      return dennyDb.getInvites("denny@email.com", "student");
+    }).then((invites) => {
+      expect(invites.length).toBe(0);
+    }).then(() => {
+
     });
   });
 })
