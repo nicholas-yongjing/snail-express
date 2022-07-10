@@ -6,7 +6,7 @@
 const { readFileSync, createWriteStream } = require('fs');
 const http = require("http");
 const testing = require('@firebase/rules-unit-testing');
-const { initializeTestEnvironment, assertFails, assertSucceeds } = testing;
+const { initializeTestEnvironment, assertFails } = testing;
 const { setLogLevel, collection, getDocs } = require('firebase/firestore');
 const getDatabase = require("../database").default;
 
@@ -66,11 +66,13 @@ describe("Class students", () => {
     });
   });
 
-  it("should let head tutors see specific students of their class", async () => {
+  it("should let users see specific students of their class", async () => {
     const barryFirestore = testEnv.authenticatedContext('barry').firestore();
     const barryDb = getDatabase(barryFirestore);
     const dennyFirestore = testEnv.authenticatedContext('denny', {email: "denny@email.com"}).firestore();
     const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', {email: "elvin@gmail.com"}).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
 
     const snapshot = await barryDb.createClass("CS2134",
       {
@@ -82,15 +84,67 @@ describe("Class students", () => {
       ["elvin@gmail.com"]
     );
 
-    return dennyDb.getInvites("denny@email.com", "student")
-      .then((invites) => {
-        return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "Denny Lim");
-      }).then(() => {
-        return barryDb.getUser(snapshot.id, "students", "denny");
-      }).then((user) => {
-        expect(user.name).toBe("Denny Lim");
+    return Promise.all([
+      dennyDb.getInvites("denny@email.com", "student")
+        .then((invites) => {
+          return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "Denny Lim");
+        }),
+      elvinDb.getInvites("elvin@gmail.com", "tutor")
+        .then((invites) => {
+          return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "Elvin Lee");
+        })
+    ]).then(() => {
+        return Promise.all([
+          barryDb.getUser(snapshot.id, "students", "denny"),
+          dennyDb.getUser(snapshot.id, "students", "denny"),
+          elvinDb.getUser(snapshot.id, "students", "denny"),
+        ]);
+      }).then((users) => {
+        users.forEach((user) => expect(user.name).toBe("Denny Lim"));
       });
   });
+
+  it("should let users see all students of their class", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', {email: "denny@email.com"}).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', {email: "elvin@gmail.com"}).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+
+    const snapshot = await barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    );
+
+    return Promise.all([
+      dennyDb.getInvites("denny@email.com", "student")
+        .then((invites) => {
+          return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "Denny Lim");
+        }),
+      elvinDb.getInvites("elvin@gmail.com", "tutor")
+        .then((invites) => {
+          return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "Elvin Lee");
+        })
+    ]).then(() => {
+        return Promise.all([
+          barryDb.getStudents(snapshot.id),
+          dennyDb.getStudents(snapshot.id),
+          elvinDb.getStudents(snapshot.id),
+        ]);
+      }).then((promises) => {
+        promises.forEach((users) => {
+          const user = users[0];
+          expect(user.name).toBe("Denny Lim");
+        })
+      });
+  });
+
 })
 
 describe("Class tutors", () => {
@@ -113,9 +167,11 @@ describe("Class tutors", () => {
     });
   });
 
-  it("should let head tutors see specific tutors of their class", async () => {
+  it("should let users see specific tutors of their class", async () => {
     const barryFirestore = testEnv.authenticatedContext('barry').firestore();
     const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', {email: "denny@email.com"}).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
     const elvinFirestore = testEnv.authenticatedContext('elvin', {email: "elvin@gmail.com"}).firestore();
     const elvinDb = getDatabase(elvinFirestore);
 
@@ -129,13 +185,65 @@ describe("Class tutors", () => {
       ["elvin@gmail.com"]
     );
 
-    return elvinDb.getInvites("elvin@gmail.com", "tutor")
-      .then((invites) => {
-        return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "Elvin Lee");
-      }).then(() => {
-        return elvinDb.getUser(snapshot.id, "tutors", "elvin");
-      }).then((user) => {
-        expect(user.name).toBe("Elvin Lee");
+    return Promise.all([
+      dennyDb.getInvites("denny@email.com", "student")
+        .then((invites) => {
+          return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "Denny Lim");
+        }),
+      elvinDb.getInvites("elvin@gmail.com", "tutor")
+        .then((invites) => {
+          return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "Elvin Lee");
+        })
+    ]).then(() => {
+        return Promise.all([
+          barryDb.getUser(snapshot.id, "tutors", "elvin"),
+          dennyDb.getUser(snapshot.id, "tutors", "elvin"),
+          elvinDb.getUser(snapshot.id, "tutors", "elvin"),
+        ]);
+      }).then((users) => {
+        users.forEach((user) => expect(user.name).toBe("Elvin Lee"));
       });
   });
+
+  it("should let users see all tutors of their class", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', {email: "denny@email.com"}).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', {email: "elvin@gmail.com"}).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+
+    const snapshot = await barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    );
+
+    return Promise.all([
+      dennyDb.getInvites("denny@email.com", "student")
+        .then((invites) => {
+          return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "Denny Lim");
+        }),
+      elvinDb.getInvites("elvin@gmail.com", "tutor")
+        .then((invites) => {
+          return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "Elvin Lee");
+        })
+    ]).then(() => {
+        return Promise.all([
+          barryDb.getTutors(snapshot.id),
+          dennyDb.getTutors(snapshot.id),
+          elvinDb.getTutors(snapshot.id),
+        ]);
+      }).then((promises) => {
+        promises.forEach((users) => {
+          const user = users[0];
+          expect(user.name).toBe("Elvin Lee");
+        })
+      });
+  });
+
 })
