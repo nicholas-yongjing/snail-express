@@ -7,7 +7,8 @@ const { readFileSync, createWriteStream } = require('fs');
 const http = require("http");
 const testing = require('@firebase/rules-unit-testing');
 const { initializeTestEnvironment, assertFails, assertSucceeds } = testing;
-const { setLogLevel } = require('firebase/firestore');
+const { setLogLevel, getDoc, doc, collection, getDocs } = require('firebase/firestore');
+const exp = require('constants');
 const getDatabase = require("../database").default;
 
 let testEnv;
@@ -141,6 +142,25 @@ describe('Class creation', () => {
     ));
     return await Promise.all([class1, class2]);
   });
+
+  it("should let users retrieve created class", async () => {
+    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
+    const db = getDatabase(aliceFirestore);
+    return db.createClass("MA2234",
+      {
+        name: "alice tan",
+        id: "alice",
+        email: "alicetan@email.com"
+      },
+      ["bob@email.com"],
+      []
+    ).then(async () => {
+      const classes = await db.getClasses("alice", "head tutor");
+      expect(classes.length).toBe(1);
+      expect(classes[0].className).toBe("MA2234");
+    });
+  })
+
 });
 
 describe("Class invitation", () => {
@@ -161,24 +181,6 @@ describe("Class invitation", () => {
       classSnapshot.id, ["student2@email.com"], "student")
     );
   });
-
-  it("should let users retrieve created class", async () => {
-    const aliceFirestore = testEnv.authenticatedContext('alice').firestore();
-    const db = getDatabase(aliceFirestore);
-    return db.createClass("MA2234",
-      {
-        name: "alice tan",
-        id: "alice",
-        email: "alicetan@email.com"
-      },
-      ["bob@email.com"],
-      []
-    ).then(async () => {
-      const classes = await db.getClasses("alice", "head tutor");
-      expect(classes.length).toBe(1);
-      expect(classes[0].className).toBe("MA2234");
-    });
-  })
 
   it("should let users see invites to enroll", async () => {
     /**
@@ -315,11 +317,150 @@ describe("Class invitation", () => {
     }).then((invites) => {
       return dennyDb.acceptInvite(invites[0].id, 'denny', "student", "denny@email.com", "denny tan");
     }).then(() => {
-      return dennyDb.getInvites("denny@email.com", "student");
-    }).then((invites) => {
-      expect(invites.length).toBe(0);
-    }).then(() => {
+      return Promise.all(
+        [
+          dennyDb.getInvites("denny@email.com", "student")
+            .then((invites) => {
+              expect(invites.length).toBe(0);
+            }),
+          dennyDb.getClasses("denny", "student")
+            .then((classes) => {
+              expect(classes.length).toBe(1);
+              expect(classes[0].className).toBe("CS2134");
+            })
+        ]
+      );
+    });
+  });
 
+  it('should let users accept tutor invites', async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    ).then(() => {
+      return elvinDb.getInvites("elvin@gmail.com", "tutor");
+    }).then((invites) => {
+      return elvinDb.acceptInvite(invites[0].id, 'elvin', "tutor", "elvin@gmail.com", "elvin chan");
+    }).then(() => {
+      return Promise.all(
+        [
+          elvinDb.getInvites("elvin@gmail.com", "tutor")
+            .then(async (invites) => {
+              await expect(invites.length).toBe(0)
+            }),
+          elvinDb.getClasses("elvin", "tutor")
+            .then(async (classes) => {
+              await expect(classes.length).toBe(1);
+              await expect(classes[0].className).toBe("CS2134");
+            })
+        ]
+      );
+    });
+  });
+
+  it('should let tutors invite students', async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+    const studentFirestore = testEnv.authenticatedContext('student', { email: "student@email.com" }).firestore();
+    const studentDb = getDatabase(studentFirestore);
+
+    return barryDb.createClass("CS3467",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      [],
+      ["elvin@gmail.com"]
+    ).then(() => {
+      return elvinDb.getInvites("elvin@gmail.com", "tutor");
+    }).then((invites) => {
+      return elvinDb.acceptInvite(invites[0].id, 'elvin', "tutor", "elvin@gmail.com", "elvin chan");
+    }).then(() => {
+      return elvinDb.getClasses("elvin", "tutor");
+    }).then((classes) => {
+      return elvinDb.addInvites(
+        classes[0].id, ["student@email.com"], "student");
+    }).then(() => {
+      return studentDb.getInvites("student@email.com", "student");
+    }).then((invites) => {
+      expect(invites.length).toBe(1);
+      expect(invites[0].className).toBe("CS3467")
+    });
+  });
+})
+
+describe("Class settings", () => {
+  it("should not let users see other classes' settings", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    ).then((snapshot) => {
+      const randomAuthedFirestore = testEnv.authenticatedContext('rando').firestore();
+      const settingsDocRef = doc(randomAuthedFirestore, "classes", snapshot.id, "settings", "levelling")
+      return assertFails(getDoc(settingsDocRef));
+    });
+  });
+})
+
+describe("Class students", () => {
+  it("should not let users see other classes' students", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    ).then((snapshot) => {
+      const randomAuthedFirestore = testEnv.authenticatedContext('rando').firestore();
+      const studentsRef = collection(randomAuthedFirestore, "classes", snapshot.id, "students")
+      return assertFails(getDocs(studentsRef));
+    });
+  });
+})
+
+describe("Class tutors", () => {
+  it("should not let users see other classes' tutors", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    ).then((snapshot) => {
+      const randomAuthedFirestore = testEnv.authenticatedContext('rando').firestore();
+      const tutorsRef = collection(randomAuthedFirestore, "classes", snapshot.id, "tutors")
+      return assertFails(getDocs(tutorsRef));
     });
   });
 })
