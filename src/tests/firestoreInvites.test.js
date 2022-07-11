@@ -7,7 +7,7 @@ const { readFileSync, createWriteStream } = require('fs');
 const http = require("http");
 const testing = require('@firebase/rules-unit-testing');
 const { initializeTestEnvironment, assertFails, assertSucceeds } = testing;
-const { setLogLevel } = require('firebase/firestore');
+const { setLogLevel, addDoc, doc, setDoc, serverTimestamp } = require('firebase/firestore');
 const getDatabase = require("../database").default;
 
 let testEnv;
@@ -251,36 +251,183 @@ describe("Class invitation", () => {
     });
   });
 
-  it('should let tutors invite students', async () => {
+  it('should not let users add student documents with invalid fields', async () => {
     const barryFirestore = testEnv.authenticatedContext('barry').firestore();
     const barryDb = getDatabase(barryFirestore);
-    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
-    const elvinDb = getDatabase(elvinFirestore);
-    const studentFirestore = testEnv.authenticatedContext('student', { email: "student@email.com" }).firestore();
-    const studentDb = getDatabase(studentFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
 
-    return barryDb.createClass("CS3467",
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      []
+    ).then(() => {
+      return dennyDb.getInvites("denny@email.com", "student");
+    }).then(async (invites) => {
+      const missingFields = await assertFails(setDoc(doc(dennyFirestore, "classes", invites[0].id, "students", "denny"), {
+        id: "denny",
+        email: "denny@email.com",
+        name: "denny lee",
+        level: 0,
+        //missing exp
+        dailyCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+          lastUpdated: serverTimestamp()
+        },
+        overallCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+        }
+      }));
+
+      const missingFields2 = await assertFails(setDoc(doc(dennyFirestore, "classes", invites[0].id, "students", "denny"), {
+        id: "denny",
+        email: "denny@email.com",
+        name: "denny lee",
+        level: 0,
+        exp: 0,
+        dailyCounts: {
+          //missing posts
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+          lastUpdated: serverTimestamp()
+        },
+        overallCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+        }
+      }));
+
+      const extraFields = await assertFails(setDoc(doc(dennyFirestore, "classes", invites[0].id, "students", "denny"), {
+        id: "denny",
+        email: "denny@email.com",
+        name: "denny lee",
+        extraRandomField: "This is not supposed to be one of the fields",
+        level: 0,
+        exp: 0,
+        dailyCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+          lastUpdated: serverTimestamp()
+        },
+        overallCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+        }
+      }));
+
+      const extraFields2 = await assertFails(setDoc(doc(dennyFirestore, "classes", invites[0].id, "students", "denny"), {
+        id: "denny",
+        email: "denny@email.com",
+        name: "denny lee",
+        level: 0,
+        exp: 0,
+        dailyCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          quizCorrectAnswers: 0,
+          lastUpdated: serverTimestamp()
+        },
+        overallCounts: {
+          posts: 0,
+          votes: 0,
+          feedbacks: 0,
+          quizzesAttended: 0,
+          additionalField: 0,
+          quizCorrectAnswers: 0,
+        }
+      }));
+      return Promise.all([missingFields, missingFields2, extraFields, extraFields2]);
+    });
+  });
+
+  it('should not let users add tutors documents with invalid fields', async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+
+    return barryDb.createClass("CS2134",
       {
         name: "barry ong",
         id: "barry",
         email: "barryong@email.com"
       },
       [],
-      ["elvin@gmail.com"]
+      ["denny@email.com"]
     ).then(() => {
-      return elvinDb.getInvites("elvin@gmail.com", "tutor");
-    }).then((invites) => {
-      return elvinDb.acceptInvite(invites[0].id, 'elvin', "tutor", "elvin@gmail.com", "elvin chan");
-    }).then(() => {
-      return elvinDb.getClasses("elvin", "tutor");
-    }).then((classes) => {
-      return elvinDb.addInvites(
-        classes[0].id, ["student@email.com"], "student");
-    }).then(() => {
-      return studentDb.getInvites("student@email.com", "student");
-    }).then((invites) => {
-      expect(invites.length).toBe(1);
-      expect(invites[0].className).toBe("CS3467")
+      return dennyDb.getInvites("denny@email.com", "tutor");
+    }).then(async (invites) => {
+      const missingFields = await assertFails(setDoc(doc(dennyFirestore, "classes", invites[0].id, "tutors", "denny"), {
+        id: "denny",
+        email: "denny@email.com",
+        //missing name
+      }));
+      const extraFields = await assertFails(setDoc(doc(dennyFirestore, "classes", invites[0].id, "tutors", "denny"), {
+        id: "denny",
+        email: "denny@email.com",
+        name: "danny lee",
+        notAllowed: 'field'
+      }));
+ 
+      return Promise.all([missingFields, extraFields]);
     });
   });
-})
+
+  it('should let tutors invite students', async () => {
+      const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+      const barryDb = getDatabase(barryFirestore);
+      const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+      const elvinDb = getDatabase(elvinFirestore);
+      const studentFirestore = testEnv.authenticatedContext('student', { email: "student@email.com" }).firestore();
+      const studentDb = getDatabase(studentFirestore);
+
+      return barryDb.createClass("CS3467",
+        {
+          name: "barry ong",
+          id: "barry",
+          email: "barryong@email.com"
+        },
+        [],
+        ["elvin@gmail.com"]
+      ).then(() => {
+        return elvinDb.getInvites("elvin@gmail.com", "tutor");
+      }).then((invites) => {
+        return elvinDb.acceptInvite(invites[0].id, 'elvin', "tutor", "elvin@gmail.com", "elvin chan");
+      }).then(() => {
+        return elvinDb.getClasses("elvin", "tutor");
+      }).then((classes) => {
+        return elvinDb.addInvites(
+          classes[0].id, ["student@email.com"], "student");
+      }).then(() => {
+        return studentDb.getInvites("student@email.com", "student");
+      }).then((invites) => {
+        expect(invites.length).toBe(1);
+        expect(invites[0].className).toBe("CS3467")
+      });
+    });
+  })
