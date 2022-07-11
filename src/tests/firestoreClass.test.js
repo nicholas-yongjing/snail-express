@@ -7,7 +7,7 @@ const { readFileSync, createWriteStream } = require('fs');
 const http = require("http");
 const testing = require('@firebase/rules-unit-testing');
 const { initializeTestEnvironment, assertFails, assertSucceeds } = testing;
-const { setLogLevel, getDoc, doc } = require('firebase/firestore');
+const { setLogLevel } = require('firebase/firestore');
 const getDatabase = require("../database").default;
 
 let testEnv;
@@ -161,24 +161,3 @@ describe('Class creation', () => {
   })
 
 });
-
-describe("Class settings", () => {
-  it("should not let users see other classes' settings", async () => {
-    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
-    const barryDb = getDatabase(barryFirestore);
-
-    return barryDb.createClass("CS2134",
-      {
-        name: "barry ong",
-        id: "barry",
-        email: "barryong@email.com"
-      },
-      ["denny@email.com"],
-      ["elvin@gmail.com"]
-    ).then((snapshot) => {
-      const randomAuthedFirestore = testEnv.authenticatedContext('rando').firestore();
-      const settingsDocRef = doc(randomAuthedFirestore, "classes", snapshot.id, "settings", "levelling")
-      return assertFails(getDoc(settingsDocRef));
-    });
-  });
-})

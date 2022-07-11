@@ -7,7 +7,7 @@ const { readFileSync, createWriteStream } = require('fs');
 const http = require("http");
 const testing = require('@firebase/rules-unit-testing');
 const { initializeTestEnvironment, assertFails, assertSucceeds } = testing;
-const { setLogLevel, addDoc, doc, setDoc, serverTimestamp } = require('firebase/firestore');
+const { setLogLevel, doc, setDoc, serverTimestamp } = require('firebase/firestore');
 const getDatabase = require("../database").default;
 
 let testEnv;
