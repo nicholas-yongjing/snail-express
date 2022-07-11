@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Button from "../components/Button";
 import { Card, Container, Form, FormControl } from "react-bootstrap";
 import WebPage from "./WebPage";
-import Question from "./Question";
+import Header from "../components/Header";
+import EnterQuestion from "./EnterQuestion";
+import { Link } from "react-router-dom";
 import { firestore } from "../firebase";
 import { collection, setDoc, doc } from "firebase/firestore";
 import { useClass } from "../contexts/ClassContext";
@@ -13,6 +15,9 @@ export default function CreateQuiz() {
   const [addingQuestions, setAddingQuestions] = useState(false);
 
   const handleCreateQuiz = () => {
+    if (quizNameRef.current.value === "") {
+        return;
+    }
     const quizDocRef = doc(
       firestore,
       "classes",
@@ -41,15 +46,17 @@ export default function CreateQuiz() {
   return (
     <WebPage>
       {addingQuestions ? (
+        <div className="d-flex flex-column">
         <Container className="mt-3 d-flex flex-column">
           <Card className="slate-600 text-slate-200 fs-4">
             <div className="d-flex justify-content-center">
               <div>
-                <Question name={quizNameRef.current.value} />
+                <EnterQuestion name={quizNameRef.current.value} />
               </div>
             </div>
           </Card>
         </Container>
+        </div>
       ) : (
         <Container className="mt-3 d-flex flex-column">
           <Card className="slate-600 text-slate-200 fs-4">

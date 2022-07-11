@@ -41,7 +41,6 @@ export default function LiveFeedback() {
   };
  
   useEffect(() => {
-    console.log('using effect')
     const unsubscribe = onSnapshot(feedbackRef, (snapshot) => {
       const arr = [0, 0, 0, 0];
       snapshot.docs.forEach((doc) => {
