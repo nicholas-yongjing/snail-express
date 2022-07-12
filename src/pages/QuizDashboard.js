@@ -62,7 +62,7 @@ export default function QuizDashboard() {
     }
   };
 
-  const sidebarLinks = [["/quiz", "All quizzes"]];
+  const sidebarLinks = [["/quiz", "All quizzes"], ["/livequiz", "Live quiz"]];
   if (isTutor) {
     sidebarLinks.push(["/createquiz", "Create quiz"]);
   }
@@ -91,7 +91,7 @@ export default function QuizDashboard() {
               {displayQuiz ? (
                 <h2 className="p-3">{activeQuiz.split("/")[activeQuiz.split("/").length - 1]}</h2>
               ) : (
-                <h2 className="p-3">View your created quizzes here</h2>
+                <h2 className="p-3">View all quizzes here</h2>
               )}
               {displayQuiz ? (
                 <div>

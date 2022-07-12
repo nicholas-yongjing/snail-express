@@ -20,6 +20,7 @@ import Tutors from "./pages/Tutors";
 import Quiz from "./pages/QuizDashboard";
 import CreateQuiz from "./components/CreateQuiz";
 import DisplayQuiz from "./pages/DisplayQuiz";
+import LiveQuiz from "./pages/LiveQuiz";
 
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
@@ -31,7 +32,7 @@ function ClassRoute({ children }) {
   const { currentClass } = useClass();
   return (
     <PrivateRoute>
-        {currentClass ? children : <Navigate to='/dashboard' />}
+      {currentClass ? children : <Navigate to="/dashboard" />}
     </PrivateRoute>
   );
 }
@@ -46,19 +47,118 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-            <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>} />
-            <Route path="/add-class" element={<PrivateRoute><AddClass /></PrivateRoute>} />
-            <Route path="/class-dashboard" element={<ClassRoute><ClassDashboard /></ClassRoute>} />
-            <Route path="/settings" element={<ClassRoute><Settings /></ClassRoute>} />
-            <Route path="/forums" element={<ClassRoute><Forums /></ClassRoute>} />
-            <Route path="/livefeedback" element={<ClassRoute><LiveFeedback /></ClassRoute>} />
-            <Route path="/students" element={<ClassRoute><Students /></ClassRoute>} />
-            <Route path="/tutors" element={<ClassRoute><Tutors/></ClassRoute>} />
-            <Route path="/quiz" element={<ClassRoute><Quiz/></ClassRoute>} />
-            <Route path="/createquiz" element={<ClassRoute><CreateQuiz/></ClassRoute>} />
-            <Route path="/displayquiz" element={<ClassRoute><DisplayQuiz/></ClassRoute>} />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/update-profile"
+              element={
+                <PrivateRoute>
+                  <UpdateProfile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/add-class"
+              element={
+                <PrivateRoute>
+                  <AddClass />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/class-dashboard"
+              element={
+                <ClassRoute>
+                  <ClassDashboard />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ClassRoute>
+                  <Settings />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/forums"
+              element={
+                <ClassRoute>
+                  <Forums />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/livefeedback"
+              element={
+                <ClassRoute>
+                  <LiveFeedback />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/students"
+              element={
+                <ClassRoute>
+                  <Students />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/tutors"
+              element={
+                <ClassRoute>
+                  <Tutors />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/quiz"
+              element={
+                <ClassRoute>
+                  <Quiz />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/createquiz"
+              element={
+                <ClassRoute>
+                  <CreateQuiz />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/displayquiz"
+              element={
+                <ClassRoute>
+                  <DisplayQuiz />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/livequiz"
+              element={
+                <ClassRoute>
+                  <LiveQuiz />
+                </ClassRoute>
+              }
+            />
           </Routes>
         </ClassProvider>
       </AuthProvider>
