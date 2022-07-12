@@ -3,6 +3,7 @@ import { firestore } from "../firebase";
 import { getDocs, doc, collection, query, orderBy } from "firebase/firestore";
 import Button from "../components/Button";
 import { Alert, Spinner, Card } from "react-bootstrap";
+import LiveQuiz from "./LiveQuiz";
 
 export default function DisplayQuiz(props) {
   const quizRef = props.quiz + "/questions";
@@ -26,6 +27,7 @@ export default function DisplayQuiz(props) {
   }, []);
 
   const handleStartQuiz = () => {
+    setLoading(true);
     setQuestion(questionList[index].qn);
     setOptions([
       questionList[index].A,
@@ -86,7 +88,7 @@ export default function DisplayQuiz(props) {
       {loading ? (
         <div>
           <Button onClick={handleStartQuiz}>
-            Click here to start the quiz
+            Display quiz
           </Button>
         </div>
       ) : completed ? (
@@ -146,51 +148,52 @@ export default function DisplayQuiz(props) {
           </div>
         </div>
       ) : (
-        <div className="slate-600 p-4" style={{ minWidth: "" }}>
-          <h3 className="p-3">Question {index + 1}</h3>
-          <h4 className="slate-800 p-4" style={{ margin: "12px" }}>
-            {question}
-          </h4>
-          <span>
-            {options.slice(0, 2).map((option, id) => {
-              return (
-                <Button
-                  style={{ margin: "12px" }}
-                  key={option}
-                  disabled={disabled}
-                  onClick={() => handleUpdateScore(letters[id])}
-                >
-                  <div>Option {" " + letters[id] + ":"}</div>
-                  <div>{option}</div>
-                </Button>
-              );
-            })}
-          </span>
-          <span>
-            {options.slice(2).map((option, id) => {
-              return (
-                <Button
-                  style={{ margin: "12px" }}
-                  key={option}
-                  disabled={disabled}
-                  onClick={() => handleUpdateScore(letters[id + 2])}
-                >
-                  <div>Option {" " + letters[id + 2] + ":"}</div>
-                  <div>{option}</div>
-                </Button>
-              );
-            })}
-          </span>
-          <br></br>
-          <span className="d-flex justify-content-between">
-            <Button onClick={handlePreviousQuestion} style={{ margin: "12px" }}>
-              Previous
-            </Button>
-            <Button onClick={handleNextQuestion} style={{ margin: "12px" }}>
-              Show next
-            </Button>
-          </span>
-        </div>
+        <LiveQuiz quiz={quizRef}/>
+        // <div className="slate-600 p-4" style={{ minWidth: "" }}>
+        //   <h3 className="p-3">Question {index + 1}</h3>
+        //   <h4 className="slate-800 p-4" style={{ margin: "12px" }}>
+        //     {question}
+        //   </h4>
+        //   <span>
+        //     {options.slice(0, 2).map((option, id) => {
+        //       return (
+        //         <Button
+        //           style={{ margin: "12px" }}
+        //           key={option}
+        //           disabled={disabled}
+        //           onClick={() => handleUpdateScore(letters[id])}
+        //         >
+        //           <div>Option {" " + letters[id] + ":"}</div>
+        //           <div>{option}</div>
+        //         </Button>
+        //       );
+        //     })}
+        //   </span>
+        //   <span>
+        //     {options.slice(2).map((option, id) => {
+        //       return (
+        //         <Button
+        //           style={{ margin: "12px" }}
+        //           key={option}
+        //           disabled={disabled}
+        //           onClick={() => handleUpdateScore(letters[id + 2])}
+        //         >
+        //           <div>Option {" " + letters[id + 2] + ":"}</div>
+        //           <div>{option}</div>
+        //         </Button>
+        //       );
+        //     })}
+        //   </span>
+        //   <br></br>
+        //   <span className="d-flex justify-content-between">
+        //     <Button onClick={handlePreviousQuestion} style={{ margin: "12px" }}>
+        //       Previous
+        //     </Button>
+        //     <Button onClick={handleNextQuestion} style={{ margin: "12px" }}>
+        //       Show next
+        //     </Button>
+        //   </span>
+        // </div>
       )}
     </div>
   );

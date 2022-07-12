@@ -11,8 +11,10 @@ import { firestore } from "../firebase";
 import {
   collection,
   getDocs,
+  doc,
   getDocsFromCache,
   query,
+  setDoc,
 } from "firebase/firestore";
 import SideBar from "../components/SideBar";
 import { Card, Container } from "react-bootstrap";
@@ -22,7 +24,6 @@ export default function QuizDashboard() {
   const { currentUser } = useAuth();
   // const [loading, setLoading] = useState(false);
   const [quizRefList, setQuizRefList] = useState([]);
-  const [quizTitleList, setQuizTitleList] = useState([]);
   const [displayQuiz, setDisplayQuiz] = useState(false);
   const [activeQuiz, setActiveQuiz] = useState("");
 
@@ -35,7 +36,18 @@ export default function QuizDashboard() {
 
   const toggleDisplayQuiz = (path) => {
     setDisplayQuiz(!displayQuiz);
-    setActiveQuiz(path);
+    if (path === "") {
+      setDoc(doc(firestore, `${activeQuiz}`, "questions", "status"), {
+        active: false,
+        curr: 0
+      });
+    } else {
+      setActiveQuiz(path);
+      setDoc(doc(firestore, `${path}`, "questions", "status"), {
+        active: true,
+        curr: 0
+      });
+    }
   };
 
   useEffect(() => {
@@ -43,14 +55,6 @@ export default function QuizDashboard() {
     setActiveQuiz("");
     getDocs(collection(firestore, "classes", currentClass.id, "quizzes"))
       .then((s) => setQuizRefList(s.docs.map((content) => content.ref.path)))
-      .finally(
-        setQuizTitleList(
-          quizRefList.map((s) => {
-            const temp = s.split("/");
-            return temp[temp.length - 1];
-          })
-        )
-      );
   }, []);
 
   const isTutor = () => {
@@ -95,7 +99,7 @@ export default function QuizDashboard() {
               )}
               {displayQuiz ? (
                 <div>
-                  <Button onClick={toggleDisplayQuiz}>
+                  <Button onClick={() => toggleDisplayQuiz("")}>
                     <div>Hide quiz</div>
                   </Button>
                   <Container className="mt-3 p-4">
