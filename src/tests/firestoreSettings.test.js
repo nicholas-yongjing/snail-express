@@ -7,7 +7,7 @@ const { readFileSync, createWriteStream } = require('fs');
 const http = require("http");
 const testing = require('@firebase/rules-unit-testing');
 const { initializeTestEnvironment, assertFails, assertSucceeds } = testing;
-const { setLogLevel, getDoc, doc } = require('firebase/firestore');
+const { setLogLevel, getDoc, doc, setDoc } = require('firebase/firestore');
 const getDatabase = require("../database").default;
 
 let testEnv;
@@ -46,7 +46,7 @@ beforeEach(async () => {
   return await testEnv.clearFirestore();
 });
 
-describe("Class settings", () => {
+describe.only("Class settings", () => {
   it("should not let users see other classes' settings", async () => {
     const barryFirestore = testEnv.authenticatedContext('barry').firestore();
     const barryDb = getDatabase(barryFirestore);
@@ -69,11 +69,11 @@ describe("Class settings", () => {
   it("should let users see their class settings", async () => {
     const barryFirestore = testEnv.authenticatedContext('barry').firestore();
     const barryDb = getDatabase(barryFirestore);
-    const dennyFirestore = testEnv.authenticatedContext('denny', {email: "denny@email.com"}).firestore();
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
     const dennyDb = getDatabase(dennyFirestore);
-    const elvinFirestore = testEnv.authenticatedContext('elvin', {email: "elvin@gmail.com"}).firestore();
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
     const elvinDb = getDatabase(elvinFirestore);
-    
+
     return barryDb.createClass("CS2134",
       {
         name: "barry ong",
@@ -100,6 +100,163 @@ describe("Class settings", () => {
             return elvinDb.getClasses("elvin", "tutor");
           }).then((classes) => {
             return assertSucceeds(elvinDb.getLevellingSettings(classes[0].id));
+          })
+      ])
+    });
+  });
+
+  it("should let only head tutors and tutors change levelling settings", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+    const expRequirements = [];
+    for (let i = 1; i < 101; i++) {
+      expRequirements.push(12 * i * i);
+    }
+    const newSettings = {
+      expRequirements: expRequirements,
+      limits: {
+        posts: 3,
+        votes: 1,
+        feedbacks: 1,
+        quizzesAttended: 3,
+        quizCorrectAnswers: 3
+      },
+      expGain: {
+        posts: 50,
+        votes: 10,
+        feedbacks: 100,
+        quizzesAttended: 50,
+        quizCorrectAnswers: 10
+      }
+    };
+
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    ).then((snapshot) => {
+      return Promise.all([
+        assertSucceeds(barryDb.changeLevellingSettings(snapshot.id, newSettings)),
+        dennyDb.getInvites("denny@email.com", "student")
+          .then((invites) => {
+            return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
+          }).then(() => {
+            return dennyDb.getClasses("denny", "student");
+          }).then((classes) => {
+            return assertFails(dennyDb.changeLevellingSettings(classes[0].id, newSettings));
+          }),
+        elvinDb.getInvites("elvin@gmail.com", "tutor")
+          .then((invites) => {
+            return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+          }).then(() => {
+            return elvinDb.getClasses("elvin", "tutor");
+          }).then((classes) => {
+            return assertSucceeds(elvinDb.changeLevellingSettings(classes[0].id, newSettings));
+          })
+      ])
+    });
+  });
+
+  it.only("should let not let users change levelling settings with missing fields", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+    const expRequirements = [];
+    for (let i = 1; i < 101; i++) {
+      expRequirements.push(12 * i * i);
+    }
+    const newSettings = {
+      expRequirements: expRequirements,
+      limits: {
+        posts: 3,
+        votes: 1,
+        feedbacks: 1,
+        quizzesAttended: 3,
+        quizCorrectAnswers: 3
+      }
+      // missing expGain
+    };
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    ).then((snapshot) => {
+      return Promise.all([
+        async function() {
+          const barrySettingsRef = doc(barryFirestore, 'classes', snapshot.id, 'settings', 'levelling');
+          return assertFails(setDoc(barrySettingsRef, newSettings));
+        }(),
+        elvinDb.getInvites("elvin@gmail.com", "tutor")
+          .then((invites) => {
+            return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+          }).then(() => {
+            return elvinDb.getClasses("elvin", "tutor");
+          }).then((classes) => {
+            const elvinSettingsRef = doc(elvinFirestore, 'classes', classes[0].id, 'settings', 'levelling');
+            return assertFails(setDoc(elvinSettingsRef, newSettings));
+          })
+      ])
+    });
+  });
+
+  it("should let not let users change levelling settings with extra fields", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+    const expRequirements = [];
+    for (let i = 1; i < 101; i++) {
+      expRequirements.push(12 * i * i);
+    }
+    const newSettings = {
+      expRequirements: expRequirements,
+      limits: {
+        posts: 3,
+        additionalField: 3,
+        votes: 1,
+        feedbacks: 1,
+        quizzesAttended: 3,
+        quizCorrectAnswers: 3
+      },
+      expGain: {
+        posts: 50,
+        votes: 10,
+        feedbacks: 100,
+        quizzesAttended: 50,
+        quizCorrectAnswers: 10
+      }
+    };
+    return barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    ).then((snapshot) => {
+      return Promise.all([
+        assertFails(barryDb.changeLevellingSettings(snapshot.id, newSettings)),
+        elvinDb.getInvites("elvin@gmail.com", "tutor")
+          .then((invites) => {
+            return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+          }).then(() => {
+            return elvinDb.getClasses("elvin", "tutor");
+          }).then((classes) => {
+            return assertFails(elvinDb.changeLevellingSettings(classes[0].id, newSettings));
           })
       ])
     });
