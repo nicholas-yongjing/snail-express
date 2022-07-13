@@ -156,6 +156,57 @@ describe("Forums", () => {
     });
   });
 
+  it("should not let users create forum posts with incorrect author id", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+
+    const snapshot = await barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    );
+
+    return barryDb.addForumThread(snapshot.id, "New General Class Thread")
+      .then(() => {
+        return Promise.all([
+          barryDb.getClasses("barry", "head tutor")
+            .then((classes) => {
+              return barryDb.getForumThreads(classes[0].id);
+            }).then((threads) => {
+              return assertFails(barryDb.addForumPost(snapshot.id, threads[0].id, "barry's post", "hi everyone", "wrongId"))
+            }),
+          dennyDb.getInvites("denny@email.com", "student")
+            .then((invites) => {
+              return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
+            }).then(() => {
+              return dennyDb.getClasses("denny", "student");
+            }).then((classes) => {
+              return dennyDb.getForumThreads(classes[0].id);
+            }).then((threads) => {
+              return assertFails(dennyDb.addForumPost(snapshot.id, threads[0].id, "denny's post", "hi everyone!", "wrongId"))
+            }),
+          elvinDb.getInvites("elvin@gmail.com", "tutor")
+            .then((invites) => {
+              return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+            }).then(() => {
+              return elvinDb.getClasses("elvin", "tutor");
+            }).then((classes) => {
+              return elvinDb.getForumThreads(classes[0].id);
+            }).then((threads) => {
+              return assertFails(elvinDb.addForumPost(snapshot.id, threads[0].id, "elvin's post", "hi everyone!!", "wrongId"))
+            })
+        ]);
+      });
+  });
+
   it("should let users create forum posts", async () => {
     const barryFirestore = testEnv.authenticatedContext('barry').firestore();
     const barryDb = getDatabase(barryFirestore);
@@ -200,10 +251,64 @@ describe("Forums", () => {
               return elvinDb.getClasses("elvin", "tutor");
             }).then((classes) => {
               return elvinDb.getForumThreads(classes[0].id);
-            }).then((threads) => { 
+            }).then((threads) => {
               return elvinDb.addForumPost(snapshot.id, threads[0].id, "elvin's post", "hi everyone!!", "elvin")
             })
         ]);
       });
+  });
+
+  it("should let users view forum posts", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+
+    const classSnapshot = await barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    );
+
+    const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
+
+    return Promise.all([
+      dennyDb.getInvites("denny@email.com", "student")
+        .then((invites) => {
+          return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
+        }),
+      elvinDb.getInvites("elvin@gmail.com", "tutor")
+        .then((invites) => {
+          return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+        })
+    ]).then(() => {
+      return barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry");
+    }).then(() => {
+      return dennyDb.addForumPost(classSnapshot.id, threadSnapshot.id, "denny's post", "bye everyone", "denny")
+    }).then(() => {
+      return elvinDb.addForumPost(classSnapshot.id, threadSnapshot.id, "elvin's post", "hi everyone!!", "elvin")
+    }).then(() => {
+      return Promise.all([
+        barryDb.getForumPosts(classSnapshot.id, threadSnapshot.id),
+        dennyDb.getForumPosts(classSnapshot.id, threadSnapshot.id),
+        elvinDb.getForumPosts(classSnapshot.id, threadSnapshot.id),
+      ])
+    }).then((promises) => {
+      const expectedTitle = ["barry's post", "denny's post", "elvin's post"];
+      const expectedBody = ["hi everyone", "bye everyone", "hi everyone!!"];
+      return promises.forEach((posts) => {
+        expect(posts.length).toBe(3);
+        for (let i = 0; i < 3; i++) {
+          expect(posts[i].title).toBe(expectedTitle[i]);
+          expect(posts[i].body).toBe(expectedBody[i]);
+        }
+      });
+    });
   });
 })
