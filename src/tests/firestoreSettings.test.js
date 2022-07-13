@@ -165,7 +165,7 @@ describe.only("Class settings", () => {
     });
   });
 
-  it.only("should let not let users change levelling settings with missing fields", async () => {
+  it("should let not let users change levelling settings with missing fields", async () => {
     const barryFirestore = testEnv.authenticatedContext('barry').firestore();
     const barryDb = getDatabase(barryFirestore);
     const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
