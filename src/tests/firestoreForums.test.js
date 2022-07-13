@@ -214,8 +214,10 @@ describe("Forums", () => {
     const dennyDb = getDatabase(dennyFirestore);
     const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
     const elvinDb = getDatabase(elvinFirestore);
+    const otherFirestore = testEnv.authenticatedContext('otherUser', { email: "otherUser@gmail.com" }).firestore();
+    const otherDb = getDatabase(otherFirestore);
 
-    const snapshot = await barryDb.createClass("CS2134",
+    const classSnapshot = await barryDb.createClass("CS2134",
       {
         name: "barry ong",
         id: "barry",
@@ -225,34 +227,24 @@ describe("Forums", () => {
       ["elvin@gmail.com"]
     );
 
-    return barryDb.addForumThread(snapshot.id, "New General Class Thread")
+    const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
+
+    return barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
       .then(() => {
         return Promise.all([
-          barryDb.getClasses("barry", "head tutor")
-            .then((classes) => {
-              return barryDb.getForumThreads(classes[0].id);
-            }).then((threads) => {
-              return barryDb.addForumPost(snapshot.id, threads[0].id, "barry's post", "hi everyone", "barry")
-            }),
+          assertFails(otherDb.addForumPost(classSnapshot.id, threadSnapshot.id, "I'm not allowed to post", "read the title", "otheruser")),
+          assertSucceeds(barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry")),
           dennyDb.getInvites("denny@email.com", "student")
             .then((invites) => {
               return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
             }).then(() => {
-              return dennyDb.getClasses("denny", "student");
-            }).then((classes) => {
-              return dennyDb.getForumThreads(classes[0].id);
-            }).then((threads) => {
-              return dennyDb.addForumPost(snapshot.id, threads[0].id, "denny's post", "hi everyone!", "denny")
+              return dennyDb.addForumPost(classSnapshot.id, threadSnapshot.id, "denny's post", "hi everyone!", "denny")
             }),
           elvinDb.getInvites("elvin@gmail.com", "tutor")
             .then((invites) => {
               return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
             }).then(() => {
-              return elvinDb.getClasses("elvin", "tutor");
-            }).then((classes) => {
-              return elvinDb.getForumThreads(classes[0].id);
-            }).then((threads) => {
-              return elvinDb.addForumPost(snapshot.id, threads[0].id, "elvin's post", "hi everyone!!", "elvin")
+              return elvinDb.addForumPost(classSnapshot.id, threadSnapshot.id, "elvin's post", "hi everyone!!", "elvin");
             })
         ]);
       });
