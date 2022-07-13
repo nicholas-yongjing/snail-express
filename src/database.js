@@ -369,10 +369,10 @@ export default function getDatabase(firestore) {
     );
   }
 
-  async function addForumReply(classId, threadId, postId, postBody, author) {
+  async function addForumReply(classId, threadId, postId, postBody, authorId) {
     const reply = {
       body: postBody,
-      author: author,
+      authorId: authorId,
       endorsed: false,
       upvoters: [],
       downvoters: [],
@@ -381,7 +381,7 @@ export default function getDatabase(firestore) {
     const repliesRef = collection(firestore, "classes", classId,
       "forumThreads", threadId, "forumPosts", postId, "forumReplies");
     return addDoc(repliesRef, reply).then(() => {
-      return _incrementActivityCount(classId, author.id, "posts")
+      return _incrementActivityCount(classId, authorId, "posts")
     });
   }
 

@@ -11,13 +11,13 @@ export default function Reply(props) {
   const currentReply = props.reply;
   const [author, setAuthor] = useState([]);
 
-  const getUserGroup = useCallback((user) => {
-    if (user && currentClass) {
-      if (currentClass.studentIds.includes(user.id)) {
+  const getUserGroup = useCallback((userId) => {
+    if (userId && currentClass) {
+      if (currentClass.studentIds.includes(userId)) {
         return "students";
-      } else if (currentClass.tutorIds.includes(user.id)) {
+      } else if (currentClass.tutorIds.includes(userId)) {
         return "tutors";
-      } else if (currentClass.headTutor.id === user.id) {
+      } else if (currentClass.headTutor.id === userId) {
         return 'headTutor';
       } else {
         return null;
@@ -27,13 +27,13 @@ export default function Reply(props) {
 
   const populateAuthor = useCallback(() => {
     if (currentClass && currentThread && currentReply) {
-      const userGroup = getUserGroup(currentReply.author);
+      const userGroup = getUserGroup(currentReply.authorId);
       if (!userGroup) {
         setAuthor({name: "[Deleted User]", role: 'Unknown role'});
       } else if (userGroup === 'headTutor') {
         setAuthor({...currentClass.headTutor, role: 'Head Tutor'});
       } else {
-        getUser(currentClass.id, userGroup, currentReply.author.id)
+        getUser(currentClass.id, userGroup, currentReply.authorId)
           .then((user) => {
             setAuthor({...user, role: (userGroup === 'students' ? 'Student' : 'Tutor')});
           });
