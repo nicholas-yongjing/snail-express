@@ -14,13 +14,13 @@ export default function Post(props) {
   const [author, setAuthor] = useState([]);
   const [replies, setReplies] = useState([]);
 
-  const getUserGroup = useCallback((user) => {
-    if (user && currentClass) {
-      if (currentClass.studentIds.includes(user.id)) {
+  const getUserGroup = useCallback((userId) => {
+    if (userId && currentClass) {
+      if (currentClass.studentIds.includes(userId)) {
         return "students";
-      } else if (currentClass.tutorIds.includes(user.id)) {
+      } else if (currentClass.tutorIds.includes(userId)) {
         return "tutors";
-      } else if (currentClass.headTutor.id === user.id) {
+      } else if (currentClass.headTutor.id === userId) {
         return 'headTutor';
       } else {
         return null;
@@ -30,7 +30,7 @@ export default function Post(props) {
 
   const populateAuthor = useCallback(() => {
     if (currentClass && currentThread && currentPost) {
-      const userGroup = getUserGroup(currentPost.author);
+      const userGroup = getUserGroup(currentPost.authorId);
       if (!userGroup) {
         setAuthor({name: "[Deleted User]", role: 'Unknown role'});
       } else if (userGroup === 'headTutor') {

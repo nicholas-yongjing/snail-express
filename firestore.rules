@@ -143,6 +143,13 @@ service cloud.firestore {  match /databases/{database}/documents {
           && request.resource.data.keys().hasOnly(keys); 
       }
 
+      function isValidPostDocument() {
+        let keys = ["title", "body", "authorId",
+          "endorsed",  "upvoters", "downvoters", "timestamp"];     
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys); 
+      }
+
       allow create: if isAuthenticated()
         && isValidClassDocument()
         && request.resource.data.headTutor.id == request.auth.uid;
@@ -168,12 +175,19 @@ service cloud.firestore {  match /databases/{database}/documents {
         allow read: if isInClass();
         allow create: if isInvitedAsStudent()
           && isValidStudentDocument();
+        allow update: if isStudent();
       }
 
       match /forumThreads/{thread} {
         allow read: if isInClass();
         allow write: if (isHeadTutor() || isTutor())
           && isValidThreadDocument();
+      }
+
+      match /forumThreads/{thread}/forumPosts/{post} {
+        allow read: if isInClass();
+        allow write: if isInClass()
+          && isValidPostDocument();
       }
     }
   }

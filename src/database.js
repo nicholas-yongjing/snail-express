@@ -338,11 +338,11 @@ export default function getDatabase(firestore) {
       });
   }
 
-  async function addForumPost(classId, threadId, postTitle, postBody, author) {
+  async function addForumPost(classId, threadId, postTitle, postBody, authorId) {
     const post = {
       title: postTitle,
       body: postBody,
-      author: author,
+      authorId: authorId,
       endorsed: false,
       upvoters: [],
       downvoters: [],
@@ -352,7 +352,7 @@ export default function getDatabase(firestore) {
       classId, "forumThreads", threadId, "forumPosts");
 
     return addDoc(postsRef, post).then(() => {
-      return _incrementActivityCount(classId, author.id, "posts")
+      return _incrementActivityCount(classId, authorId, "posts")
     });
   }
 
