@@ -1,11 +1,12 @@
 import { useRef } from "react";
 import { useClass } from "../contexts/ClassContext";
-import { addInvites, getStudents, getTutors, validateEmails } from "../database";
+import firestore from "../firestore";
 import { Form } from "react-bootstrap";
 import Button from "../components/Button";
 
 export default function SettingsGeneral(props) {
   const { currentClass, changeClassName } = useClass();
+  const { addInvites, getStudents, getTutors, validateEmails } = firestore;
   const { setMessage, setError, loading, setLoading, role } = props;
   const classNameRef = useRef();
   const studentFormRef = useRef();

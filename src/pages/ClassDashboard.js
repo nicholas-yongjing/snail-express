@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useClass } from '../contexts/ClassContext';
-import { getLevellingSettings, getUser } from '../database';
+import firestore from '../firestore';
 import SideBar from "../components/SideBar"
 import WebPage from '../components/WebPage';
 import Header from '../components/Header';
@@ -10,6 +10,7 @@ import Header from '../components/Header';
 export default function ClassDashBoard() {
   const { currentUser } = useAuth();
   const { currentClass, setCurrentClass } = useClass();
+  const { getLevellingSettings, getUser } = firestore;
   const [classUser, setClassUser] = useState({});
   const [levelUpExp, setlevelUpExp] = useState([]);
   const sidebarLinks = [['/students', 'Students'],

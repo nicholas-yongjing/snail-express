@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useClass } from '../contexts/ClassContext';
-import { getUser, getForumReplies } from '../database';
+import firestore from '../firestore';
 import { Card } from 'react-bootstrap';
 import ReactionBar from "../components/ReactionBar";
 import Reply from "../components/Reply"
 
 export default function Post(props) {
   const { currentClass } = useClass();
+  const { getUser, getForumReplies } = firestore;
   const currentThread = props.thread;
   const currentPost = props.post;
   const populatePosts = props.populatePosts;

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useClass } from "../contexts/ClassContext";
-import { changeLevellingSettings, getLevellingSettings } from "../database";
+import firestore from "../firestore";
 import { Form } from "react-bootstrap";
 import Button from "./Button";
 
 export default function SettingsLevelling(props) {
   const { currentClass } = useClass();
+  const { changeLevellingSettings, getLevellingSettings } = firestore;
   const postLimitRef = useRef();
   const voteLimitRef = useRef();
   const postExpRef = useRef();
