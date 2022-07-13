@@ -40,7 +40,7 @@ export default function SettingsLevelling(props) {
         }
       })
     }
-  }, [limits, expGains, currentClass]);
+  }, [limits, expGains, currentClass, getLevellingSettings]);
 
   useEffect(() => {
     populateSettings();

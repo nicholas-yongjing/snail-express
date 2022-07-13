@@ -20,7 +20,7 @@ export default function ForumPosts(props) {
         setPosts(retrievedPosts);
       });
     }
-  }, [currentUser, currentClass, currentThread]);
+  }, [currentUser, currentClass, currentThread, getForumPosts]);
 
   useEffect(() => {
     populatePosts();

@@ -42,7 +42,7 @@ export default function Post(props) {
           });
       }
     }
-  }, [currentClass, currentThread, currentPost, getUserGroup]);
+  }, [currentClass, currentThread, currentPost, getUserGroup, getUser]);
 
   const populateReplies = useCallback(() => {
     if (currentClass && currentThread && currentPost) {
@@ -51,7 +51,7 @@ export default function Post(props) {
           setReplies(retrievedReplies);
         });
     }
-  }, [currentClass, currentThread, currentPost]);
+  }, [currentClass, currentThread, currentPost, getForumReplies]);
 
   useEffect(() => {
     populateAuthor();

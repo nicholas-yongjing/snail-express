@@ -20,7 +20,7 @@ export default function SettingsForums(props) {
         }
       });
     }
-  }, [currentClass, role]);
+  }, [currentClass, role, getForumThreads]);
 
   useEffect(() => {
     populateThreads()

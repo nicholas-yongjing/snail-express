@@ -21,7 +21,7 @@ const Tutors = () => {
           }));
         })
     }
-  }, [currentUser, currentClass]);
+  }, [currentUser, currentClass, getTutors]);
 
   useEffect(() => {
     populateTutors();

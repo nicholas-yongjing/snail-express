@@ -23,7 +23,7 @@ export default function ClassDashBoard() {
         setlevelUpExp(settings.expRequirements)
       })
     }
-  }, [currentClass]);
+  }, [currentClass, getLevellingSettings]);
 
   const getRole = useCallback(() => {
     if (currentUser && currentClass) {
@@ -50,7 +50,7 @@ export default function ClassDashBoard() {
         });
       }
     }
-  }, [currentUser.uid, currentUser.displayName, currentClass.id, getRole, populateLevelUpExp]);
+  }, [currentUser.uid, currentUser.displayName, currentClass.id, getRole, populateLevelUpExp, getUser]);
 
   useEffect(() => {
     populateClassUser();

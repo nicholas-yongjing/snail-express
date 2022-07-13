@@ -39,7 +39,7 @@ export default function Reply(props) {
           });
       }
     }
-  }, [currentClass, currentThread, currentReply, getUserGroup]);
+  }, [currentClass, currentThread, currentReply, getUserGroup, getUser]);
 
   useEffect(() => {
     populateAuthor();

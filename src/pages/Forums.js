@@ -19,7 +19,7 @@ export default function Forums() {
         }
       });
     }
-  }, [currentClass.id])
+  }, [currentClass.id, getForumThreads])
 
   useEffect(() => {
     populateThreads()
