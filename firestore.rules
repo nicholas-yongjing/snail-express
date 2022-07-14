@@ -137,6 +137,19 @@ service cloud.firestore {  match /databases/{database}/documents {
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["tutorInvites", "tutorIds"]));
       }
 
+      function isValidPostUpdate() {
+        return
+          (
+            isStudent()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["upvoters", "downvoters"])
+          )
+          ||
+          (
+            (isHeadTutor() || isTutor())
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["upvoters", "downvoters", "endorsed"])
+          );
+      }
+
       function isValidThreadDocument() {
         let keys = ["name", "timestamp"];     
         return request.resource.data.keys().hasAll(keys)
@@ -195,7 +208,9 @@ service cloud.firestore {  match /databases/{database}/documents {
         allow read: if isInClass();
         allow create: if isInClass()
           && isValidPostDocument()
-          && request.resource.data.authorId == request.auth.uid; 
+          && request.resource.data.authorId == request.auth.uid;
+        allow update: if isValidPostDocument()
+          && isValidPostUpdate()
       }
 
       match /forumThreads/{thread}/forumPosts/{post}/forumReplies/{reply} {
