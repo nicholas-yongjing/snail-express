@@ -36,7 +36,7 @@ export default function NavigationBar() {
           </Link>
           <Link
             className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
-            to="/quiz"
+            to="/quiz-dashboard"
           >
             Quiz
           </Link>

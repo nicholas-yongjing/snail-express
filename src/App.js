@@ -17,6 +17,8 @@ import Forums from "./pages/Forums";
 import LiveFeedback from "./pages/LiveFeedback";
 import Students from "./pages/Students";
 import Tutors from "./pages/Tutors";
+import QuizDashboard from "./pages/QuizDashboard";
+import AllQuizzes from "./pages/AllQuizzes";
 
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
@@ -120,6 +122,22 @@ function App() {
               element={
                 <ClassRoute>
                   <Tutors />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/quiz-dashboard"
+              element={
+                <ClassRoute>
+                  <QuizDashboard />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/all-quizzes"
+              element={
+                <ClassRoute>
+                  <QuizDashboard />
                 </ClassRoute>
               }
             />
