@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
 import AllQuizzes from "./AllQuizzes";
 import OfflineQuizzes from "./OfflineQuizzes";
+import SideBar from "../components/SideBar";
+import WebPage from "../components/WebPage";
 
 import { useClass } from "../contexts/ClassContext";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../firebase";
+import { Link } from "react-router-dom";
 
 export default function QuizDashboard() {
   const { currentClass, isTutor } = useClass();
   const [quizList, setQuizList] = useState([]);
   const sidebarLinks = isTutor
     ? [
-        ["/all-quizzes", "All quizzes"],
+        ["/quiz-dashboard", "All quizzes"],
         ["/create-quiz", "Create Quiz"],
       ]
     : [
-        ["/offline-quizzes", "Offline quizzes"],
+        ["/quiz-dashboard", "Offline quizzes"],
         ["/live-quiz", "Live quiz"],
       ];
 
@@ -23,14 +26,52 @@ export default function QuizDashboard() {
     console.log("Populating quiz list");
     getDocs(collection(firestore, "classes", currentClass.id, "quizzes")).then(
       (snapshot) => {
-        setQuizList(snapshot.docs); // Populate quiz list
+        snapshot.docs.map((document) => {
+          getDocs(
+            collection(
+              firestore,
+              "classes",
+              currentClass.id,
+              "quizzes",
+              document.id,
+              "questions"
+            )
+          ).then((questions) => {
+            setQuizList([
+              ...quizList,
+              { id: document.id, data: questions.docs },
+            ]);
+          });
+        });
       }
     );
+    setTimeout(() => {}, 2000);
   }, []);
 
-  if (isTutor) {
-    return <AllQuizzes quizList={quizList} sidebarLinks={sidebarLinks} />; 
-  } else {
-    return <OfflineQuizzes quizList={quizList} sidebarLinks={sidebarLinks} />;
-  }
+  return (
+    <>
+      <WebPage>
+        <div className="flex-grow-1 justify-self-stretch d-flex text-slate-200 fs-5">
+          <SideBar>
+            {sidebarLinks.map(([link, text]) => {
+              return (
+                <Link
+                  to={link}
+                  key={text}
+                  className="btn fs-4 w-100 generic-button d-flex justify-content-center"
+                >
+                  {text}
+                </Link>
+              );
+            })}
+          </SideBar>
+          {isTutor ? (
+            <AllQuizzes quizList={quizList} />
+          ) : (
+            <OfflineQuizzes quizList={quizList} />
+          )}
+        </div>
+      </WebPage>
+    </>
+  );
 }

@@ -1,29 +1,37 @@
-import React from "react";
-import SideBar from "../components/SideBar";
-import { Link } from "react-router-dom";
-import WebPage from "../components/WebPage";
+import React, { useState } from "react";
+import Quiz from "../components/Quiz";
+import Button from "../components/Button";
 
 export default function AllQuizzes(props) {
-  const { quizList, sidebarLinks } = props;
+  const { quizList } = props;
+  const [showQuiz, setShowQuiz] = useState(false);
 
-  {console.log(quizList)}
+  const toggleQuiz = () => {
+    setShowQuiz(!showQuiz);
+  };
+
   return (
-    <WebPage>
-      <div className="flex-grow-1 justify-self-stretch d-flex text-slate-200 fs-5">
-        <SideBar>
-          {sidebarLinks.map(([link, text]) => {
-            return (
-              <Link
-                to={link}
-                key={text}
-                className="btn fs-4 w-100 generic-button d-flex justify-content-center"
-              >
-                {text}
-              </Link>
-            );
-          })}
-        </SideBar>
-      </div>
-    </WebPage>
+    <div className="p-4">
+      {console.log(quizList)}
+      {quizList.map((obj, index) => {
+        const name = obj.id;
+        const questions = obj.data.map((doc) => doc.data());
+        return showQuiz ? (
+          <div key={index}>
+            <Quiz name={name} questions={questions} />
+            <Button className="mt-3" onClick={toggleQuiz}>
+              Hide quiz
+            </Button>
+          </div>
+        ) : (
+          <div key={index}>
+            <h3>View all quizzes</h3>
+            <Button className="mt-3" onClick={toggleQuiz}>
+              {name}
+            </Button>
+          </div>
+        );
+      })}
+    </div>
   );
 }
