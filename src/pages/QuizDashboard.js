@@ -39,13 +39,17 @@ export default function QuizDashboard() {
     if (path === "") {
       setDoc(doc(firestore, `${activeQuiz}`, "questions", "status"), {
         active: false,
-        curr: 0
+        curr: 0,
+        correct: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        wrong: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       });
     } else {
       setActiveQuiz(path);
       setDoc(doc(firestore, `${path}`, "questions", "status"), {
         active: true,
-        curr: 0
+        curr: 0,
+        correct: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        wrong: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       });
     }
   };
@@ -53,8 +57,9 @@ export default function QuizDashboard() {
   useEffect(() => {
     setDisplayQuiz(false);
     setActiveQuiz("");
-    getDocs(collection(firestore, "classes", currentClass.id, "quizzes"))
-      .then((s) => setQuizRefList(s.docs.map((content) => content.ref.path)))
+    getDocs(collection(firestore, "classes", currentClass.id, "quizzes")).then(
+      (s) => setQuizRefList(s.docs.map((content) => content.ref.path))
+    );
   }, []);
 
   const isTutor = () => {
@@ -66,7 +71,10 @@ export default function QuizDashboard() {
     }
   };
 
-  const sidebarLinks = [["/quiz", "All quizzes"], ["/livequiz", "Live quiz"]];
+  const sidebarLinks = [
+    ["/quiz", "All quizzes"],
+    ["/livequiz", "Live quiz"],
+  ];
   if (isTutor) {
     sidebarLinks.push(["/createquiz", "Create quiz"]);
   }
@@ -93,7 +101,9 @@ export default function QuizDashboard() {
           {isTutor ? (
             <div>
               {displayQuiz ? (
-                <h2 className="p-3">{activeQuiz.split("/")[activeQuiz.split("/").length - 1]}</h2>
+                <h2 className="p-3">
+                  {activeQuiz.split("/")[activeQuiz.split("/").length - 1]}
+                </h2>
               ) : (
                 <h2 className="p-3">View all quizzes here</h2>
               )}

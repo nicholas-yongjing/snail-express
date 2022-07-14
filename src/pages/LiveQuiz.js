@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { firestore } from "../firebase";
 import { useClass } from "../contexts/ClassContext";
 import {
@@ -9,12 +9,13 @@ import {
   getDocs,
   orderBy,
   onSnapshot,
+  setDoc,
 } from "firebase/firestore";
 import Button from "../components/Button";
 
 export default function LiveQuiz(props) {
   const { currentClass, isTutor } = useClass();
-  const quizRef = props.quiz;
+  const quizRef = useMemo(() => props.quiz, [props]);
   const [questionList, setQuestionList] = useState([]);
   const [index, setIndex] = useState(0);
   const [question, setQuestion] = useState("");
@@ -34,9 +35,6 @@ export default function LiveQuiz(props) {
       });
     };
     populateQuestions();
-    setLoading(true);
-
-    setLoading(false);
   }, []);
 
   const handleStartQuiz = () => {
@@ -55,39 +53,46 @@ export default function LiveQuiz(props) {
   };
 
   const handleUpdateStatistics = (response) => {
-    // setDisabled(true);
-    // setDoc(doc(firestore, quizRef, "attempts"), {
-    // })
+    setDisabled(true);
+    let obj = {}
+    getDoc(doc(firestore, quizRef, "status")).then(doc => {
+        obj = doc;
+    });
+    console.log(obj);
+    if (response == answer) {
+    //   temp.correct[index] += 1;
+    //   setDoc(doc(firestore, quizRef, "status"), temp);
+    } else {
+    //   temp.wrong[index] += 1;
+    //   setDoc(doc(firestore, quizRef, "status"), temp);
+    }
   };
 
   useEffect(() => {
+    console.log("using effect");
     const unsubscribe = onSnapshot(doc(firestore, quizRef, "status"), (doc) => {
-      setLoading(true);
-      setIndex(doc.data().curr);
-      setQuestion(questionList[index].qn);
-      setOptions([
-        questionList[index].A,
-        questionList[index].B,
-        questionList[index].C,
-        questionList[index].D,
-      ]);
-      setAnswer(questionList[index].ans);
-      setTimeout(() => setLoading(false), 1000);
+      console.log("inside snapshot");
+      if (questionList.length > 0) {
+        setDisabled(false);
+        setLoading(true);
+        setIndex(doc.data().curr);
+        setQuestion(questionList[index].qn);
+        setOptions([
+          questionList[index].A,
+          questionList[index].B,
+          questionList[index].C,
+          questionList[index].D,
+        ]);
+        setAnswer(questionList[index].ans);
+        setTimeout(() => setLoading(false), 2000);
+      }
     });
-
-    return () => unsubscribe();
-  }, [questionList, index, question, options, answer]);
+    return unsubscribe;
+  }, [quizRef]);
 
   return (
     <>
       <div>
-        {active ? (
-          <div></div>
-        ) : (
-          <Button onClick={handleStartQuiz}>
-            Click here to start the quiz
-          </Button>
-        )}
         <div className="slate-600 p-4" style={{ minWidth: "" }}>
           <h3 className="p-3">Question {index + 1}</h3>
           <h4 className="slate-800 p-4" style={{ margin: "12px" }}>
