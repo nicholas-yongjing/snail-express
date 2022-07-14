@@ -4,7 +4,8 @@ import {
 } from "firebase/firestore";
 
 export default function getDatabase(firestore) {
-
+  const LOG = false;
+  
   function _removeDuplicates(arr) {
     return [...(new Set(arr))];
   }
@@ -103,7 +104,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getClasses(userId, role) {
-    console.log("Retrieving classes")
+    if (LOG) {console.log("Retrieving classes");}
     let q;
     if (role === 'student') {
       q = query(collection(firestore, "classes"),
@@ -126,7 +127,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getInvites(email, role) {
-    console.log("Retrieving invites");
+    if (LOG) {console.log("Retrieving invites");}
     let field;
     if (role === 'student') {
       field = 'studentInvites';
@@ -218,7 +219,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getUser(classId, userGroup, userId) {
-    console.log("Retrieving user");
+    if (LOG) {console.log("Retrieving user");}
     if (userGroup !== 'students' && userGroup !== 'tutors') {
       throw new Error(`Invalid user group: ${userGroup}`)
     }
@@ -229,7 +230,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getStudents(classId) {
-    console.log("Retrieving students");
+    if (LOG) {console.log("Retrieving students");}
     const studentsRef = collection(firestore, "classes",
       classId, "students");
     return getDocs(studentsRef)
@@ -241,7 +242,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getTutors(classId) {
-    console.log("Retrieving tutors");
+    if (LOG) {console.log("Retrieving tutors");}
     const tutorsRef = collection(firestore, "classes",
       classId, "tutors");
     return getDocs(tutorsRef)
@@ -253,7 +254,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getLevellingSettings(classId) {
-    console.log('Retrieving Levelling Settings')
+    if (LOG) {console.log('Retrieving Levelling Settings');}
     const settingsRef = doc(firestore, 'classes', classId, 'settings', 'levelling');
     return getDoc(settingsRef)
       .then((snapshot) => {
@@ -277,7 +278,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getForumThreads(classId) {
-    console.log("Retrieving forum threads");
+    if (LOG) {console.log("Retrieving forum threads");}
     const threadsRef = collection(firestore, "classes", classId, "forumThreads");
     return (getDocs(query(threadsRef, orderBy('timestamp')))
       .then((querySnapshot) => {
@@ -358,7 +359,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getForumPosts(classId, threadId) {
-    console.log("Retrieving forum posts")
+    if (LOG) {console.log("Retrieving forum posts");}
     const postsRef = collection(firestore, "classes",
       classId, "forumThreads", threadId, "forumPosts");
     return (getDocs(query(postsRef, orderBy('timestamp')))
@@ -387,7 +388,7 @@ export default function getDatabase(firestore) {
   }
 
   async function getForumReplies(classId, threadId, postId) {
-    console.log("Retrieving forum replies");
+    if (LOG) {console.log("Retrieving forum replies");}
     const repliesRef = collection(firestore, "classes",
       classId, "forumThreads", threadId, "forumPosts", postId, "forumReplies");
     return (getDocs(query(repliesRef, orderBy('timestamp')))

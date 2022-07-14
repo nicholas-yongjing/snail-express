@@ -335,7 +335,7 @@ describe("Forums", () => {
         .then((invites) => {
           return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
         }).then(() => {
-          assertSucceeds(dennyDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "reply teacher", "denny"))
+          return assertSucceeds(dennyDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "reply teacher", "denny"))
         }),
       elvinDb.getInvites("elvin@gmail.com", "tutor")
         .then((invites) => {
