@@ -17,10 +17,6 @@ import Forums from "./pages/Forums";
 import LiveFeedback from "./pages/LiveFeedback";
 import Students from "./pages/Students";
 import Tutors from "./pages/Tutors";
-import Quiz from "./pages/QuizDashboard";
-import CreateQuiz from "./components/CreateQuiz";
-import DisplayQuiz from "./pages/DisplayQuiz";
-import LiveQuiz from "./pages/LiveQuiz";
 
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
@@ -124,38 +120,6 @@ function App() {
               element={
                 <ClassRoute>
                   <Tutors />
-                </ClassRoute>
-              }
-            />
-            <Route
-              path="/quiz"
-              element={
-                <ClassRoute>
-                  <Quiz />
-                </ClassRoute>
-              }
-            />
-            <Route
-              path="/createquiz"
-              element={
-                <ClassRoute>
-                  <CreateQuiz />
-                </ClassRoute>
-              }
-            />
-            <Route
-              path="/displayquiz"
-              element={
-                <ClassRoute>
-                  <DisplayQuiz />
-                </ClassRoute>
-              }
-            />
-            <Route
-              path="/livequiz"
-              element={
-                <ClassRoute>
-                  <LiveQuiz />
                 </ClassRoute>
               }
             />
