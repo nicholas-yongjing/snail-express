@@ -14,7 +14,7 @@ export default function AllQuizzes(props) {
     <div className="p-4">
       {quizList.map((obj, index) => {
         const name = obj.id;
-        const questions = obj.data.map((doc) => doc.data());
+        const questions = obj.data.forEach((doc) => doc.data());
         return showQuiz ? (
           <div key={index}>
             <Quiz name={name} questions={questions} />

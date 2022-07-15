@@ -22,15 +22,17 @@ export default function QuizDashboard() {
         ["/live-quiz", "Live quiz"],
       ];
 
-  const populateQuizList = () => {
-    setQuizList([]);
+  const populateQuizList = async () => {
     console.log("Populating quiz list");
-    getDocs(collection(firestore, "classes", currentClass.id, "quizzes")).then(
-      (snapshot) => {
-        console.log(snapshot.docs);
-        snapshot.docs.map((document) => {
+    return await getDocs(
+      collection(firestore, "classes", currentClass.id, "quizzes")
+    ).then(async (snapshot) => {
+      console.log(snapshot.docs);
+
+      return Promise.all(
+        snapshot.docs.map(async (document) => {
           console.log(document);
-          getDocs(
+          return await getDocs(
             collection(
               firestore,
               "classes",
@@ -39,16 +41,17 @@ export default function QuizDashboard() {
               document.id,
               "questions"
             )
-          )
-            .then((questions) => {
-              setQuizList((quizList) => {
-                return [...quizList, { id: document.id, data: questions.docs }];
-              });
-            })
-            .finally(() => console.log("Setting complete for: " + document.id));
-        });
-      }
-    );
+          );
+        })
+      ).then(async (promises) => {
+        return setQuizList(promises.map((questions) => {
+          return { id: Math.random(), data: questions.docs };
+        }));
+        // return setQuizList((quizList) => {
+        //   return [...quizList, { id: document.id, data: questions.docs }];
+        // });
+      });
+    });
   };
 
   useEffect(() => {
