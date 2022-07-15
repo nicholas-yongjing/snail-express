@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 export default function QuizDashboard() {
   const { currentClass, isTutor } = useClass();
   const [quizList, setQuizList] = useState([]);
+
   const sidebarLinks = isTutor
     ? [
         ["/quiz-dashboard", "All quizzes"],
@@ -23,15 +24,15 @@ export default function QuizDashboard() {
       ];
 
   const populateQuizList = async () => {
-    console.log("Populating quiz list");
+    // console.log("Populating quiz list");
     return await getDocs(
       collection(firestore, "classes", currentClass.id, "quizzes")
     ).then(async (snapshot) => {
-      console.log(snapshot.docs);
+    //   console.log(snapshot.docs);
 
       return Promise.all(
         snapshot.docs.map(async (document) => {
-          console.log(document);
+        //   console.log(document);
           return await getDocs(
             collection(
               firestore,
@@ -44,12 +45,14 @@ export default function QuizDashboard() {
           );
         })
       ).then(async (promises) => {
-        return setQuizList(promises.map((questions) => {
-          return { id: Math.random(), data: questions.docs };
-        }));
-        // return setQuizList((quizList) => {
-        //   return [...quizList, { id: document.id, data: questions.docs }];
-        // });
+        return setQuizList(
+          promises.map((questions) => {
+            return {
+              id: questions.query._path.segments[3], // get quiz name from path
+              data: questions.docs,
+            };
+          })
+        );
       });
     });
   };

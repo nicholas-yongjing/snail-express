@@ -62,10 +62,10 @@ export default function AddQuestions(props) {
     questionRef.current.value = "";
   };
 
-  return count >= 10 ? (
+  return count > 10 ? (
     <div className="d-flex flex-column align-items-center">
       <div className="mt-3">Max question limit reached!</div>
-      <Link to="/quiz">
+      <Link to="/quiz-dashboard">
         <Button className="mt-3 mb-3">Proceed to quiz list</Button>
       </Link>
     </div>
@@ -73,7 +73,7 @@ export default function AddQuestions(props) {
     <div>
       <div className="text-slate-300">
         <div variant="info" className="fs-5 mt-2">
-          {count + "/10 questions added so far"}
+          {(count - 1) + "/10 questions added so far"}
         </div>
       </div>
       <div className="d-flex flex-row-reverse">

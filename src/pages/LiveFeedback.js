@@ -70,7 +70,7 @@ export default function LiveFeedback() {
             />
             <DropdownButton
               title="Submit feedback"
-              className="slate-800 btn-secondary"
+              className="slate-600 btn-secondary"
             >
               {reactions.map((reaction) => {
                 return (
