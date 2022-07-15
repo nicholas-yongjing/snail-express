@@ -18,9 +18,8 @@ import LiveFeedback from "./pages/LiveFeedback";
 import Students from "./pages/Students";
 import Tutors from "./pages/Tutors";
 import QuizDashboard from "./pages/QuizDashboard";
-import AllQuizzes from "./pages/AllQuizzes";
 import CreateQuiz from "./pages/CreateQuiz";
-import Quiz from "./components/Quiz";
+import LiveQuiz from "./pages/LiveQuiz";
 
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
@@ -140,6 +139,14 @@ function App() {
               element={
                 <ClassRoute>
                   <CreateQuiz />
+                </ClassRoute>
+              }
+            />
+            <Route
+              path="/live-quiz"
+              element={
+                <ClassRoute>
+                  <LiveQuiz />
                 </ClassRoute>
               }
             />

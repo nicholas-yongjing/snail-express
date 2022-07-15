@@ -3,11 +3,10 @@ import SideBar from "../components/SideBar";
 import WebPage from "../components/WebPage";
 import { Link } from "react-router-dom";
 
-export default function AllQuizzes(props) {
+export default function OfflineQuizzes(props) {
   const { quizList, sidebarLinks } = props;
 
   return (
-    <WebPage>
-    </WebPage>
+    <div>Offline quizzes</div>
   );
 }

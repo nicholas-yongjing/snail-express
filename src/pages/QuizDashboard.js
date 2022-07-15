@@ -12,8 +12,9 @@ import { Link } from "react-router-dom";
 export default function QuizDashboard() {
   const { currentClass, isTutor } = useClass();
   const [quizList, setQuizList] = useState([]);
+  const tutor = isTutor();
 
-  const sidebarLinks = isTutor
+  const sidebarLinks = tutor
     ? [
         ["/quiz-dashboard", "All quizzes"],
         ["/create-quiz", "Create Quiz"],
@@ -78,7 +79,7 @@ export default function QuizDashboard() {
               );
             })}
           </SideBar>
-          {isTutor ? (
+          {tutor ? (
             <AllQuizzes quizList={quizList} />
           ) : (
             <OfflineQuizzes quizList={quizList} />

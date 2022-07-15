@@ -3,7 +3,6 @@ import Button from "./Button";
 import { useClass } from "../contexts/ClassContext";
 import { firestore } from "../firebase";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { Card, Container } from "react-bootstrap";
 
 export default function Quiz(props) {
   const { currentQuiz } = props;
@@ -26,10 +25,18 @@ export default function Quiz(props) {
   );
 
   useEffect(() => {
-    getDoc(controlsRef).then((doc) => setControls(doc.data()));
+    getDoc(controlsRef).then((doc) => setControls(doc.data())); // Localise controls
+    const unsubscribe = () => setDoc(controlsRef, {
+      currentQuestion: 1,
+      live: false,
+    });
+    return unsubscribe;
   }, []);
 
   const handleToggleQuiz = () => {
+    setDoc(doc(firestore, "classes", currentClass.id, "quizzes", "live"), {
+      name: name,
+    });
     updateDoc(controlsRef, { ...controls, live: !live });
     setControls((prevState) => ({
       ...prevState,
@@ -37,13 +44,8 @@ export default function Quiz(props) {
     }));
   };
 
-  const handleUpdateControls = () => {
-    // always update locally first before pushing onto DB
-  };
-
-  const handleSubmit = () => {};
-
   const handlePrevious = () => {
+    // always update locally first before pushing onto DB
     updateDoc(controlsRef, {
       ...controls,
       currentQuestion: currentQuestion - 1,
@@ -55,6 +57,7 @@ export default function Quiz(props) {
   };
 
   const handleNext = () => {
+    // always update locally first before pushing onto DB
     updateDoc(controlsRef, {
       ...controls,
       currentQuestion: currentQuestion + 1,
