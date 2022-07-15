@@ -12,7 +12,6 @@ export default function AllQuizzes(props) {
 
   return (
     <div className="p-4">
-      {console.log(quizList)}
       {quizList.map((obj, index) => {
         const name = obj.id;
         const questions = obj.data.map((doc) => doc.data());

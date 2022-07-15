@@ -22,11 +22,14 @@ export default function QuizDashboard() {
         ["/live-quiz", "Live quiz"],
       ];
 
-  useEffect(() => {
+  const populateQuizList = () => {
+    setQuizList([]);
     console.log("Populating quiz list");
     getDocs(collection(firestore, "classes", currentClass.id, "quizzes")).then(
       (snapshot) => {
+        console.log(snapshot.docs);
         snapshot.docs.map((document) => {
+          console.log(document);
           getDocs(
             collection(
               firestore,
@@ -36,16 +39,20 @@ export default function QuizDashboard() {
               document.id,
               "questions"
             )
-          ).then((questions) => {
-            setQuizList([
-              ...quizList,
-              { id: document.id, data: questions.docs },
-            ]);
-          });
+          )
+            .then((questions) => {
+              setQuizList((quizList) => {
+                return [...quizList, { id: document.id, data: questions.docs }];
+              });
+            })
+            .finally(() => console.log("Setting complete for: " + document.id));
         });
       }
     );
-    setTimeout(() => {}, 2000);
+  };
+
+  useEffect(() => {
+    populateQuizList();
   }, []);
 
   return (
