@@ -382,8 +382,8 @@ export default function getDatabase(firestore) {
     };
     const repliesRef = collection(firestore, "classes", classId,
       "forumThreads", threadId, "forumPosts", postId, "forumReplies");
-    return addDoc(repliesRef, reply).then(() => {
-      return _incrementActivityCount(classId, authorId, "posts")
+    return addDoc(repliesRef, reply).then((snapshot) => {
+      return _incrementActivityCount(classId, authorId, "posts").then(() => snapshot);
     });
   }
 

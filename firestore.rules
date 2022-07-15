@@ -126,6 +126,26 @@ service cloud.firestore {  match /databases/{database}/documents {
           && request.resource.data.expGain.keys().hasAll(expCategories);
       }
 
+      function isValidThreadDocument() {
+        let keys = ["name", "timestamp"];     
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys); 
+      }
+
+      function isValidPostDocument() {
+        let keys = ["title", "body", "authorId",
+          "endorsed",  "upvoters", "downvoters", "timestamp"];     
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys);
+      }
+
+      function isValidReplyDocument() {
+        let keys = ["body", "authorId",
+          "endorsed",  "upvoters", "downvoters", "timestamp"];     
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys);
+      }
+
       function isValidStudentUpdate() {
         return (isStudent() || isInvited())
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["studentInvites", "studentIds"]);
@@ -150,26 +170,10 @@ service cloud.firestore {  match /databases/{database}/documents {
           );
       }
 
-      function isValidThreadDocument() {
-        let keys = ["name", "timestamp"];     
-        return request.resource.data.keys().hasAll(keys)
-          && request.resource.data.keys().hasOnly(keys); 
+      function isValidReplyUpdate() {
+        return isValidPostUpdate();
       }
-
-      function isValidPostDocument() {
-        let keys = ["title", "body", "authorId",
-          "endorsed",  "upvoters", "downvoters", "timestamp"];     
-        return request.resource.data.keys().hasAll(keys)
-          && request.resource.data.keys().hasOnly(keys);
-      }
-
-      function isValidReplyDocument() {
-        let keys = ["body", "authorId",
-          "endorsed",  "upvoters", "downvoters", "timestamp"];     
-        return request.resource.data.keys().hasAll(keys)
-          && request.resource.data.keys().hasOnly(keys);
-      }
-
+      
       allow create: if isAuthenticated()
         && isValidClassDocument()
         && request.resource.data.headTutor.id == request.auth.uid;
@@ -218,6 +222,8 @@ service cloud.firestore {  match /databases/{database}/documents {
         allow create: if isInClass()
           && isValidReplyDocument()
           && request.resource.data.authorId == request.auth.uid; 
+        allow update: if isValidReplyDocument()
+          && isValidReplyUpdate()
       }
     }
   }

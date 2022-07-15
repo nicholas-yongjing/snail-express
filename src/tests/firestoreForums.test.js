@@ -327,7 +327,7 @@ describe("Forums", () => {
     const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
 
     const postSnapshot = await barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry");
-    
+
     return Promise.all([
       assertFails(otherDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "im not allowed to reply", "otherUser")),
       assertSucceeds(barryDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "reply myself", "barry")),
@@ -369,7 +369,7 @@ describe("Forums", () => {
     const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
 
     const postSnapshot = await barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry");
-    
+
     return Promise.all([
       assertFails(otherDb.togglePostvote("otherUser", "upvote", classSnapshot.id, threadSnapshot.id, postSnapshot.id)),
       assertSucceeds(barryDb.togglePostvote("barry", "upvote", classSnapshot.id, threadSnapshot.id, postSnapshot.id)),
@@ -416,7 +416,7 @@ describe("Forums", () => {
     const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
 
     const postSnapshot = await barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry");
-    
+
     return Promise.all([
       assertFails(otherDb.togglePostEndorsement(classSnapshot.id, threadSnapshot.id, postSnapshot.id)),
       assertSucceeds(barryDb.togglePostEndorsement(classSnapshot.id, threadSnapshot.id, postSnapshot.id)),
@@ -424,7 +424,7 @@ describe("Forums", () => {
         .then((invites) => {
           return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
         }).then(() => {
-          return assertFails(dennyDb.togglePostEndorsement( classSnapshot.id, threadSnapshot.id, postSnapshot.id))
+          return assertFails(dennyDb.togglePostEndorsement(classSnapshot.id, threadSnapshot.id, postSnapshot.id))
         }),
       elvinDb.getInvites("elvin@gmail.com", "tutor")
         .then((invites) => {
@@ -441,5 +441,136 @@ describe("Forums", () => {
     }).then((posts) => {
       expect(posts[0].endorsed).toBe(false);
     });
+  });
+
+  it("should only let valid users reply to posts", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+    const otherFirestore = testEnv.authenticatedContext('otherUser', { email: "otherUser@gmail.com" }).firestore();
+    const otherDb = getDatabase(otherFirestore);
+
+    const classSnapshot = await barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    );
+
+    const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
+
+    const postSnapshot = await barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry");
+
+    return Promise.all([
+      assertFails(otherDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "not allowed to reply", "otherUser")),
+      assertSucceeds(barryDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "replying as head tutor", "barry")),
+      dennyDb.getInvites("denny@email.com", "student")
+        .then((invites) => {
+          return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
+        }).then(() => {
+          return assertSucceeds(dennyDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "student's reply", "denny"));
+        }),
+      elvinDb.getInvites("elvin@gmail.com", "tutor")
+        .then((invites) => {
+          return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+        }).then(() => {
+          return assertSucceeds(elvinDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "tutor's reply", "elvin"));
+        }),
+    ]);
+  });
+
+  it("should only let valid users view replies", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+    const otherFirestore = testEnv.authenticatedContext('otherUser', { email: "otherUser@gmail.com" }).firestore();
+    const otherDb = getDatabase(otherFirestore);
+
+    const classSnapshot = await barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    );
+
+    const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
+    const postSnapshot = await barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry");
+
+    return barryDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "barry's reply", "barry")
+      .then(() => {
+        return Promise.all([
+          assertFails(otherDb.getForumReplies(classSnapshot.id, threadSnapshot.id, postSnapshot.id)),
+          barryDb.getForumReplies(classSnapshot.id, threadSnapshot.id, postSnapshot.id),
+          dennyDb.getInvites("denny@email.com", "student")
+            .then((invites) => {
+              return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
+            }).then(() => {
+              return dennyDb.getForumReplies(classSnapshot.id, threadSnapshot.id, postSnapshot.id);
+            }),
+          elvinDb.getInvites("elvin@gmail.com", "tutor")
+            .then((invites) => {
+              return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+            }).then(() => {
+              return elvinDb.getForumReplies(classSnapshot.id, threadSnapshot.id, postSnapshot.id);
+            }),
+        ]);
+      }).then((promises) => {
+        for (let i = 1; i < 4; i++) {
+          let replies = promises[i];
+          expect(replies.length).toBe(1);
+          expect(replies[0].body).toBe("barry's reply")
+        }
+      });
+  });
+
+  it("should only let head tutors and tutors endorse replies", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+
+    const classSnapshot = await barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    );
+
+    const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
+    const postSnapshot = await barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry");
+    const replySnapshot = await barryDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "barry's reply", "barry");
+
+    return Promise.all([
+      assertSucceeds(barryDb.togglePostEndorsement(classSnapshot.id, threadSnapshot.id, postSnapshot.id, replySnapshot.id)),
+      dennyDb.getInvites("denny@email.com", "student")
+        .then((invites) => {
+          return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
+        }).then(() => {
+          return assertFails(dennyDb.togglePostEndorsement(classSnapshot.id, threadSnapshot.id, postSnapshot.id, replySnapshot.id));
+        }),
+      elvinDb.getInvites("elvin@gmail.com", "tutor")
+        .then((invites) => {
+          return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+        }).then(() => {
+          return assertSucceeds(elvinDb.togglePostEndorsement(classSnapshot.id, threadSnapshot.id, postSnapshot.id, replySnapshot.id));
+        }),
+    ]);
   });
 })
