@@ -570,6 +570,44 @@ describe("Forums", () => {
         }
       });
   });
+  
+  it("should only let authors edit replies", async () => {
+    const barryFirestore = testEnv.authenticatedContext('barry').firestore();
+    const barryDb = getDatabase(barryFirestore);
+    const dennyFirestore = testEnv.authenticatedContext('denny', { email: "denny@email.com" }).firestore();
+    const dennyDb = getDatabase(dennyFirestore);
+    const elvinFirestore = testEnv.authenticatedContext('elvin', { email: "elvin@gmail.com" }).firestore();
+    const elvinDb = getDatabase(elvinFirestore);
+
+    const classSnapshot = await barryDb.createClass("CS2134",
+      {
+        name: "barry ong",
+        id: "barry",
+        email: "barryong@email.com"
+      },
+      ["denny@email.com"],
+      ["elvin@gmail.com"]
+    );
+    const threadSnapshot = await barryDb.addForumThread(classSnapshot.id, "New General Class Thread")
+    const postSnapshot = await barryDb.addForumPost(classSnapshot.id, threadSnapshot.id, "barry's post", "hi everyone", "barry");
+    const replySnapshot = await barryDb.addForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, "barry's reply", "barry");
+
+    return Promise.all([
+      assertSucceeds(barryDb.editForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, replySnapshot.id, "i can edit reply")),
+      dennyDb.getInvites("denny@email.com", "student")
+        .then((invites) => {
+          return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
+        }).then(() => {
+          return assertFails(dennyDb.editForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, replySnapshot.id, "not allowed to edit"));
+        }),
+      elvinDb.getInvites("elvin@gmail.com", "tutor")
+        .then((invites) => {
+          return elvinDb.acceptInvite(invites[0].id, "elvin", "tutor", "elvin@gmail.com", "elvin lim");
+        }).then(() => {
+          return assertFails(elvinDb.editForumReply(classSnapshot.id, threadSnapshot.id, postSnapshot.id, replySnapshot.id, "not allowed to edit"));
+        }),
+    ]);
+  });
 
   it("should only let head tutors and tutors endorse replies", async () => {
     const barryFirestore = testEnv.authenticatedContext('barry').firestore();
