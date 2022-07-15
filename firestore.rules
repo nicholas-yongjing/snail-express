@@ -1,5 +1,6 @@
 rules_version = '2';
-service cloud.firestore {  match /databases/{database}/documents {
+service cloud.firestore {
+  match /databases/{database}/documents {
     match /classes/{class} {
 
       function isAuthenticated() {
@@ -225,6 +226,18 @@ service cloud.firestore {  match /databases/{database}/documents {
         allow update: if isValidReplyDocument()
           && isValidReplyUpdate()
       }
+
+     match /feedback/{individualFeedback} {
+      allow read, write: if isInClass();
+     }
+
+     match /quizzes/{quiz} {
+      allow read, write: if isInClass();
+     }
+
+     match /quizzes/{quiz}/questions/{questionNo} {
+      allow read, write: if isInClass();
+     }
     }
   }
 }
