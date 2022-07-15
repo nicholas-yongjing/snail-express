@@ -85,6 +85,12 @@ service cloud.firestore {
         return isHeadTutor() || isTutor() || isStudent();
       }
 
+      function isAuthor() {
+        return isInClass()
+          && "authorId" in resource.data
+          && resource.data.authorId == request.auth.uid; 
+      }
+
       function isValidClassDocument() {
         let keys = ["className", "headTutor", "tutorInvites", "studentInvites",
           "tutorIds", "studentIds", "timestamp"];
@@ -160,6 +166,11 @@ service cloud.firestore {
 
       function isValidPostUpdate() {
         return
+          (
+            isAuthor()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["title", "body"])
+          )
+          ||
           (
             isStudent()
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["upvoters", "downvoters"])

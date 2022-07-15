@@ -371,6 +371,17 @@ export default function getDatabase(firestore) {
     );
   }
 
+  async function editForumPost(classId, threadId, postId, postTitle, postBody) {
+    const post = {
+      title: postTitle,
+      body: postBody,
+    };
+    const postRef = doc(firestore, "classes",
+      classId, "forumThreads", threadId, "forumPosts", postId);
+
+    return updateDoc(postRef, post);
+  }
+
   async function addForumReply(classId, threadId, postId, postBody, authorId) {
     const reply = {
       body: postBody,
@@ -492,7 +503,7 @@ export default function getDatabase(firestore) {
     getClasses, getUser, getStudents, getTutors,
     getLevellingSettings, changeLevellingSettings,
     addForumThread, getForumThreads, addForumPost,
-    getForumPosts, addForumReply, getForumReplies,
+    getForumPosts, editForumPost, addForumReply, getForumReplies,
     togglePostEndorsement, togglePostvote,
     setLectureFeedback, resetLectureFeedbacks
   };
