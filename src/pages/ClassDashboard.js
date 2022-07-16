@@ -43,6 +43,7 @@ export default function ClassDashBoard() {
             handleClick={handleClick}
             buttonClass="light-button"
           />
+          <br />
           <User userId={currentUser.uid} />
         </div>
       </div>
