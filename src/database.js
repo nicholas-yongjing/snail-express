@@ -4,7 +4,7 @@ import {
 } from "firebase/firestore";
 
 export default function getDatabase(firestore) {
-  const LOG = false;
+  const LOG = true;
   
   function _removeDuplicates(arr) {
     return [...(new Set(arr))];
@@ -372,6 +372,7 @@ export default function getDatabase(firestore) {
   }
 
   async function editForumPost(classId, threadId, postId, postTitle, postBody) {
+    console.log(classId, threadId, postId, postTitle, postBody) 
     const post = {
       title: postTitle,
       body: postBody,

@@ -1,11 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { useClass } from '../contexts/ClassContext';
 import firestore from '../firestore';
 import { Card } from 'react-bootstrap';
 import ReactionBar from "../components/ReactionBar";
 import Reply from "../components/Reply"
+import Button from './Button';
+import EditPost from './EditPost';
+
 
 export default function Post(props) {
+  const { currentUser } = useAuth();
   const { currentClass } = useClass();
   const { getUser, getForumReplies } = firestore;
   const currentThread = props.thread;
@@ -13,6 +18,7 @@ export default function Post(props) {
   const populatePosts = props.populatePosts;
   const [author, setAuthor] = useState([]);
   const [replies, setReplies] = useState([]);
+  const [editing, setEditing] = useState(false);
 
   const getUserGroup = useCallback((userId) => {
     if (userId && currentClass) {
@@ -62,13 +68,33 @@ export default function Post(props) {
     <div className='d-flex flex-column fs-5'>
       <Card className='slate-700'>
         <Card.Body>
-          <h3><strong>{currentPost.title}</strong></h3>
+          <div className='d-flex justify-content-between align-items-center'>
+            <h3><strong>{currentPost.title}</strong></h3>
+            {
+              currentPost.authorId === currentUser.uid
+              ? <Button
+                onClick={() => {setEditing(!editing)}}
+              >
+                Edit
+              </Button>
+              : null
+            }
+          </div>
           <h4 className='d-flex gap-4'>
             <strong>{author.name}</strong>
             <span>{author.role}</span>
             <span>{author.level !== undefined ? `Level ${author.level}` : ''}</span>
           </h4>
-          <p>{currentPost.body}</p>
+          {editing
+            ? <EditPost
+              currentThread={currentThread}
+              currentPost={currentPost}
+              populatePosts={populatePosts}
+              setEditing={setEditing}
+            />
+            : <p>{currentPost.body}</p>
+          }
+          
         </Card.Body>
         <ReactionBar
           currentThread={currentThread}
