@@ -4,18 +4,18 @@ import { useClass } from "../contexts/ClassContext";
 import { Alert, Form } from "react-bootstrap";
 import Button from "./Button";
 
-export default function EditPost(props) {
+export default function EditReply(props) {
   const { currentClass } = useClass();
-  const { editForumPost } = firestore;
+  const { editForumReply } = firestore;
   const currentThread = props.currentThread;
   const currentPost = props.currentPost;
+  const currentReply = props.currentReply;
   const populatePosts = props.populatePosts;
   const setEditing = props.setEditing;
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const formRef = useRef();
-  const postTitleRef = useRef();
   const postBodyRef = useRef();
 
   function handleSubmit(event) {
@@ -23,10 +23,10 @@ export default function EditPost(props) {
     setMessage('');
     setError('');
     setLoading(true);
-    editForumPost(currentClass.id, currentThread.id, currentPost.id,
-      postTitleRef.current.value, postBodyRef.current.value).then(() => {
+    editForumReply(currentClass.id, currentThread.id, currentPost.id, currentReply.id,
+      postBodyRef.current.value).then(() => {
         formRef.current.reset();
-        setMessage('Post successfully edited!')
+        setMessage('Reply successfully edited!')
         populatePosts();
       }).then(() => setEditing(false))
       .catch((err) => setError("Failed to edit post, please try again later"))
@@ -43,22 +43,12 @@ export default function EditPost(props) {
       {message && <Alert variant="success">{message}</Alert>}
       <Form.Group>
         <Form.Control
-          type="text"
-          ref={postTitleRef}
-          required
-          placeholder="Title"
-          defaultValue={currentPost.title}
-          className="generic-field"
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Control
           as="textarea"
           rows={5}
           ref={postBodyRef}
           required
           placeholder="Post content"
-          defaultValue={currentPost.body}
+          defaultValue={currentReply.body}
           className="generic-field"
         />
       </Form.Group>

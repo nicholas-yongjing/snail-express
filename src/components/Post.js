@@ -8,7 +8,6 @@ import Reply from "../components/Reply"
 import Button from './Button';
 import EditPost from './EditPost';
 
-
 export default function Post(props) {
   const { currentUser } = useAuth();
   const { currentClass } = useClass();
@@ -42,7 +41,7 @@ export default function Post(props) {
       } else if (userGroup === 'headTutor') {
         setAuthor({...currentClass.headTutor, role: 'Head Tutor'});
       } else {
-        getUser(currentClass.id, userGroup, currentPost.author.id)
+        getUser(currentClass.id, userGroup, currentPost.authorId)
           .then((user) => {
             setAuthor({...user, role: (userGroup === 'students' ? 'Student' : 'Tutor')});
           });
@@ -110,6 +109,7 @@ export default function Post(props) {
             return (
               <Reply
                 key={reply.id}
+                populatePosts={populatePosts}
                 thread={currentThread}
                 post={currentPost}
                 reply={reply}
