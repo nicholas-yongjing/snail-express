@@ -156,11 +156,11 @@ export default function SettingsLevelling(props) {
           }
         </div>
         <div className="d-flex gap-4">
-          <div>
+          <div className="d-flex flex-column gap-4">
             <div className="fs-4">
               Level
             </div>
-            <div className="p-2 text-slate-700">____</div>
+            <div>
             {
               [...Array(100).keys()].map((index) => {
                 return (
@@ -170,8 +170,9 @@ export default function SettingsLevelling(props) {
                 );
               })
             }
-          </div>
-          <div className="flex-grow-1 d-flex flex-column gap-4">
+            </div>
+         </div>
+          <div className="flex-grow-1 d-flex flex-column gap-3">
             <div className="d-flex justify-content-between fs-4">
               <div>
                 Cumulative EXP required
