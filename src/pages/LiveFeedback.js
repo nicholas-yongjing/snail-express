@@ -5,7 +5,7 @@ import {
   Dropdown,
   DropdownButton,
   ProgressBar,
-  Spinner,
+  Spinner
 } from "react-bootstrap";
 import { firestore } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
