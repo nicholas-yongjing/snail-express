@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { getClasses, getInvites } from "../database";
+import firestore from "../firestore";
 import WebPage from "../components/WebPage";
 import Classes from "../components/Classes";
 import Invites from "../components/Invites";
@@ -9,6 +9,7 @@ import Header from "../components/Header";
 
 export default function Dashboard() {
   const { currentUser } = useAuth();
+  const { getClasses, getInvites } = firestore;
   const [createdClasses, setCreatedClasses] = useState([]);
   const [teachingClasses, setTeachingClasses] = useState([]);
   const [enrolledClasses, setEnrolledClasses] = useState([]);
@@ -25,7 +26,7 @@ export default function Dashboard() {
         }
       })
     }
-  }, [currentUser.uid, currentUser.email]);
+  }, [currentUser.uid, currentUser.email, getClasses]);
 
   const populateInvites = useCallback(() => {
     if (currentUser.email) {
@@ -40,7 +41,7 @@ export default function Dashboard() {
         })
       }
     }
-  }, [currentUser.email]);
+  }, [currentUser.email, getInvites]);
 
   useEffect(() => {
     populateClasses('head tutor', setCreatedClasses);

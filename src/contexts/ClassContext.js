@@ -1,6 +1,6 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { firestore } from "../firebase";
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useState } from "react";
+import app from "../firebase";
 import { useAuth } from "./AuthContext";
 
 const ClassContext = createContext();
@@ -23,7 +23,7 @@ export function ClassProvider({ children }) {
 
   async function changeClassName(className) {
     if (currentClass) {
-      const classRef = doc(firestore, "classes", currentClass.id);
+      const classRef = doc(getFirestore(app), "classes", currentClass.id);
       return getDoc(classRef)
         .then((snapshot) => {
           return setDoc(classRef, { ...snapshot.data(), className: className });

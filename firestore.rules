@@ -1,9 +1,254 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if
-          request.time < timestamp.date(2022, 7, 17);
+    match /classes/{class} {
+
+      function isAuthenticated() {
+        return request.auth.uid != null;
+      }
+
+      function isInvitedAsTutor() {
+        return isAuthenticated()
+          && (
+            (
+              "tutorInvites" in resource.data
+              && request.auth.token.email in resource.data.tutorInvites
+            )
+            ||
+            (
+              request.auth.token.email in get(/databases/$(database)/documents/classes/$(class)).data.tutorInvites
+            )
+          )
+      }
+
+      function isInvitedAsStudent() {
+        return isAuthenticated()
+          && (
+            (
+              "studentInvites" in resource.data
+              && request.auth.token.email in resource.data.studentInvites
+            )
+            ||
+            (
+              request.auth.token.email in get(/databases/$(database)/documents/classes/$(class)).data.studentInvites
+            )
+          )
+      }
+
+      function isInvited() {
+        return isInvitedAsStudent() || isInvitedAsTutor();
+      }
+
+      function isHeadTutor() {
+        return isAuthenticated()
+          && (
+            (
+              "headTutor" in resource.data
+              && resource.data.headTutor.id == request.auth.uid
+            )
+            ||
+            (
+              get(/databases/$(database)/documents/classes/$(class)).data.headTutor.id == request.auth.uid
+            )
+          );
+      }
+
+      function isTutor() {
+        return isAuthenticated()
+        && (
+          (
+            "tutorIds" in resource.data
+            && request.auth.uid in resource.data.tutorIds
+          )
+          ||
+          (
+            exists(/databases/$(database)/documents/classes/$(class)/tutors/$(request.auth.uid))
+          )
+        );
+      }
+
+      function isStudent() {
+        return isAuthenticated()
+        && (
+          (
+            "studentIds" in resource.data
+            && request.auth.uid in resource.data.studentIds
+          )
+          ||
+          (
+            exists(/databases/$(database)/documents/classes/$(class)/students/$(request.auth.uid))
+          )
+        );
+      }
+
+      function isInClass() {
+        return isHeadTutor() || isTutor() || isStudent();
+      }
+
+      function isAuthor() {
+        return isInClass()
+          && "authorId" in resource.data
+          && resource.data.authorId == request.auth.uid; 
+      }
+
+      function isValidClassDocument() {
+        let keys = ["className", "headTutor", "tutorInvites", "studentInvites",
+          "tutorIds", "studentIds", "timestamp"];
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys)
+          && request.resource.data.headTutor.keys().hasOnly(["name", "id", "email"])
+          && request.resource.data.headTutor.keys().hasAll(["name", "id", "email"]);
+      }
+
+      function isValidStudentDocument() {
+        let keys = ["name", "id", "email", "exp", "level",
+          "dailyCounts", "overallCounts"];
+        let dailyCountsKeys = ["posts", "votes", "feedbacks",
+          "quizzesAttended", "quizCorrectAnswers", "lastUpdated"];
+        let overallCountsKeys = ["posts", "votes", "feedbacks",
+          "quizzesAttended", "quizCorrectAnswers"];       
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys)
+          && request.resource.data.dailyCounts.keys().hasOnly(dailyCountsKeys)
+          && request.resource.data.dailyCounts.keys().hasAll(dailyCountsKeys)
+          && request.resource.data.overallCounts.keys().hasOnly(overallCountsKeys)
+          && request.resource.data.overallCounts.keys().hasAll(overallCountsKeys);
+      }
+
+      function isValidTutorDocument() {
+        let keys = ["name", "id", "email"];     
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys); 
+      }
+
+      function isValidSettingsDocument() {
+        let keys = ["limits", "expGain", "expRequirements"];
+        let expCategories = ["posts", "votes", "feedbacks", 
+          "quizzesAttended", "quizCorrectAnswers"];
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys)
+          && request.resource.data.limits.keys().hasOnly(expCategories)
+          && request.resource.data.limits.keys().hasAll(expCategories)
+          && request.resource.data.expGain.keys().hasOnly(expCategories)
+          && request.resource.data.expGain.keys().hasAll(expCategories);
+      }
+
+      function isValidThreadDocument() {
+        let keys = ["name", "timestamp"];     
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys); 
+      }
+
+      function isValidPostDocument() {
+        let keys = ["title", "body", "authorId",
+          "endorsed",  "upvoters", "downvoters", "timestamp"];     
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys);
+      }
+
+      function isValidReplyDocument() {
+        let keys = ["body", "authorId",
+          "endorsed",  "upvoters", "downvoters", "timestamp"];     
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys);
+      }
+
+      function isValidStudentUpdate() {
+        return (isStudent() || isInvited())
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["studentInvites", "studentIds"]);
+      }
+
+      function isValidTutorUpdate() {
+        return (isHeadTutor() || isTutor()) 
+          || (isInvited()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["tutorInvites", "tutorIds"]));
+      }
+
+      function isValidPostUpdate() {
+        return
+          (
+            isAuthor()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["title", "body"])
+          )
+          ||
+          (
+            isStudent()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["upvoters", "downvoters"])
+          )
+          ||
+          (
+            (isHeadTutor() || isTutor())
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["upvoters", "downvoters", "endorsed"])
+          );
+      }
+
+      function isValidReplyUpdate() {
+        return isValidPostUpdate();
+      }
+      
+      allow create: if isAuthenticated()
+        && isValidClassDocument()
+        && request.resource.data.headTutor.id == request.auth.uid;
+      allow read: if isInClass() || isInvited();
+      allow update: if isValidClassDocument()
+        && (isValidTutorUpdate() || isValidStudentUpdate());
+      
+      match /settings/levelling {
+        allow read: if isInClass();
+        allow create: if isHeadTutor()
+          && isValidSettingsDocument();
+        allow update: if (isHeadTutor() || isTutor())
+          && isValidSettingsDocument();
+      }
+
+      match /tutors/{tutor} {
+        allow read: if isInClass();
+        allow create: if isInvitedAsTutor()
+          && isValidTutorDocument();
+      }
+
+      match /students/{student} {
+        allow read: if isInClass();
+        allow create: if isInvitedAsStudent()
+          && isValidStudentDocument();
+        allow update: if isStudent();
+      }
+
+      match /forumThreads/{thread} {
+        allow read: if isInClass();
+        allow write: if (isHeadTutor() || isTutor())
+          && isValidThreadDocument();
+      }
+
+      match /forumThreads/{thread}/forumPosts/{post} {
+        allow read: if isInClass();
+        allow create: if isInClass()
+          && isValidPostDocument()
+          && request.resource.data.authorId == request.auth.uid;
+        allow update: if isValidPostDocument()
+          && isValidPostUpdate()
+      }
+
+      match /forumThreads/{thread}/forumPosts/{post}/forumReplies/{reply} {
+        allow read: if isInClass();
+        allow create: if isInClass()
+          && isValidReplyDocument()
+          && request.resource.data.authorId == request.auth.uid; 
+        allow update: if isValidReplyDocument()
+          && isValidReplyUpdate()
+      }
+
+     match /feedback/{individualFeedback} {
+      allow read, write: if isInClass();
+     }
+
+     match /quizzes/{quiz} {
+      allow read, write: if isInClass();
+     }
+
+     match /quizzes/{quiz}/questions/{questionNo} {
+      allow read, write: if isInClass();
+     }
     }
   }
 }

@@ -1,9 +1,10 @@
 import { useAuth } from "../contexts/AuthContext";
-import { deleteInvite, acceptInvite } from '../database';
+import firestore from "../firestore";
 import { Card } from 'react-bootstrap';
 
 export default function Invites(props) {
   const { currentUser } = useAuth();
+  const { acceptInvite, deleteInvite } = firestore;
   const invites = props.invites;
   const role = props.role;
   const populateClasses = props.populateClasses;

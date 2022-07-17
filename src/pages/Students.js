@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
-import { getStudents } from "../database";
+import firestore from "../firestore";
 import { Card } from "react-bootstrap";
 import WebPage from "../components/WebPage";
 import Header from "../components/Header";
@@ -9,6 +9,7 @@ import Header from "../components/Header";
 const Students = () => {
   const { currentUser } = useAuth();
   const { currentClass } = useClass();
+  const { getStudents } = firestore;
   const [studentList, setStudentList] = useState([]);
 
   const populateStudents = useCallback(() => {
@@ -20,7 +21,7 @@ const Students = () => {
           }));
         })
     }
-  }, [currentUser, currentClass]);
+  }, [currentUser, currentClass, getStudents]);
 
   useEffect(() => {
     populateStudents();

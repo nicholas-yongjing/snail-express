@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Form, Alert, Container } from "react-bootstrap";
-import { validateEmails, createClass } from "../database";
+import firestore from "../firestore";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
 import Header from "../components/Header";
@@ -9,6 +9,7 @@ import Header from "../components/Header";
 export default function AddClass() {
   const { currentUser } = useAuth();
   const [error, setError] = useState('');
+  const { validateEmails, createClass } = firestore;
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState('');
   const formRef = useRef();
