@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useClass } from "../contexts/ClassContext";
-import { changeLevellingSettings, getLevellingSettings } from "../database";
+import firestore from "../firestore";
 import { Form } from "react-bootstrap";
 import Button from "./Button";
 
 export default function SettingsLevelling(props) {
   const { currentClass } = useClass();
+  const { changeLevellingSettings, getLevellingSettings } = firestore;
   const postLimitRef = useRef();
   const voteLimitRef = useRef();
   const postExpRef = useRef();
@@ -39,7 +40,7 @@ export default function SettingsLevelling(props) {
         }
       })
     }
-  }, [limits, expGains, currentClass]);
+  }, [limits, expGains, currentClass, getLevellingSettings]);
 
   useEffect(() => {
     populateSettings();
@@ -156,11 +157,11 @@ export default function SettingsLevelling(props) {
           }
         </div>
         <div className="d-flex gap-4">
-          <div>
+          <div className="d-flex flex-column gap-4">
             <div className="fs-4">
               Level
             </div>
-            <div className="p-2 text-slate-700">____</div>
+            <div>
             {
               [...Array(100).keys()].map((index) => {
                 return (
@@ -170,8 +171,9 @@ export default function SettingsLevelling(props) {
                 );
               })
             }
-          </div>
-          <div className="flex-grow-1 d-flex flex-column gap-4">
+            </div>
+         </div>
+          <div className="flex-grow-1 d-flex flex-column gap-3">
             <div className="d-flex justify-content-between fs-4">
               <div>
                 Cumulative EXP required

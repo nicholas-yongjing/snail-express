@@ -5,24 +5,25 @@ import {
   Dropdown,
   DropdownButton,
   ProgressBar,
-  Spinner
+  Spinner,
 } from "react-bootstrap";
-import { firestore } from "../firebase";
-import { collection, onSnapshot } from "firebase/firestore";
-import { resetLectureFeedbacks, setLectureFeedback } from "../database";
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import firestore from "../firestore";
+import app from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
 import WebPage from "../components/WebPage";
 import Header from "../components/Header";
 
 export default function LiveFeedback() {
-  const { currentClass, isTutor } = useClass();
   const { currentUser } = useAuth();
+  const { currentClass, isTutor } = useClass();
+  const { resetLectureFeedbacks, setLectureFeedback } = firestore;
   const [results, setResults] = useState([0, 0, 0, 0]);
   const [loading, setLoading] = useState(false);
   const variants = ["danger", "info", "warning", "success"];
   const reactions = useMemo(() => ["fast", "slow", "confusing", "good"], []);
-  const feedbackRef = useMemo(() => collection(firestore, "classes",
+  const feedbackRef = useMemo(() => collection(getFirestore(app), "classes",
     currentClass.id, "feedback"), [currentClass.id]);
 
   const handleSubmit = (reaction) => {
@@ -41,6 +42,7 @@ export default function LiveFeedback() {
   };
  
   useEffect(() => {
+    console.log('using effect')
     const unsubscribe = onSnapshot(feedbackRef, (snapshot) => {
       const arr = [0, 0, 0, 0];
       snapshot.docs.forEach((doc) => {

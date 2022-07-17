@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
+import firestore from '../firestore';
 import { useAuth } from '../contexts/AuthContext';
 import { useClass } from '../contexts/ClassContext';
-import { getForumPosts } from "../database";
 import AddPost from '../components/AddPost';
 import Header from './Header';
 import Post from "../components/Post"
 
 export default function ForumPosts(props) {
-  const { currentClass } = useClass();
   const { currentUser } = useAuth();
+  const { currentClass } = useClass();
+  const { getForumPosts } = firestore;
   const currentThread = props.currentThread;
   const [posts, setPosts] = useState([]);
   const [expandForm, setExpandForm] = useState(false);
@@ -19,7 +20,7 @@ export default function ForumPosts(props) {
         setPosts(retrievedPosts);
       });
     }
-  }, [currentUser, currentClass, currentThread]);
+  }, [currentUser, currentClass, currentThread, getForumPosts]);
 
   useEffect(() => {
     populatePosts();
