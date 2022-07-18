@@ -85,38 +85,6 @@ export default function LiveQuiz() {
         "responses.total": increment(1),
       });
     }
-
-    // if (response == questions[currentQuestion].answer) {
-    //   updateDoc(
-    //     doc(
-    //       firestore,
-    //       "classes",
-    //       currentClass.id,
-    //       "quizzes",
-    //       name,
-    //       "questions",
-    //       `${currentQuestion + 1}`
-    //     ),
-    //     {
-    //       correct: increment(1),
-    //     }
-    //   );
-    // } else {
-    //   updateDoc(
-    //     doc(
-    //       firestore,
-    //       "classes",
-    //       currentClass.id,
-    //       "quizzes",
-    //       name,
-    //       "questions",
-    //       `${currentQuestion + 1}`
-    //     ),
-    //     {
-    //       wrong: increment(1),
-    //     }
-    //   );
-    // }
   };
 
   return (

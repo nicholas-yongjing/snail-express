@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Quiz from "../components/Quiz";
+import Quiz from "../components/TutorQuizInterface";
 import Button from "../components/Button";
 import { Spinner } from "react-bootstrap";
 import { doc, getDocs, updateDoc, collection } from "firebase/firestore";
@@ -7,7 +7,6 @@ import { useClass } from "../contexts/ClassContext";
 import { firestore } from "../firebase";
 
 export default function AllQuizzes(props) {
-  const { currentClass } = useClass();
   const { quizList } = props;
   const [showQuiz, setShowQuiz] = useState(false);
   const [currentQuiz, setCurrentQuiz] = useState({});
@@ -22,7 +21,7 @@ export default function AllQuizzes(props) {
       {showQuiz ? (
         <div>
           <Quiz currentQuiz={currentQuiz} />
-          <div key={currentQuiz.name}>
+          <div key={currentQuiz.name} className="d-flex flex-column align-items-start">
             <Button className="mt-3" onClick={toggleQuiz}>
               Hide quiz
             </Button>

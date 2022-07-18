@@ -9,14 +9,15 @@ import {
   collection,
   onSnapshot,
   updateDoc,
+  getDoc,
 } from "firebase/firestore";
 
-export default function Quiz(props) {
+export default function TutorQuizInterface(props) {
   const { currentQuiz } = props;
   const { currentClass } = useClass();
   const [controls, setControls] = useState({});
 
-  const { live, currentQuestion } = controls;
+  const { offline, live, currentQuestion } = controls;
 
   useEffect(() => {
     console.log("inside use effect");
@@ -103,6 +104,12 @@ export default function Quiz(props) {
     });
   };
 
+  const toggleSetOffline = () => {
+    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
+      offline: !offline,
+    });
+  };
+
   return (
     <div>
       <h3>{name}</h3>
@@ -111,7 +118,11 @@ export default function Quiz(props) {
       ) : (
         <Button onClick={handleStartQuiz}>Start quiz</Button>
       )}
-
+      {offline ? (
+        <Button onClick={toggleSetOffline}>Remove from offline quizzes</Button>
+      ) : (
+        <Button onClick={toggleSetOffline}>Make available offline</Button>
+      )}
       <div>
         {live && (
           <div className="slate-600 p-4" style={{ margin: "16px" }}>
