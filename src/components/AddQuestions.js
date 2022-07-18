@@ -20,15 +20,8 @@ export default function AddQuestions(props) {
 
   const options = ["A", "B", "C", "D"];
 
-  useEffect(() => {
-    console.log("Populating quiz with tutor interface");
-    setDoc(doc(firestore, "classes", currentClass.id, "quizzes", name, "questions", "0"), {
-        live: false,
-        currentQuestion: 1
-    });
-  }, []);
-
   const handleAddQuestion = (event, answer) => {
+    console.log("Adding question");
     event.preventDefault();
     setDoc(
       doc(

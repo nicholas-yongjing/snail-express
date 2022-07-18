@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Button from "./Button";
+import Statistics from "./Statistics";
 import { useClass } from "../contexts/ClassContext";
 import { firestore } from "../firebase";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDocs,
+  collection,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 
 export default function Quiz(props) {
   const { currentQuiz } = props;
@@ -11,75 +18,106 @@ export default function Quiz(props) {
 
   const { live, currentQuestion } = controls;
 
-  const name = currentQuiz.id;
-  const questions = currentQuiz.data.map((doc) => doc.data());
-
-  const controlsRef = doc(
-    firestore,
-    "classes",
-    currentClass.id,
-    "quizzes",
-    name,
-    "questions",
-    "0"
-  );
-
   useEffect(() => {
-    getDoc(controlsRef).then((doc) => setControls(doc.data())); // Localise controls
-    const unsubscribe = () => setDoc(controlsRef, {
-      currentQuestion: 1,
-      live: false,
-    });
+    console.log("inside use effect");
+    const unsubscribe = onSnapshot(
+      doc(firestore, "classes", currentClass.id, "quizzes", name),
+      (doc) => {
+        setControls(doc.data());
+      }
+    );
+
     return unsubscribe;
   }, []);
 
-  const handleToggleQuiz = () => {
-    setDoc(doc(firestore, "classes", currentClass.id, "quizzes", "live"), {
-      name: name,
+  const name = currentQuiz.id;
+  const questions = currentQuiz.data.map((doc) => doc.data());
+
+  const handleStartQuiz = () => {
+    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
+      live: true,
+      currentQuestion: 0,
     });
-    updateDoc(controlsRef, { ...controls, live: !live });
-    setControls((prevState) => ({
-      ...prevState,
-      live: !live,
-    }));
+    getDocs(
+      collection(
+        firestore,
+        "classes",
+        currentClass.id,
+        "quizzes",
+        name,
+        "questions"
+      )
+    ).then((snapshot) => {
+      snapshot.docs.map((question) => {
+        updateDoc(doc(firestore, question.ref.path), {
+          responses: {
+            A: 0,
+            B: 0,
+            C: 0,
+            D: 0,
+            total: 0,
+          },
+        });
+      });
+    });
+  };
+
+  const handleEndQuiz = () => {
+    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
+      live: false,
+      currentQuestion: 0,
+    });
+    getDocs(
+      collection(
+        firestore,
+        "classes",
+        currentClass.id,
+        "quizzes",
+        name,
+        "questions"
+      )
+    ).then((snapshot) => {
+      snapshot.docs.map((question) => {
+        updateDoc(doc(firestore, question.ref.path), {
+          responses: {
+            A: 0,
+            B: 0,
+            C: 0,
+            D: 0,
+            total: 0,
+          },
+        });
+      });
+    });
   };
 
   const handlePrevious = () => {
-    // always update locally first before pushing onto DB
-    updateDoc(controlsRef, {
-      ...controls,
+    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
       currentQuestion: currentQuestion - 1,
     });
-    setControls((prevState) => ({
-      ...prevState,
-      currentQuestion: currentQuestion - 1,
-    }));
   };
 
   const handleNext = () => {
-    // always update locally first before pushing onto DB
-    updateDoc(controlsRef, {
-      ...controls,
+    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
       currentQuestion: currentQuestion + 1,
     });
-    setControls((prevState) => ({
-      ...prevState,
-      currentQuestion: currentQuestion + 1,
-    }));
   };
 
   return (
     <div>
       <h3>{name}</h3>
-      <Button className="mt-3" onClick={handleToggleQuiz}>
-        {controls.live ? <div>End quiz</div> : <div>Start quiz</div>}
-      </Button>
+      {live ? (
+        <Button onClick={handleEndQuiz}>End quiz</Button>
+      ) : (
+        <Button onClick={handleStartQuiz}>Start quiz</Button>
+      )}
+
       <div>
-        {controls.live ? (
-          <div className="slate-600" style={{ margin: "16px" }}>
+        {live && (
+          <div className="slate-600 p-4" style={{ margin: "16px" }}>
             <div>
               <h3 className="p-3" style={{ margin: "8px" }}>
-                Question {currentQuestion}
+                Question {currentQuestion + 1}
               </h3>
               <h4 className="slate-800 p-4" style={{ margin: "8px" }}>
                 {questions[currentQuestion].question}
@@ -121,10 +159,15 @@ export default function Quiz(props) {
               </span>
             </div>
           </div>
-        ) : (
-          <div>Quiz has not been started</div>
         )}
       </div>
+      {live && (
+        <Statistics
+          name={name}
+          currentClass={currentClass}
+          currentQuestion={currentQuestion}
+        />
+      )}
     </div>
   );
 }
