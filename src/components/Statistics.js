@@ -37,6 +37,7 @@ export default function Statistics(props) {
   return (
     <div className="slate-600 p-4" style={{ margin: "16px" }}>
       <h3 className="slate-600 text-slate-200 p-4">Statistics</h3>
+      {console.log(currentQuestion)}
       <div>
         <div className="d-flex justify-content-center">{studentResponses.A} out of {studentResponses.total} selected option A</div>
         <ProgressBar
