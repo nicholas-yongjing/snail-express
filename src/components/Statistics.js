@@ -32,7 +32,7 @@ export default function Statistics(props) {
       }
     );
     return unsubscribe;
-  }, []);
+  }, [currentQuestion]);
 
   return (
     <div className="slate-600 p-4" style={{ margin: "16px" }}>

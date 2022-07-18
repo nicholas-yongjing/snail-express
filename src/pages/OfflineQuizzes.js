@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Button from "../components/Button";
-import { query, collection, where, getDocs } from "firebase/firestore";
+import { query, collection, where, getDocs, orderBy } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { useClass } from "../contexts/ClassContext";
 import RevisionQuiz from "../components/RevisionQuiz";
@@ -22,11 +22,11 @@ export default function OfflineQuizzes() {
       collection(firestore, "classes", currentClass.id, "quizzes"),
       where("offline", "==", true)
     );
-    
+
     getDocs(q).then(async (snapshot) => {
       return Promise.all(
         snapshot.docs.map(async (document) => {
-          return await getDocs(
+          const q = query(
             collection(
               firestore,
               "classes",
@@ -34,8 +34,10 @@ export default function OfflineQuizzes() {
               "quizzes",
               document.id,
               "questions"
-            )
+            ),
+            orderBy("id")
           );
+          return await getDocs(q);
         })
       ).then(async (promises) => {
         return setQuizList(

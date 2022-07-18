@@ -16,6 +16,7 @@ import {
   updateDoc,
   where,
   increment,
+  orderBy,
 } from "firebase/firestore";
 
 export default function LiveQuiz() {
@@ -39,7 +40,8 @@ export default function LiveQuiz() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docs.map((d) => {
         setCurrentQuestion(d.data().currentQuestion);
-        getDocs(collection(firestore, d.ref.path, "questions")).then(
+        const q = query(collection(firestore, d.ref.path, "questions"), orderBy("id"));
+        getDocs(q).then(
           (questions) => {
             setSubmitted(false);
             setQuestions(questions.docs.map((doc) => doc.data()));

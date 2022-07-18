@@ -10,11 +10,21 @@ export default function AllQuizzes(props) {
   const { quizList } = props;
   const [showQuiz, setShowQuiz] = useState(false);
   const [currentQuiz, setCurrentQuiz] = useState({});
+  const { currentClass } = useClass();
 
   const toggleQuiz = (quiz) => {
     setShowQuiz(!showQuiz);
     setCurrentQuiz(quiz == null ? {} : quiz);
   };
+
+  useEffect(() => {
+    getDocs(collection(firestore, "classes", currentClass.id, "quizzes")).then(snapshot => {
+      snapshot.docs.map(d => updateDoc(doc(firestore, d.ref.path), {
+        live: false,
+        currentQuestion: 0
+      }))
+    })
+  }, []);
 
   return (
     <div className="p-4">

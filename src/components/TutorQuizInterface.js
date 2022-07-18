@@ -155,7 +155,7 @@ export default function TutorQuizInterface(props) {
                   className="slate-800"
                   style={{ margin: "8px" }}
                   onClick={handlePrevious}
-                  disabled={currentQuestion <= 1}
+                  disabled={currentQuestion <= 0}
                 >
                   Previous
                 </Button>
