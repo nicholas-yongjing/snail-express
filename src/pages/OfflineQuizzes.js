@@ -42,8 +42,9 @@ export default function OfflineQuizzes() {
       ).then(async (promises) => {
         return setQuizList(
           promises.map((questions) => {
+            console.log(questions);
             return {
-              id: questions.query._path.segments[3], // get quiz name from path
+              id: questions.query._query.path.segments[3], // get quiz name from path
               data: questions.docs,
             };
           })
