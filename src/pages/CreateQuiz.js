@@ -17,7 +17,7 @@ export default function CreateQuiz() {
     if (nameRef.current.value === "") {
       return;
     }
-    CreateQuiz(currentClass, nameRef.current.value);
+    createQuiz(currentClass.id, nameRef.current.value);
     setAddingQuestions(true);
   };
 

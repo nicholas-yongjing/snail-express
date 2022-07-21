@@ -50,7 +50,7 @@ export default function AddQuestions(props) {
         total: 0,
       },
     };
-    createQuestion(currentClass, name, count, questionObj);
+    createQuestion(currentClass.id, name, count, questionObj);
     setCount(count + 1);
     resetRefs();
   };

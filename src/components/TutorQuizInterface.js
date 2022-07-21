@@ -39,28 +39,28 @@ export default function TutorQuizInterface(props) {
   const questions = currentQuiz.data.map((doc) => doc.data());
 
   const handleStartQuiz = () => {
-    activateQuiz(currentClass, name);
+    activateQuiz(currentClass.id, name);
   };
 
   const handleEndQuiz = () => {
-    deactivateQuiz(currentClass, name);
+    deactivateQuiz(currentClass.id, name);
   };
 
   const handlePrevious = () => {
-    showPreviousQuestion(currentClass, name, currentQuestion);
+    showPreviousQuestion(currentClass.id, name, currentQuestion);
   };
 
   const handleNext = () => {
-    showNextQuestion(currentClass, name, currentQuestion);
+    showNextQuestion(currentClass.id, name, currentQuestion);
   };
 
   const toggleSetOffline = () => {
-    toggleOffline(currentClass, name, offline);
+    toggleOffline(currentClass.id, name, offline);
   };
 
   const handleDeleteQuiz = () => {
     setShowQuiz(false);
-    deleteQuiz(currentClass, name);
+    deleteQuiz(currentClass.id, name);
   };
 
   return (

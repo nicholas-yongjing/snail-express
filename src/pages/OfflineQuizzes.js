@@ -18,7 +18,7 @@ export default function OfflineQuizzes() {
   };
 
   useEffect(() => {
-    pullOfflineQuizList(currentClass, setQuizList)
+    pullOfflineQuizList(currentClass.id, setQuizList)
   }, []);
 
   return (

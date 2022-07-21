@@ -17,7 +17,7 @@ export default function AllQuizzes(props) {
   };
 
   useEffect(() => {
-    resetQuiz(currentClass);
+    resetQuiz(currentClass.id);
   }, []);
 
   return (

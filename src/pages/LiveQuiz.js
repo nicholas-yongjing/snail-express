@@ -54,7 +54,7 @@ export default function LiveQuiz() {
 
   const handleSubmit = (response) => {
     setSubmitted(true);
-    submitAnswer(currentClass, name, currentQuestion, response);
+    submitAnswer(currentClass.id, name, currentQuestion, response);
   };
 
   return (

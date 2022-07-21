@@ -26,7 +26,7 @@ export default function QuizDashboard() {
       ];
 
   useEffect(() => {
-    pullQuizList(currentClass, setQuizList);
+    pullQuizList(currentClass.id, setQuizList);
   }, [showQuiz]);
 
   return (
