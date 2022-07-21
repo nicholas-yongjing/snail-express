@@ -5,7 +5,7 @@ import SideBar from "../components/SideBar";
 import WebPage from "../components/WebPage";
 
 import { useClass } from "../contexts/ClassContext";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { Link } from "react-router-dom";
 
@@ -29,12 +29,12 @@ export default function QuizDashboard() {
     return await getDocs(
       collection(firestore, "classes", currentClass.id, "quizzes")
     ).then(async (snapshot) => {
-    //   console.log(snapshot.docs);
+      //   console.log(snapshot.docs);
 
       return Promise.all(
         snapshot.docs.map(async (document) => {
-        //   console.log(document);
-          return await getDocs(
+          //   console.log(document);
+          const q = query(
             collection(
               firestore,
               "classes",
@@ -42,14 +42,17 @@ export default function QuizDashboard() {
               "quizzes",
               document.id,
               "questions"
-            )
+            ),
+            orderBy("id")
           );
+          return await getDocs(q);
         })
       ).then(async (promises) => {
         return setQuizList(
           promises.map((questions) => {
+            console.log(questions);
             return {
-              id: questions.query._path.segments[3], // get quiz name from path
+              id: questions.query._query.path.segments[3], // get quiz name from path
               data: questions.docs,
             };
           })
