@@ -1,7 +1,7 @@
 import { onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { doc } from "firebase/firestore";
-import { firestore } from "../firebase";
+import { db } from "../firebase";
 import { ProgressBar } from "react-bootstrap";
 
 export default function Statistics(props) {
@@ -18,7 +18,7 @@ export default function Statistics(props) {
     console.log("Using effect in statistics");
     const unsubscribe = onSnapshot(
       doc(
-        firestore,
+        db,
         "classes",
         currentClass.id,
         "quizzes",

@@ -5,6 +5,7 @@ import SideBar from "../components/SideBar";
 
 import { useClass } from "../contexts/ClassContext";
 import firestore from "../firestore";
+import { db } from "../firebase";
 import { Link } from "react-router-dom";
 import {
   collection,
@@ -31,14 +32,14 @@ export default function LiveQuiz() {
   useEffect(() => {
     console.log("inside use effect live quiz");
     const q = query(
-      collection(firestore, "classes", currentClass.id, "quizzes"),
+      collection(db, "classes", currentClass.id, "quizzes"),
       where("live", "==", true)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docs.map((d) => {
         setCurrentQuestion(d.data().currentQuestion);
         const q = query(
-          collection(firestore, d.ref.path, "questions"),
+          collection(db, d.ref.path, "questions"),
           orderBy("id")
         );
         getDocs(q).then((questions) => {

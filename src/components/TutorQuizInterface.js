@@ -3,6 +3,7 @@ import Button from "./Button";
 import Statistics from "./Statistics";
 import { useClass } from "../contexts/ClassContext";
 import firestore from "../firestore";
+import { db } from "../firebase";
 import {
   doc,
   onSnapshot,
@@ -26,7 +27,7 @@ export default function TutorQuizInterface(props) {
   useEffect(() => {
     console.log("inside use effect");
     const unsubscribe = onSnapshot(
-      doc(firestore, "classes", currentClass.id, "quizzes", name),
+      doc(db, "classes", currentClass.id, "quizzes", name),
       (doc) => {
         setControls(doc.data());
       }
