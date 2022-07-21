@@ -5,6 +5,20 @@ import {
 
 export default function getDatabase(firestore) {
   const LOG = true;
+
+  function createQuestion(currentClass, name, count, questionObj) {
+    setDoc(
+      doc(
+        firestore,
+        "classes",
+        currentClass.id,
+        "quizzes",
+        name,
+        "questions",
+        `${count}`
+      ), questionObj
+    );
+  };
   
   function _removeDuplicates(arr) {
     return [...(new Set(arr))];

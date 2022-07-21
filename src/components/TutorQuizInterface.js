@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import Statistics from "./Statistics";
 import { useClass } from "../contexts/ClassContext";
+import { useNavigate } from "react-router-dom";
 import { firestore } from "../firebase";
 import {
   doc,
@@ -9,13 +10,14 @@ import {
   collection,
   onSnapshot,
   updateDoc,
-  getDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 export default function TutorQuizInterface(props) {
-  const { currentQuiz } = props;
+  const { setShowQuiz, currentQuiz } = props;
   const { currentClass } = useClass();
   const [controls, setControls] = useState({});
+  const navigate = useNavigate();
 
   const { offline, live, currentQuestion } = controls;
 
@@ -110,6 +112,11 @@ export default function TutorQuizInterface(props) {
     });
   };
 
+  const handleDeleteQuiz = () => {
+    setShowQuiz(false);
+    deleteDoc(doc(firestore, "classes", currentClass.id, "quizzes", name));
+  };
+
   return (
     <div>
       <h3>{name}</h3>
@@ -118,11 +125,15 @@ export default function TutorQuizInterface(props) {
       ) : (
         <Button onClick={handleStartQuiz}>Start quiz</Button>
       )}
-      {offline ? (
-        <Button onClick={toggleSetOffline}>Remove from offline quizzes</Button>
-      ) : (
-        <Button onClick={toggleSetOffline}>Make available offline</Button>
-      )}
+      {!live &&
+        (offline ? (
+          <Button onClick={toggleSetOffline}>
+            Remove from offline quizzes
+          </Button>
+        ) : (
+          <Button onClick={toggleSetOffline}>Make available offline</Button>
+        ))}
+      {!live && <Button onClick={handleDeleteQuiz}>Delete quiz</Button>}
       <div>
         {live && (
           <div className="slate-600 p-4" style={{ margin: "16px" }}>

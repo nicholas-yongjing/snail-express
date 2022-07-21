@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import Button from "../components/Button";
+import firestore from "../firestore";
 
 import { Link } from "react-router-dom";
-import { Form, Dropdown, DropdownButton } from "react-bootstrap";
-import { doc, setDoc } from "firebase/firestore";
-import { firestore } from "../firebase";
+import { Form, Dropdown, DropdownButton, Alert } from "react-bootstrap";
 import { useClass } from "../contexts/ClassContext";
 
 export default function AddQuestions(props) {
+  const { createQuestion } = firestore;
   const { name } = props;
   const { currentClass } = useClass();
   const [count, setCount] = useState(1);
+  const [alert, setAlert] = useState(false);
 
   const questionRef = useRef();
   const aRef = useRef();
@@ -21,28 +22,35 @@ export default function AddQuestions(props) {
   const options = ["A", "B", "C", "D"];
 
   const handleAddQuestion = (event, answer) => {
-    console.log("Adding question");
     event.preventDefault();
-    setDoc(
-      doc(
-        firestore,
-        "classes",
-        currentClass.id,
-        "quizzes",
-        name,
-        "questions",
-        `${count}`
-      ),
-      {
-        question: questionRef.current.value,
-        A: aRef.current.value,
-        B: bRef.current.value,
-        C: cRef.current.value,
-        D: dRef.current.value,
-        answer: answer,
-        id: count,
-      }
-    );
+    if (
+      questionRef.current.value === "" ||
+      aRef.current.value === "" ||
+      bRef.current.value === "" ||
+      cRef.current.value === "" ||
+      dRef.current.value === ""
+    ) {
+      setAlert(true);
+      return;
+    }
+    setAlert(false);
+    const questionObj = {
+      question: questionRef.current.value,
+      A: aRef.current.value,
+      B: bRef.current.value,
+      C: cRef.current.value,
+      D: dRef.current.value,
+      answer: answer,
+      id: count,
+      responses: {
+        A: 0,
+        B: 0,
+        C: 0,
+        D: 0,
+        total: 0,
+      },
+    };
+    createQuestion(currentClass, name, count, questionObj);
     setCount(count + 1);
     resetRefs();
   };
@@ -65,14 +73,23 @@ export default function AddQuestions(props) {
   ) : (
     <div>
       <div className="text-slate-300">
+        {alert && (
+          <Alert variant="danger" className="mt-3">
+            Please fill in all fields!
+          </Alert>
+        )}
         <div variant="info" className="fs-5 mt-2">
-          {(count - 1) + "/10 questions added so far"}
+          {count - 1 + "/10 questions added so far"}
         </div>
       </div>
       <div className="d-flex flex-row-reverse">
-        <Link to="/quiz-dashboard">
-          <Button>Finish and exit</Button>
-        </Link>
+        {count > 1 ? (
+          <Link to="/quiz-dashboard">
+            <Button>Finish and exit</Button>
+          </Link>
+        ) : (
+          <Button disabled={true}>Finish and exit</Button>
+        )}
       </div>
       <Form className="d-flex flex-column align-items-center">
         <Form.Group>
