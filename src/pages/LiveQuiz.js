@@ -110,7 +110,7 @@ export default function LiveQuiz() {
             <h3>Live Quiz</h3>
             <br></br>
             <h3>{name}</h3>
-            {name ? (
+            {name && (
               <div className="slate-600 p-4 m-4">
                 <div>
                   <h3 className="p-3" style={{ margin: "8px" }}>
@@ -155,7 +155,7 @@ export default function LiveQuiz() {
                   </Button>
                 </span>
               </div>
-            ) : <h3 className="p-4">No quiz available... please wait for your tutor to start the quiz!</h3>}
+            )}
           </div>
         </div>
       </div>

@@ -87,7 +87,7 @@ export default function RevisionQuiz(props) {
                 score is: {score + "/" + questions.length}
               </Alert>
             </div>
-            <div className="slate-600 p-3 rounded">
+            <div className="slate-600 p-3">
               {incorrectQuestions.length == 0 ? (
                 <div>Good job</div>
               ) : (
@@ -97,7 +97,7 @@ export default function RevisionQuiz(props) {
                     return (
                       <div
                         key={index}
-                        className="p-3 slate-800 rounded"
+                        className="p-3 slate-800"
                         style={{ margin: "16px" }}
                       >
                         <span className="d-flex">

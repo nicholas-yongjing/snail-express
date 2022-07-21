@@ -20,7 +20,7 @@ export default function Header(props) {
   };
 
   return (
-    <div data-testid="header" className='d-flex justify-content-between align-items-center p-2 w-100 '>
+    <div className='d-flex justify-content-between align-items-center p-2 w-100 '>
       <h1 className='fs-1'>
         <strong>
           {headerText}

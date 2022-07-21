@@ -3,21 +3,19 @@ import Button from "./Button";
 import Statistics from "./Statistics";
 import { useClass } from "../contexts/ClassContext";
 import { firestore } from "../firebase";
-import { useNavigate } from "react-router-dom";
 import {
   doc,
   getDocs,
   collection,
   onSnapshot,
   updateDoc,
-  deleteDoc,
+  getDoc,
 } from "firebase/firestore";
 
 export default function TutorQuizInterface(props) {
-  const { setShowQuiz, currentQuiz } = props;
-  const { currentClass, setCurrentClass } = useClass();
+  const { currentQuiz } = props;
+  const { currentClass } = useClass();
   const [controls, setControls] = useState({});
-  const navigate = useNavigate();
 
   const { offline, live, currentQuestion } = controls;
 
@@ -112,16 +110,6 @@ export default function TutorQuizInterface(props) {
     });
   };
 
-  const handleDeleteQuiz = () => {
-    setShowQuiz(false);
-    // setTimeout(
-    //   () =>
-    //     deleteDoc(doc(firestore, "classes", currentClass.id, "quizzes", name)),
-    //   500
-    // );
-    deleteDoc(doc(firestore, "classes", currentClass.id, "quizzes", name))
-  };
-
   return (
     <div>
       <h3>{name}</h3>
@@ -130,15 +118,11 @@ export default function TutorQuizInterface(props) {
       ) : (
         <Button onClick={handleStartQuiz}>Start quiz</Button>
       )}
-      {!live &&
-        (offline ? (
-          <Button onClick={toggleSetOffline}>
-            Remove from offline quizzes
-          </Button>
-        ) : (
-          <Button onClick={toggleSetOffline}>Make available offline</Button>
-        ))}
-      {!live && <Button onClick={handleDeleteQuiz}>Delete quiz</Button>}
+      {offline ? (
+        <Button onClick={toggleSetOffline}>Remove from offline quizzes</Button>
+      ) : (
+        <Button onClick={toggleSetOffline}>Make available offline</Button>
+      )}
       <div>
         {live && (
           <div className="slate-600 p-4" style={{ margin: "16px" }}>
@@ -193,7 +177,6 @@ export default function TutorQuizInterface(props) {
           name={name}
           currentClass={currentClass}
           currentQuestion={currentQuestion}
-          setCurrentClass={setCurrentClass}
         />
       )}
     </div>

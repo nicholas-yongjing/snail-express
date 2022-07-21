@@ -13,7 +13,6 @@ export default function QuizDashboard() {
   const { currentClass, isTutor } = useClass();
   const [quizList, setQuizList] = useState([]);
   const tutor = isTutor();
-  const [showQuiz, setShowQuiz] = useState(false);
 
   const sidebarLinks = tutor
     ? [
@@ -63,9 +62,8 @@ export default function QuizDashboard() {
   };
 
   useEffect(() => {
-    console.log("infinite renders");
     populateQuizList();
-  }, [showQuiz]);
+  }, []);
 
   return (
     <>
@@ -85,11 +83,7 @@ export default function QuizDashboard() {
             })}
           </SideBar>
           {tutor ? (
-            <AllQuizzes
-              showQuiz={showQuiz}
-              setShowQuiz={setShowQuiz}
-              quizList={quizList}
-            />
+            <AllQuizzes quizList={quizList} />
           ) : (
             <OfflineQuizzes quizList={quizList} />
           )}

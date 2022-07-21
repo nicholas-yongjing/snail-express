@@ -11,6 +11,8 @@ import LiveQuiz from "../images/live-quiz.jpg";
 import Revise from "../images/revise-quizzes.jpg";
 import LearnByHelping from "../images/learn-by-helping-others.jpg";
 
+import { Tabs, Tab } from "react-bootstrap";
+
 export default function LandingPage() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
@@ -57,7 +59,6 @@ export default function LandingPage() {
               style={{ margin: "4px" }}
               onClick={() => toggleFeatures("students")}
               disabled={showStudents}
-              data-test-id="btn-student"
             >
               Students
             </Button>
@@ -65,7 +66,6 @@ export default function LandingPage() {
               style={{ margin: "4px" }}
               onClick={() => toggleFeatures("tutors")}
               disabled={!showStudents}
-              data-test-id="btn-tutor"
             >
               Tutors
             </Button>

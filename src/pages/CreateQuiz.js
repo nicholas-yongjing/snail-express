@@ -25,7 +25,7 @@ export default function CreateQuiz() {
         "quizzes",
         `${nameRef.current.value}`
       ),
-      { live: false, offline: false, currentQuestion: 0 }
+      { live: false }
     ).then(console.log("Setting quiz name"));
     setAddingQuestions(true);
   };
