@@ -153,6 +153,43 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(keys);
       }
 
+      // added
+      function isValidFeedbackDocument() {
+        let keys = ["name", "reaction"];
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys);
+      }
+
+      // added
+      function isValidQuizDocument() {
+        let keys = ["live", "offline", "currentQuestion"];
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys);
+      }
+      
+      // added
+      function isValidQuestionDocument() {
+        let keys = ["question", "A", "B", "C", "D", "answer", "responses"];
+        let responsesKeys = ["A", "B", "C", "D", "total"];
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys)
+          && request.resource.data.responses.keys().hasAll(responsesKeys)
+          && request.resource.data.responses.keys().hasOnly(responsesKeys);
+      }
+
+      // added
+      function isValidQuizUpdate() {
+        return isTutor() 
+          && request.resource.data.affectedKeys().hasOnly(["live", "offline", "currentQuestion"]);
+      }
+
+      // added
+      function isValidQuestionUpdate() {
+        return isTutor() 
+          && request.resource.data.affectedKeys().hasOnly(["responses"])
+          && request.resource.data.responses.affectedKeys().hasOnly(["A", "B", "C", "D", "total"]);
+      }
+
       function isValidStudentUpdate() {
         return (isStudent() || isInvited())
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["studentInvites", "studentIds"]);
