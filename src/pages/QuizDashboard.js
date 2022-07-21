@@ -5,13 +5,13 @@ import SideBar from "../components/SideBar";
 import WebPage from "../components/WebPage";
 
 import { useClass } from "../contexts/ClassContext";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { firestore } from "../firebase";
+import firestore from "../firestore";
 import { Link } from "react-router-dom";
 
 export default function QuizDashboard() {
   const { currentClass, isTutor } = useClass();
-  const [quizList, setQuizList] = useState([]);  
+  const { pullQuizList } = firestore;
+  const [quizList, setQuizList] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
   const tutor = isTutor();
 
@@ -25,45 +25,8 @@ export default function QuizDashboard() {
         ["/live-quiz", "Live quiz"],
       ];
 
-  const populateQuizList = async () => {
-    // console.log("Populating quiz list");
-    return await getDocs(
-      collection(firestore, "classes", currentClass.id, "quizzes")
-    ).then(async (snapshot) => {
-      //   console.log(snapshot.docs);
-
-      return Promise.all(
-        snapshot.docs.map(async (document) => {
-          //   console.log(document);
-          const q = query(
-            collection(
-              firestore,
-              "classes",
-              currentClass.id,
-              "quizzes",
-              document.id,
-              "questions"
-            ),
-            orderBy("id")
-          );
-          return await getDocs(q);
-        })
-      ).then(async (promises) => {
-        return setQuizList(
-          promises.map((questions) => {
-            console.log(questions);
-            return {
-              id: questions.query._query.path.segments[3], // get quiz name from path
-              data: questions.docs,
-            };
-          })
-        );
-      });
-    });
-  };
-
   useEffect(() => {
-    populateQuizList();
+    pullQuizList(currentClass, setQuizList);
   }, [showQuiz]);
 
   return (
@@ -84,7 +47,11 @@ export default function QuizDashboard() {
             })}
           </SideBar>
           {tutor ? (
-            <AllQuizzes showQuiz={showQuiz} setShowQuiz={setShowQuiz} quizList={quizList} />
+            <AllQuizzes
+              showQuiz={showQuiz}
+              setShowQuiz={setShowQuiz}
+              quizList={quizList}
+            />
           ) : (
             <OfflineQuizzes quizList={quizList} />
           )}

@@ -2,22 +2,24 @@ import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import Statistics from "./Statistics";
 import { useClass } from "../contexts/ClassContext";
-import { useNavigate } from "react-router-dom";
-import { firestore } from "../firebase";
+import firestore from "../firestore";
 import {
   doc,
-  getDocs,
-  collection,
   onSnapshot,
-  updateDoc,
-  deleteDoc,
 } from "firebase/firestore";
 
 export default function TutorQuizInterface(props) {
   const { setShowQuiz, currentQuiz } = props;
   const { currentClass } = useClass();
+  const {
+    activateQuiz,
+    deactivateQuiz,
+    showNextQuestion,
+    showPreviousQuestion,
+    toggleOffline,
+    deleteQuiz,
+  } = firestore;
   const [controls, setControls] = useState({});
-  const navigate = useNavigate();
 
   const { offline, live, currentQuestion } = controls;
 
@@ -37,84 +39,28 @@ export default function TutorQuizInterface(props) {
   const questions = currentQuiz.data.map((doc) => doc.data());
 
   const handleStartQuiz = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      live: true,
-      currentQuestion: 0,
-    });
-    getDocs(
-      collection(
-        firestore,
-        "classes",
-        currentClass.id,
-        "quizzes",
-        name,
-        "questions"
-      )
-    ).then((snapshot) => {
-      snapshot.docs.map((question) => {
-        updateDoc(doc(firestore, question.ref.path), {
-          responses: {
-            A: 0,
-            B: 0,
-            C: 0,
-            D: 0,
-            total: 0,
-          },
-        });
-      });
-    });
+    activateQuiz(currentClass, name);
   };
 
   const handleEndQuiz = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      live: false,
-      currentQuestion: 0,
-    });
-    getDocs(
-      collection(
-        firestore,
-        "classes",
-        currentClass.id,
-        "quizzes",
-        name,
-        "questions"
-      )
-    ).then((snapshot) => {
-      snapshot.docs.map((question) => {
-        updateDoc(doc(firestore, question.ref.path), {
-          responses: {
-            A: 0,
-            B: 0,
-            C: 0,
-            D: 0,
-            total: 0,
-          },
-        });
-      });
-    });
+    deactivateQuiz(currentClass, name);
   };
 
   const handlePrevious = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      currentQuestion: currentQuestion - 1,
-    });
+    showPreviousQuestion(currentClass, name, currentQuestion);
   };
 
   const handleNext = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      currentQuestion: currentQuestion + 1,
-    });
+    showNextQuestion(currentClass, name, currentQuestion);
   };
 
   const toggleSetOffline = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      offline: !offline,
-    });
+    toggleOffline(currentClass, name, offline);
   };
 
   const handleDeleteQuiz = () => {
     setShowQuiz(false);
-    deleteDoc(doc(firestore, "classes", currentClass.id, "quizzes", name));
+    deleteQuiz(currentClass, name);
   };
 
   return (

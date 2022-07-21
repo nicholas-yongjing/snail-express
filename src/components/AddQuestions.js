@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Button from "../components/Button";
 import firestore from "../firestore";
 
@@ -23,7 +23,7 @@ export default function AddQuestions(props) {
 
   const handleAddQuestion = (event, answer) => {
     event.preventDefault();
-    if (
+    if ( 
       questionRef.current.value === "" ||
       aRef.current.value === "" ||
       bRef.current.value === "" ||

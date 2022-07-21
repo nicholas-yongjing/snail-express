@@ -4,24 +4,21 @@ import Button from "../components/Button";
 import SideBar from "../components/SideBar";
 
 import { useClass } from "../contexts/ClassContext";
-import { firestore } from "../firebase";
+import firestore from "../firestore";
 import { Link } from "react-router-dom";
 import {
-  doc,
   collection,
-  getDoc,
   getDocs,
   onSnapshot,
   query,
-  updateDoc,
   where,
-  increment,
   orderBy,
 } from "firebase/firestore";
 
 export default function LiveQuiz() {
   const { currentClass } = useClass();
   const [name, setName] = useState("");
+  const { submitAnswer } = firestore;
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [submitted, setSubmitted] = useState(false);
@@ -40,15 +37,16 @@ export default function LiveQuiz() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docs.map((d) => {
         setCurrentQuestion(d.data().currentQuestion);
-        const q = query(collection(firestore, d.ref.path, "questions"), orderBy("id"));
-        getDocs(q).then(
-          (questions) => {
-            setSubmitted(false);
-            setQuestions(questions.docs.map((doc) => doc.data()));
-            const hoops = d.ref.path.split("/");
-            setName(hoops[hoops.length - 1]);
-          }
+        const q = query(
+          collection(firestore, d.ref.path, "questions"),
+          orderBy("id")
         );
+        getDocs(q).then((questions) => {
+          setSubmitted(false);
+          setQuestions(questions.docs.map((doc) => doc.data()));
+          const hoops = d.ref.path.split("/");
+          setName(hoops[hoops.length - 1]);
+        });
       });
     });
     return unsubscribe;
@@ -56,37 +54,7 @@ export default function LiveQuiz() {
 
   const handleSubmit = (response) => {
     setSubmitted(true);
-    const questionRef = doc(
-      firestore,
-      "classes",
-      currentClass.id,
-      "quizzes",
-      name,
-      "questions",
-      `${currentQuestion + 1}`
-    );
-
-    if (response == "A") {
-      updateDoc(questionRef, {
-        "responses.A": increment(1),
-        "responses.total": increment(1),
-      });
-    } else if (response == "B") {
-      updateDoc(questionRef, {
-        "responses.B": increment(1),
-        "responses.total": increment(1),
-      });
-    } else if (response == "C") {
-      updateDoc(questionRef, {
-        "responses.C": increment(1),
-        "responses.total": increment(1),
-      });
-    } else {
-      updateDoc(questionRef, {
-        "responses.D": increment(1),
-        "responses.total": increment(1),
-      });
-    }
+    submitAnswer(currentClass, name, currentQuestion, response);
   };
 
   return (
@@ -155,7 +123,12 @@ export default function LiveQuiz() {
                   </Button>
                 </span>
               </div>
-            ) : <h3 className="p-4">No quiz available... please wait for your tutor to start the quiz!</h3>}
+            ) : (
+              <h3 className="p-4">
+                No quiz available... please wait for your tutor to start the
+                quiz!
+              </h3>
+            )}
           </div>
         </div>
       </div>

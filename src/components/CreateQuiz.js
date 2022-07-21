@@ -3,12 +3,12 @@ import Button from "../components/Button";
 import { Card, Container, Form, FormControl } from "react-bootstrap";
 import WebPage from "./WebPage";
 import AddQuestions from "./AddQuestions";
-import { firestore } from "../firebase";
-import { setDoc, doc } from "firebase/firestore";
+import firestore from "../firestore";
 import { useClass } from "../contexts/ClassContext";
 
 export default function CreateQuiz() {
   const { currentClass } = useClass();
+  const { createQuiz } = firestore;
   const quizNameRef = useRef();
   const [addingQuestions, setAddingQuestions] = useState(false);
 
@@ -16,16 +16,7 @@ export default function CreateQuiz() {
     if (quizNameRef.current.value === "") {
       return;
     }
-    const quizDocRef = doc(
-      firestore,
-      "classes",
-      currentClass.id,
-      "quizzes",
-      `${quizNameRef.current.value}`
-    );
-    setDoc(quizDocRef, { live: false, offline: true, currentQuestion: 0 }).then(
-      console.log("Setting quiz name")
-    );
+    createQuiz(currentClass, quizNameRef.current.value);
     setAddingQuestions(true);
   };
 

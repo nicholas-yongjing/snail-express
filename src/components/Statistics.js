@@ -13,7 +13,6 @@ export default function Statistics(props) {
     D: 0,
     total: 0,
   });
-  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     console.log("Using effect in statistics");
