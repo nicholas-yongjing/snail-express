@@ -275,17 +275,31 @@ service cloud.firestore {
           && isValidReplyUpdate()
       }
 
-     match /feedback/{individualFeedback} {
-      allow read, write: if isInClass();
-     }
+      // added
+      match /feedback/{individualFeedback} {
+        allow read, create, update: if isInClass() 
+          && isValidFeedbackDocument();
+        allow delete: if isTutor();
+      }
 
-     match /quizzes/{quiz} {
-      allow read, write: if isInClass();
-     }
+      // added
+      match /quizzes/{quiz} {
+        allow read: if isInClass();
+        allow create: if isTutor() 
+          && isValidQuizDocument();
+        allow update: if isTutor()
+          && isValidQuizUpdate();
+      }
 
-     match /quizzes/{quiz}/questions/{questionNo} {
-      allow read, write: if isInClass();
-     }
+      // added
+      match /quizzes/{quiz}/questions/{questionID} {
+        allow read: if isInClass();
+        allow create: if isTutor() 
+          && isValidQuestionDocument();
+        allow update: if isInClass()
+          && isValidQuestionUpdate();
+      }
+
     }
   }
 }
