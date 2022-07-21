@@ -64,7 +64,7 @@ export default function Post(props) {
   }, [populateAuthor, populateReplies]);
 
   return (
-    <div className='d-flex flex-column fs-5'>
+    <div className='d-flex flex-column fs-5' data-testid="post-1">
       <Card className='slate-700'>
         <Card.Body>
           <div className='d-flex justify-content-between align-items-center'>

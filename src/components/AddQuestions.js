@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Button from "../components/Button";
 
 import { Link } from "react-router-dom";
-import { Form, Dropdown, DropdownButton } from "react-bootstrap";
+import { Form, Dropdown, DropdownButton, Alert } from "react-bootstrap";
 import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { useClass } from "../contexts/ClassContext";
@@ -11,6 +11,7 @@ export default function AddQuestions(props) {
   const { name } = props;
   const { currentClass } = useClass();
   const [count, setCount] = useState(1);
+  const [alert, setAlert] = useState(false);
 
   const questionRef = useRef();
   const aRef = useRef();
@@ -21,6 +22,18 @@ export default function AddQuestions(props) {
   const options = ["A", "B", "C", "D"];
 
   const handleAddQuestion = (event, answer) => {
+    if (
+      questionRef.current.value === "" ||
+      aRef.current.value === "" ||
+      bRef.current.value === "" ||
+      cRef.current.value === "" ||
+      dRef.current.value === ""
+    ) {
+      setAlert(true);
+      return;
+    }
+    setAlert(false);
+    console.log(questionRef);
     console.log("Adding question");
     event.preventDefault();
     setDoc(
@@ -63,21 +76,32 @@ export default function AddQuestions(props) {
       </Link>
     </div>
   ) : (
-    <div>
+    <div data-testid="container">
       <div className="text-slate-300">
-        <div variant="info" className="fs-5 mt-2">
-          {(count - 1) + "/10 questions added so far"}
+        {alert && (
+          <Alert variant="danger" className="mt-3">
+            Please fill in all fields!
+          </Alert>
+        )}
+        <div data-testid="count" variant="info" className="fs-5 mt-2">
+          {count - 1 + "/10 questions added so far"}
         </div>
       </div>
       <div className="d-flex flex-row-reverse">
-        <Link to="/quiz-dashboard">
-          <Button>Finish and exit</Button>
-        </Link>
+        {count > 1 ? (
+          <Link to="/quiz-dashboard">
+            <Button>Finish and exit</Button>
+          </Link>
+        ) : (
+          <Button disabled={true}>Finish and exit</Button>
+        )}
       </div>
       <Form className="d-flex flex-column align-items-center">
         <Form.Group>
           <div style={{ margin: "6px" }}>
-            <Form.Label className="text-slate-200 p-2">Question:</Form.Label>
+            <Form.Label data-testid="question" className="text-slate-200 p-2">
+              Question:
+            </Form.Label>
             <Form.Control
               as="textarea"
               ref={questionRef}
@@ -89,6 +113,7 @@ export default function AddQuestions(props) {
           </div>
           <div className="d-flex" style={{ margin: "6px" }}>
             <Form.Label
+              data-testid="option-A"
               className="text-slate-200 p-2"
               style={{ minWidth: "120px" }}
             >
@@ -101,6 +126,7 @@ export default function AddQuestions(props) {
               className="generic-field"
             />
             <Form.Label
+              data-testid="option-B"
               className="text-slate-200 p-2"
               style={{ minWidth: "120px" }}
             >
@@ -115,6 +141,7 @@ export default function AddQuestions(props) {
           </div>
           <div className="d-flex" style={{ margin: "6px" }}>
             <Form.Label
+              data-testid="option-C"
               className="text-slate-200 p-2"
               style={{ minWidth: "120px" }}
             >
@@ -127,6 +154,7 @@ export default function AddQuestions(props) {
               className="generic-field"
             />
             <Form.Label
+              data-testid="option-D"
               className="text-slate-200 p-2"
               style={{ minWidth: "120px" }}
             >
@@ -140,9 +168,14 @@ export default function AddQuestions(props) {
             />
           </div>
         </Form.Group>
-        <DropdownButton title="Correct option" className="mt-3 mb-3">
+        <DropdownButton
+          data-testid="dropdown"
+          title="Correct option"
+          className="mt-3 mb-3"
+        >
           {options.map((option) => (
             <Dropdown.Item
+              data-testid={`dropdown-option-${option}`}
               key={option}
               onClick={(event) => handleAddQuestion(event, option)}
             >

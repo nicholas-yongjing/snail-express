@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 import app from "../firebase";
 import { useAuth } from "./AuthContext";
 
-const ClassContext = createContext();
+export const ClassContext = createContext();
 
 export function useClass() {
   return useContext(ClassContext);

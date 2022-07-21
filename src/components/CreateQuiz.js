@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Button from "../components/Button";
 import { Card, Container, Form, FormControl } from "react-bootstrap";
 import WebPage from "./WebPage";
-import Header from "../components/Header";
-import EnterQuestion from "./EnterQuestion";
-import { Link } from "react-router-dom";
+import AddQuestions from "./AddQuestions";
 import { firestore } from "../firebase";
-import { collection, setDoc, doc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import { useClass } from "../contexts/ClassContext";
 
 export default function CreateQuiz() {
@@ -51,7 +49,7 @@ export default function CreateQuiz() {
           <Card className="slate-600 text-slate-200 fs-4">
             <div className="d-flex justify-content-center">
               <div>
-                <EnterQuestion name={quizNameRef.current.value} />
+                <AddQuestions name={quizNameRef.current.value} />
               </div>
             </div>
           </Card>
@@ -65,11 +63,11 @@ export default function CreateQuiz() {
                 className="slate-600 text-slate-200 fs-4 mt-3 d-flex flex-column justify-content-center"
                 style={{ maxWidth: "500px" }}
               >
-                <Form.Label className="d-flex justify-content-center">
+                <Form.Label data-testid="label" className="d-flex justify-content-center">
                   Enter the title of your new quiz!
                 </Form.Label>
-                <FormControl ref={quizNameRef}></FormControl>
-                <Button onClick={handleCreateQuiz} className="mt-3 mb-3">
+                <FormControl data-testid="input" ref={quizNameRef}></FormControl>
+                <Button data-testid="button" onClick={handleCreateQuiz} className="mt-3 mb-3">
                   Start
                 </Button>
               </div>

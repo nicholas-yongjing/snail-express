@@ -11,7 +11,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -64,6 +64,7 @@ export function AuthProvider({ children }) {
       photoURL: link
     }).then(() => console.log("Successfully updated profile picture!"));
   }
+  
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

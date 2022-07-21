@@ -14,7 +14,7 @@ export default function Button(props) {
   }
 
   return (
-      <button {...props} className={classes}>
+      <button {...props} className={classes} data-testid="button">
         {props.children}
       </button>
   );

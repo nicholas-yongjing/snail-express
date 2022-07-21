@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useClass } from "../contexts/ClassContext";
-import SnailLogo from "../images/snail-logo.png"
+import SnailLogo from "../images/snail-logo.png";
 
 export default function NavigationBar() {
   const { currentUser, logout } = useAuth();
@@ -23,6 +23,7 @@ export default function NavigationBar() {
       return (
         <div className="navbar-nav  fs-5">
           <Link
+            style={{ marginLeft: "12px" }}
             className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
             to="/class-dashboard"
           >
@@ -82,13 +83,15 @@ export default function NavigationBar() {
       </div>
     ) : (
       <div className="d-flex gap-3">
-        <Link to="/login"
+        <Link
+          to="/login"
           className="btn border-slate-200 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
           role="button"
         >
           Login
         </Link>
-        <Link to="/signup"
+        <Link
+          to="/signup"
           className="btn border-slate-200 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
           role="button"
         >
@@ -101,16 +104,11 @@ export default function NavigationBar() {
   return (
     <nav className="navbar navbar-expand-lg p-3 justify-content-between slate-900">
       <div className="d-flex align-items-center">
-
         <Link
           className="d-flex gap-4 align-items-center nav-link text-slate-200 text-slate-200 hover-text-slate-200 fs-3"
           to="/dashboard"
         >
-          <img
-            src={SnailLogo}
-            alt="snail express"
-            style={{ width: '40px' }}
-          />
+          <img src={SnailLogo} alt="snail express" style={{ width: "40px" }} />
           snail-express
         </Link>
         {getLinks()}
