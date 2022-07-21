@@ -62,7 +62,7 @@ export default function LiveFeedback() {
       <WebPage>
         <Container fluid='xl'>
           <Container
-            className="d-flex flex-column gap-4 align-items-center mt-5 p-4 slate-600 "
+            className="d-flex flex-column gap-4 align-items-center mt-5 p-4 slate-600 rounded"
             style={{ margin: "auto", maxWidth: "900px", minHeight: "350px" }}
           >
             <Header

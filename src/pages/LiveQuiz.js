@@ -80,16 +80,16 @@ export default function LiveQuiz() {
             <br></br>
             <h3>{name}</h3>
             {name ? (
-              <div className="slate-600 p-4 m-4">
+              <div className="slate-600 p-4 m-4 rounded">
                 <div>
                   <h3 className="p-3" style={{ margin: "8px" }}>
                     Question {currentQuestion + 1}
                   </h3>
-                  <h4 className="slate-800 p-4" style={{ margin: "8px" }}>
+                  <h4 className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                     {questions[currentQuestion].question}
                   </h4>
                 </div>
-                <span className="d-flex justify-content-between">
+                <span className="d-flex justify-content-between" style={{marginBottom: "16px"}}>
                   <Button
                     className="slate-800 p-3"
                     style={{ margin: "8px" }}
@@ -116,7 +116,7 @@ export default function LiveQuiz() {
                   </Button>
                   <Button
                     className="slate-800 p-3"
-                    style={{ margin: "8px" }}
+                    style={{ margin: "8px"}}
                     onClick={() => handleSubmit("D")}
                     disabled={submitted}
                   >
@@ -125,10 +125,10 @@ export default function LiveQuiz() {
                 </span>
               </div>
             ) : (
-              <h3 className="p-4">
-                No quiz available... please wait for your tutor to start the
+              <h4>
+                No quiz available... please wait for your tutor to start a
                 quiz!
-              </h3>
+              </h4>
             )}
           </div>
         </div>

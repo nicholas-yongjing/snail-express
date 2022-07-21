@@ -83,27 +83,27 @@ export default function TutorQuizInterface(props) {
       {!live && <Button onClick={handleDeleteQuiz}>Delete quiz</Button>}
       <div>
         {live && (
-          <div className="slate-600 p-4" style={{ margin: "16px" }}>
+          <div className="slate-600 p-4 rounded" style={{ margin: "16px" }}>
             <div>
               <h3 className="p-3" style={{ margin: "8px" }}>
                 Question {currentQuestion + 1}
               </h3>
-              <h4 className="slate-800 p-4" style={{ margin: "8px" }}>
+              <h4 className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                 {questions[currentQuestion].question}
               </h4>
             </div>
             <div>
               <span className="d-flex justify-content-between">
-                <div className="slate-800 p-4" style={{ margin: "8px" }}>
+                <div className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                   Option A: {questions[currentQuestion].A}
                 </div>
-                <div className="slate-800 p-4" style={{ margin: "8px" }}>
+                <div className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                   Option B: {questions[currentQuestion].B}
                 </div>
                 <div className="slate-800 p-4" style={{ margin: "8px" }}>
                   Option C: {questions[currentQuestion].C}
                 </div>
-                <div className="slate-800 p-4" style={{ margin: "8px" }}>
+                <div className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                   Option D: {questions[currentQuestion].D}
                 </div>
               </span>

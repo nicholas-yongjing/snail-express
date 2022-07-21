@@ -34,7 +34,7 @@ export default function Statistics(props) {
   }, [currentQuestion]);
 
   return (
-    <div className="slate-600 p-4" style={{ margin: "16px" }}>
+    <div className="slate-600 p-4 rounded" style={{ margin: "16px" }}>
       <h3 className="slate-600 text-slate-200 p-4">Statistics</h3>
       {console.log(currentQuestion)}
       <div>
