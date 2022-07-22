@@ -25,7 +25,6 @@ export default function TutorQuizInterface(props) {
   const { revision, live, currentQuestion } = controls;
 
   useEffect(() => {
-    console.log("inside use effect");
     const unsubscribe = onSnapshot(
       doc(db, "classes", currentClass.id, "quizzes", name),
       (doc) => {

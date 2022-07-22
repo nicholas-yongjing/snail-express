@@ -14,7 +14,7 @@ export default function NavigationBar() {
       await logout();
       navigate("/login", { replace: true });
     } catch {
-      console.log("Failed to log out");
+      alert("Failed to log out");
     }
   }
 

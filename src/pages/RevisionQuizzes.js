@@ -4,9 +4,9 @@ import firestore from "../firestore";
 import { useClass } from "../contexts/ClassContext";
 import RevisionQuiz from "../components/RevisionQuiz";
 
-export default function OfflineQuizzes() {
+export default function RevisionQuizzes() {
   const { currentClass } = useClass();
-  const { pullOfflineQuizList } = firestore;
+  const { pullRevisionQuizList } = firestore;
   const [quizList, setQuizList] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
 
@@ -18,7 +18,7 @@ export default function OfflineQuizzes() {
   };
 
   useEffect(() => {
-    pullOfflineQuizList(currentClass.id, setQuizList)
+    pullRevisionQuizList(currentClass.id, setQuizList)
   }, []);
 
   return (

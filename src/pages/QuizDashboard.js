@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AllQuizzes from "./AllQuizzes";
-import OfflineQuizzes from "./OfflineQuizzes";
+import RevisionQuizzes from "./RevisionQuizzes";
 import SideBar from "../components/SideBar";
 import WebPage from "../components/WebPage";
 
@@ -21,7 +21,7 @@ export default function QuizDashboard() {
         ["/create-quiz", "Create Quiz"],
       ]
     : [
-        ["/quiz-dashboard", "Offline quizzes"],
+        ["/quiz-dashboard", "Revision quizzes"],
         ["/live-quiz", "Live quiz"],
       ];
 
@@ -53,7 +53,7 @@ export default function QuizDashboard() {
               quizList={quizList}
             />
           ) : (
-            <OfflineQuizzes quizList={quizList} />
+            <RevisionQuizzes quizList={quizList} />
           )}
         </div>
       </WebPage>

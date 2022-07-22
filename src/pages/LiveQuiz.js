@@ -30,7 +30,6 @@ export default function LiveQuiz() {
   ];
 
   useEffect(() => {
-    console.log("inside use effect live quiz");
     const q = query(
       collection(db, "classes", currentClass.id, "quizzes"),
       where("live", "==", true)
