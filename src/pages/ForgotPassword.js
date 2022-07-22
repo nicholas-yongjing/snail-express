@@ -3,7 +3,7 @@ import { Container, Form, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
   const { resetPassword } = useAuth();
@@ -54,6 +54,7 @@ export default function ForgotPassword() {
           )}
         </Form>
       </Container>
+      
     </WebPage>
   );
 }

@@ -54,6 +54,18 @@ export default function getDatabase(firestore) {
     });
   }
 
+  function createInvalidQuiz(className, quizName) {
+    setDoc(
+      doc(firestore, "classes", className, "quizzes", `${quizName}`),
+      {
+        live: false,
+        revision: false,
+        currentQuestion: 0,
+        extrafield: true
+      }
+    );
+  }
+
   function submitAnswer(className, quizName, currentQuestion, response) {
     const questionRef = doc(
       firestore,

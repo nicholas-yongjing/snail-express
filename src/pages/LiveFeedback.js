@@ -17,7 +17,7 @@ import Header from "../components/Header";
 
 export default function LiveFeedback() {
   const { currentUser } = useAuth();
-  const { currentClass, isTutor } = useClass();
+  const { currentClass, isHeadTutor } = useClass();
   const { resetLectureFeedbacks, setLectureFeedback } = firestore;
   const [results, setResults] = useState([0, 0, 0, 0]);
   const [loading, setLoading] = useState(false);
@@ -124,7 +124,7 @@ export default function LiveFeedback() {
               )}
             </div>
             <div className="mt-3 d-flex align-items-center">
-              {isTutor() ? (
+              {isHeadTutor() ? (
                 <Button
                   className="generic-button"
                   onClick={handleReset}
