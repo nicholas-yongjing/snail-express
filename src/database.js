@@ -19,10 +19,10 @@ import {
 export default function getDatabase(firestore) {
   const LOG = true;
 
-  async function pullOfflineQuizList(className, setter) {
+  async function pullRevisionQuizList(className, setter) {
     const q = query(
       collection(firestore, "classes", className, "quizzes"),
-      where("offline", "==", true)
+      where("revision", "==", true)
     );
 
     getDocs(q).then(async (snapshot) => {
@@ -88,9 +88,9 @@ export default function getDatabase(firestore) {
     }
   }
 
-  function toggleOffline(className, quizName, offline) {
+  function toggleRevision(className, quizName, revision) {
     updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
-      offline: !offline,
+      revision: !revision,
     });
   }
 
@@ -218,7 +218,7 @@ export default function getDatabase(firestore) {
       doc(firestore, "classes", className, "quizzes", `${quizName}`),
       {
         live: false,
-        offline: false,
+        revision: false,
         currentQuestion: 0,
       }
     );
@@ -907,8 +907,8 @@ export default function getDatabase(firestore) {
     showNextQuestion,
     showPreviousQuestion,
     deleteQuiz,
-    toggleOffline,
+    toggleRevision,
     submitAnswer,
-    pullOfflineQuizList,
+    pullRevisionQuizList,
   };
 }

@@ -25,7 +25,7 @@ export default function LiveQuiz() {
   const [submitted, setSubmitted] = useState(false);
 
   const sidebarLinks = [
-    ["/quiz-dashboard", "Offline quizzes"],
+    ["/quiz-dashboard", "Revision quizzes"],
     ["/live-quiz", "Live quiz"],
   ];
 

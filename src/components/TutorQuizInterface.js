@@ -17,12 +17,12 @@ export default function TutorQuizInterface(props) {
     deactivateQuiz,
     showNextQuestion,
     showPreviousQuestion,
-    toggleOffline,
+    toggleRevision,
     deleteQuiz,
   } = firestore;
   const [controls, setControls] = useState({});
 
-  const { offline, live, currentQuestion } = controls;
+  const { revision, live, currentQuestion } = controls;
 
   useEffect(() => {
     console.log("inside use effect");
@@ -55,8 +55,8 @@ export default function TutorQuizInterface(props) {
     showNextQuestion(currentClass.id, name, currentQuestion);
   };
 
-  const toggleSetOffline = () => {
-    toggleOffline(currentClass.id, name, offline);
+  const toggleSetRevision = () => {
+    toggleRevision(currentClass.id, name, revision);
   };
 
   const handleDeleteQuiz = () => {
@@ -73,12 +73,12 @@ export default function TutorQuizInterface(props) {
         <Button onClick={handleStartQuiz}>Start quiz</Button>
       )}
       {!live &&
-        (offline ? (
-          <Button onClick={toggleSetOffline}>
-            Remove from offline quizzes
+        (revision ? (
+          <Button onClick={toggleSetRevision}>
+            Remove from revision quizzes
           </Button>
         ) : (
-          <Button onClick={toggleSetOffline}>Make available offline</Button>
+          <Button onClick={toggleSetRevision}>Make available for revision</Button>
         ))}
       {!live && <Button onClick={handleDeleteQuiz}>Delete quiz</Button>}
       <div>
