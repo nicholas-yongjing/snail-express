@@ -20,7 +20,6 @@ export default function Invites(props) {
   }
 
   function handleDelete(inviteId) {
-    console.log('deleting invites');
     deleteInvite(inviteId, role, currentUser.email)
       .then(() => populateInvites());
   }
