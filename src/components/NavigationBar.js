@@ -21,9 +21,8 @@ export default function NavigationBar() {
   function getLinks() {
     if (currentUser && currentClass) {
       return (
-        <div className="navbar-nav fs-5">
+        <div className="navbar-nav fs-5" style={{margin: "12px"}}>
           <Link
-            style={{ marginLeft: "12px" }}
             className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
             to="/class-dashboard"
           >
@@ -69,7 +68,7 @@ export default function NavigationBar() {
     return currentUser ? (
       <div className="d-flex gap-2">
         <Link
-          className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
+          className="d-flex align-self-center nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
           to="/profile"
         >
           Profile
