@@ -255,6 +255,16 @@ export default function getDatabase(firestore) {
     );
   }
 
+  async function invalidQuestionUpdate(className, quizName, count) {
+    return updateDoc(doc(firestore, "classes", className, "quizzes", `${quizName}`, "questions", `${count}`), {
+      newfield: "should not be allowed"
+    })
+  }
+
+  async function deleteQuestion(className, quizName, count) {
+    return deleteDoc(doc(firestore, "classes", className, "quizzes", `${quizName}`, "questions", `${count}`));
+  }
+
   function _removeDuplicates(arr) {
     return [...new Set(arr)];
   }
@@ -929,5 +939,7 @@ export default function getDatabase(firestore) {
     readQuiz,
     createInvalidQuiz,
     invalidQuizUpdate,
+    invalidQuestionUpdate,
+    deleteQuestion
   };
 }

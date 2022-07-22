@@ -180,14 +180,17 @@ service cloud.firestore {
       // added
       function isValidQuizUpdate() {
         return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["live", "revision", "currentQuestion"]);
-      //  && (isTutor() || isHeadTutor()) 
       }
 
       // added
       function isValidQuestionUpdate() {
-        return (isTutor() || isHeadTutor()) 
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["responses"])
-          && request.resource.data.responses.diff(resource.data).affectedKeys().hasOnly(["A", "B", "C", "D", "total"]);
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["responses"])
+          && request.resource.data.responses.diff(resource.data.responses).affectedKeys().hasOnly(["A", "B", "C", "D", "total"]);
+      }
+
+      // added 
+      function isValidFeedbackUpdate() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["reaction"]);
       }
 
       function isValidStudentUpdate() {
@@ -279,7 +282,7 @@ service cloud.firestore {
       match /feedback/{individualFeedback} {
         allow read, create, update: if isInClass() 
           && isValidFeedbackDocument();
-        allow delete: if isTutor();
+        allow delete: if isHeadTutor();
       }
 
       // added
@@ -298,12 +301,11 @@ service cloud.firestore {
       // added
       match /quizzes/{quiz}/questions/{questionID} {
         allow read: if isInClass();
-        allow create: if isTutor() 
+        allow create: if (isTutor() || isHeadTutor())  
           && isValidQuestionDocument();
         allow update: if isInClass()
           && isValidQuestionUpdate();
       }
-
     }
   }
 }
