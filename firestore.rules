@@ -162,7 +162,7 @@ service cloud.firestore {
 
       // added
       function isValidQuizDocument() {
-        let keys = ["live", "offline", "currentQuestion"];
+        let keys = ["live", "revision", "currentQuestion"];
         return request.resource.data.keys().hasAll(keys)
           && request.resource.data.keys().hasOnly(keys);
       }
@@ -179,15 +179,15 @@ service cloud.firestore {
 
       // added
       function isValidQuizUpdate() {
-        return isTutor() 
-          && request.resource.data.affectedKeys().hasOnly(["live", "offline", "currentQuestion"]);
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["live", "revision", "currentQuestion"]);
+      //  && (isTutor() || isHeadTutor()) 
       }
 
       // added
       function isValidQuestionUpdate() {
-        return isTutor() 
-          && request.resource.data.affectedKeys().hasOnly(["responses"])
-          && request.resource.data.responses.affectedKeys().hasOnly(["A", "B", "C", "D", "total"]);
+        return (isTutor() || isHeadTutor()) 
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["responses"])
+          && request.resource.data.responses.diff(resource.data).affectedKeys().hasOnly(["A", "B", "C", "D", "total"]);
       }
 
       function isValidStudentUpdate() {
@@ -285,10 +285,14 @@ service cloud.firestore {
       // added
       match /quizzes/{quiz} {
         allow read: if isInClass();
-        allow create: if isTutor() 
+        allow create: if (isTutor() 
+          || isHeadTutor())
           && isValidQuizDocument();
-        allow update: if isTutor()
+        allow update: if (isTutor()
+          || isHeadTutor())
           && isValidQuizUpdate();
+        allow delete: if isTutor()
+          || isHeadTutor();
       }
 
       // added

@@ -19,13 +19,17 @@ import {
 export default function getDatabase(firestore) {
   const LOG = true;
 
+  function readQuiz(className, quizName) {
+    return getDoc(doc(firestore, "classes", className, "quizzes", quizName));
+  }
+
   async function pullRevisionQuizList(className, setter) {
     const q = query(
       collection(firestore, "classes", className, "quizzes"),
       where("revision", "==", true)
     );
 
-    getDocs(q).then(async (snapshot) => {
+    return getDocs(q).then(async (snapshot) => {
       return Promise.all(
         snapshot.docs.map(async (document) => {
           const q = query(
@@ -66,22 +70,22 @@ export default function getDatabase(firestore) {
     );
 
     if (response == "A") {
-      updateDoc(questionRef, {
+      return updateDoc(questionRef, {
         "responses.A": increment(1),
         "responses.total": increment(1),
       });
     } else if (response == "B") {
-      updateDoc(questionRef, {
+      return updateDoc(questionRef, {
         "responses.B": increment(1),
         "responses.total": increment(1),
       });
     } else if (response == "C") {
-      updateDoc(questionRef, {
+      return updateDoc(questionRef, {
         "responses.C": increment(1),
         "responses.total": increment(1),
       });
     } else {
-      updateDoc(questionRef, {
+      return updateDoc(questionRef, {
         "responses.D": increment(1),
         "responses.total": increment(1),
       });
@@ -89,33 +93,33 @@ export default function getDatabase(firestore) {
   }
 
   function toggleRevision(className, quizName, revision) {
-    updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
+    return updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
       revision: !revision,
     });
   }
 
   function deleteQuiz(className, quizName) {
-    deleteDoc(doc(firestore, "classes", className, "quizzes", quizName));
+    return deleteDoc(doc(firestore, "classes", className, "quizzes", quizName));
   }
 
   function showPreviousQuestion(className, quizName, currentQuestion) {
-    updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
+    return updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
       currentQuestion: currentQuestion - 1,
     });
   }
 
   function showNextQuestion(className, quizName, currentQuestion) {
-    updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
+    return updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
       currentQuestion: currentQuestion + 1,
     });
   }
 
-  function activateQuiz(className, quizName) {
-    updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
+  async function activateQuiz(className, quizName) {
+    await updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
       live: true,
       currentQuestion: 0,
     });
-    getDocs(
+    return getDocs(
       collection(
         firestore,
         "classes",
@@ -139,12 +143,12 @@ export default function getDatabase(firestore) {
     });
   }
 
-  function deactivateQuiz(className, quizName) {
-    updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
+  async function deactivateQuiz(className, quizName) {
+    await updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
       live: false,
       currentQuestion: 0,
     });
-    getDocs(
+    return getDocs(
       collection(
         firestore,
         "classes",
@@ -200,8 +204,8 @@ export default function getDatabase(firestore) {
     });
   }
 
-  function resetQuiz(className) {
-    getDocs(collection(firestore, "classes", className, "quizzes")).then(
+  async function resetQuiz(className) {
+    return getDocs(collection(firestore, "classes", className, "quizzes")).then(
       (snapshot) => {
         snapshot.docs.map((document) =>
           updateDoc(doc(firestore, document.ref.path), {
@@ -213,8 +217,8 @@ export default function getDatabase(firestore) {
     );
   }
 
-  function createQuiz(className, quizName) {
-    setDoc(
+  async function createQuiz(className, quizName) {
+    return setDoc(
       doc(firestore, "classes", className, "quizzes", `${quizName}`),
       {
         live: false,
@@ -224,8 +228,20 @@ export default function getDatabase(firestore) {
     );
   }
 
-  function createQuestion(className, quizName, count, questionObj) {
-    setDoc(
+  async function createInvalidQuiz(className, quizName) {
+    return setDoc(doc(firestore, "classes", className, "quizzes", `${quizName}`), {
+      live: false, revision: false, currentQuestion: 0, extrafield: true
+    })
+  }
+
+  async function invalidQuizUpdate(className, quizName) {
+    return updateDoc(doc(firestore, "classes", className, "quizzes", `${quizName}`), {
+      live: false, revision: false, currentQuestion: 0, anotherextrafield: true
+    })
+  }
+
+  async function createQuestion(className, quizName, count, questionObj) {
+    return setDoc(
       doc(
         firestore,
         "classes",
@@ -910,5 +926,8 @@ export default function getDatabase(firestore) {
     toggleRevision,
     submitAnswer,
     pullRevisionQuizList,
+    readQuiz,
+    createInvalidQuiz,
+    invalidQuizUpdate,
   };
 }
