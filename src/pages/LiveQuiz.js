@@ -4,51 +4,49 @@ import Button from "../components/Button";
 import SideBar from "../components/SideBar";
 
 import { useClass } from "../contexts/ClassContext";
-import { firestore } from "../firebase";
+import firestore from "../firestore";
+import { db } from "../firebase";
 import { Link } from "react-router-dom";
 import {
-  doc,
   collection,
-  getDoc,
   getDocs,
   onSnapshot,
   query,
-  updateDoc,
   where,
-  increment,
   orderBy,
 } from "firebase/firestore";
 
 export default function LiveQuiz() {
   const { currentClass } = useClass();
   const [name, setName] = useState("");
+  const { submitAnswer } = firestore;
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [submitted, setSubmitted] = useState(false);
 
   const sidebarLinks = [
-    ["/quiz-dashboard", "Offline quizzes"],
+    ["/quiz-dashboard", "Revision quizzes"],
     ["/live-quiz", "Live quiz"],
   ];
 
   useEffect(() => {
-    console.log("inside use effect live quiz");
     const q = query(
-      collection(firestore, "classes", currentClass.id, "quizzes"),
+      collection(db, "classes", currentClass.id, "quizzes"),
       where("live", "==", true)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docs.map((d) => {
         setCurrentQuestion(d.data().currentQuestion);
-        const q = query(collection(firestore, d.ref.path, "questions"), orderBy("id"));
-        getDocs(q).then(
-          (questions) => {
-            setSubmitted(false);
-            setQuestions(questions.docs.map((doc) => doc.data()));
-            const hoops = d.ref.path.split("/");
-            setName(hoops[hoops.length - 1]);
-          }
+        const q = query(
+          collection(db, d.ref.path, "questions"),
+          orderBy("id")
         );
+        getDocs(q).then((questions) => {
+          setSubmitted(false);
+          setQuestions(questions.docs.map((doc) => doc.data()));
+          const hoops = d.ref.path.split("/");
+          setName(hoops[hoops.length - 1]);
+        });
       });
     });
     return unsubscribe;
@@ -56,37 +54,7 @@ export default function LiveQuiz() {
 
   const handleSubmit = (response) => {
     setSubmitted(true);
-    const questionRef = doc(
-      firestore,
-      "classes",
-      currentClass.id,
-      "quizzes",
-      name,
-      "questions",
-      `${currentQuestion + 1}`
-    );
-
-    if (response == "A") {
-      updateDoc(questionRef, {
-        "responses.A": increment(1),
-        "responses.total": increment(1),
-      });
-    } else if (response == "B") {
-      updateDoc(questionRef, {
-        "responses.B": increment(1),
-        "responses.total": increment(1),
-      });
-    } else if (response == "C") {
-      updateDoc(questionRef, {
-        "responses.C": increment(1),
-        "responses.total": increment(1),
-      });
-    } else {
-      updateDoc(questionRef, {
-        "responses.D": increment(1),
-        "responses.total": increment(1),
-      });
-    }
+    submitAnswer(currentClass.id, name, currentQuestion, response);
   };
 
   return (
@@ -110,17 +78,17 @@ export default function LiveQuiz() {
             <h3>Live Quiz</h3>
             <br></br>
             <h3>{name}</h3>
-            {name && (
-              <div className="slate-600 p-4 m-4">
+            {name ? (
+              <div className="slate-600 p-4 m-4 rounded">
                 <div>
                   <h3 className="p-3" style={{ margin: "8px" }}>
                     Question {currentQuestion + 1}
                   </h3>
-                  <h4 className="slate-800 p-4" style={{ margin: "8px" }}>
+                  <h4 className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                     {questions[currentQuestion].question}
                   </h4>
                 </div>
-                <span className="d-flex justify-content-between">
+                <span className="d-flex justify-content-between" style={{marginBottom: "16px"}}>
                   <Button
                     className="slate-800 p-3"
                     style={{ margin: "8px" }}
@@ -147,7 +115,7 @@ export default function LiveQuiz() {
                   </Button>
                   <Button
                     className="slate-800 p-3"
-                    style={{ margin: "8px" }}
+                    style={{ margin: "8px"}}
                     onClick={() => handleSubmit("D")}
                     disabled={submitted}
                   >
@@ -155,6 +123,11 @@ export default function LiveQuiz() {
                   </Button>
                 </span>
               </div>
+            ) : (
+              <h4>
+                No quiz available... please wait for your tutor to start a
+                quiz!
+              </h4>
             )}
           </div>
         </div>

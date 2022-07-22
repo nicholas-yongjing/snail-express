@@ -22,7 +22,7 @@ export default function Achievements(props) {
     5: { title: "Requesting Assistance", description: "Posted in the forums 5 times", rarity: 'common' },
     10: { title: "Conversation Starter", description: "Posted in the forums 10 times", rarity: 'common' },
     25: { title: "Initiator", description: "Posted in the forums 25 times", rarity: 'uncommon' },
-    50: { title: "Discussion Facillitator", description: "Posted in the forums 50 times", rarity: 'uncommon' },
+    50: { title: "Discussion Facilitator", description: "Posted in the forums 50 times", rarity: 'uncommon' },
     100: { title: "Inquisitor", description: "Posted in the forums 100 times", rarity: 'rare' },
     200: { title: "I don't know what I don't know", description: "Posted in the forums 200 times", rarity: 'rare' },
     500: { title: "Consult the Elder Gods", description: "Posted in the forums 500 times", rarity: 'epic' },
@@ -36,16 +36,28 @@ export default function Achievements(props) {
     50: { title: "Logician", description: "Replied in the forums 50 times", rarity: 'uncommon' },
     100: { title: "Tech Support", description: "Replied in the forums 100 times", rarity: 'rare' },
     200: { title: "The Enlightened", description: "Replied in the forums 200 times", rarity: 'rare' },
-    500: { title: "Ask and You Shall Receive", description: "Replied in the forums 500 times", rarity: 'epic' },
+    500: { title: "Ask and You Snail Receive", description: "Replied in the forums 500 times", rarity: 'epic' },
     1000: { title: "Forum Guardian", description: "Replied in the forums 1000 times", rarity: 'legendary' },
   }
   const voteAchievements = {
     1: { title: "I Agree", description: "Clicked on the vote button once", rarity: 'common' },
-    50: { title: "Opionated", description: "Clicked the vote button 50 times", rarity: 'uncommon' },
+    50: { title: "Opinionated", description: "Clicked the vote button 50 times", rarity: 'uncommon' },
     100: { title: "Judgey", description: "Clicked the vote button 100 times", rarity: 'rare' },
     500: { title: "The Critic", description: "Clicked the vote button 500 times", rarity: 'rare' },
     1000: { title: "Democracy", description: "Clicked the vote button 1000 times", rarity: 'epic' },
     10000: { title: "Autoclicker", description: "Clicked the vote button 10000 times", rarity: 'legendary' },
+  }
+  const quizAchievements = {
+    1: {title: "", description: "", rarity: "common"},
+    3: {title: "", description: "", rarity: "common"},
+    5: {title: "", description: "", rarity: "uncommon"},
+    7: {title: "", description: "", rarity: "uncommon"},
+    9: {title: "", description: "", rarity: "rare"},
+    13: {title: "", description: "", rarity: "epic"},
+    17: {title: "", description: "", rarity: "legendary"},
+  }
+  const feedbackAchievements = {
+
   }
 
   if (user && user.level && user.overallCounts) {

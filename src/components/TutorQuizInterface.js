@@ -2,27 +2,31 @@ import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import Statistics from "./Statistics";
 import { useClass } from "../contexts/ClassContext";
-import { firestore } from "../firebase";
+import firestore from "../firestore";
+import { db } from "../firebase";
 import {
   doc,
-  getDocs,
-  collection,
   onSnapshot,
-  updateDoc,
-  getDoc,
 } from "firebase/firestore";
 
 export default function TutorQuizInterface(props) {
-  const { currentQuiz } = props;
+  const { setShowQuiz, currentQuiz } = props;
   const { currentClass } = useClass();
+  const {
+    activateQuiz,
+    deactivateQuiz,
+    showNextQuestion,
+    showPreviousQuestion,
+    toggleRevision,
+    deleteQuiz,
+  } = firestore;
   const [controls, setControls] = useState({});
 
-  const { offline, live, currentQuestion } = controls;
+  const { revision, live, currentQuestion } = controls;
 
   useEffect(() => {
-    console.log("inside use effect");
     const unsubscribe = onSnapshot(
-      doc(firestore, "classes", currentClass.id, "quizzes", name),
+      doc(db, "classes", currentClass.id, "quizzes", name),
       (doc) => {
         setControls(doc.data());
       }
@@ -35,79 +39,28 @@ export default function TutorQuizInterface(props) {
   const questions = currentQuiz.data.map((doc) => doc.data());
 
   const handleStartQuiz = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      live: true,
-      currentQuestion: 0,
-    });
-    getDocs(
-      collection(
-        firestore,
-        "classes",
-        currentClass.id,
-        "quizzes",
-        name,
-        "questions"
-      )
-    ).then((snapshot) => {
-      snapshot.docs.map((question) => {
-        updateDoc(doc(firestore, question.ref.path), {
-          responses: {
-            A: 0,
-            B: 0,
-            C: 0,
-            D: 0,
-            total: 0,
-          },
-        });
-      });
-    });
+    activateQuiz(currentClass.id, name);
   };
 
   const handleEndQuiz = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      live: false,
-      currentQuestion: 0,
-    });
-    getDocs(
-      collection(
-        firestore,
-        "classes",
-        currentClass.id,
-        "quizzes",
-        name,
-        "questions"
-      )
-    ).then((snapshot) => {
-      snapshot.docs.map((question) => {
-        updateDoc(doc(firestore, question.ref.path), {
-          responses: {
-            A: 0,
-            B: 0,
-            C: 0,
-            D: 0,
-            total: 0,
-          },
-        });
-      });
-    });
+    deactivateQuiz(currentClass.id, name);
   };
 
   const handlePrevious = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      currentQuestion: currentQuestion - 1,
-    });
+    showPreviousQuestion(currentClass.id, name, currentQuestion);
   };
 
   const handleNext = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      currentQuestion: currentQuestion + 1,
-    });
+    showNextQuestion(currentClass.id, name, currentQuestion);
   };
 
-  const toggleSetOffline = () => {
-    updateDoc(doc(firestore, "classes", currentClass.id, "quizzes", name), {
-      offline: !offline,
-    });
+  const toggleSetRevision = () => {
+    toggleRevision(currentClass.id, name, revision);
+  };
+
+  const handleDeleteQuiz = () => {
+    setShowQuiz(false);
+    deleteQuiz(currentClass.id, name);
   };
 
   return (
@@ -118,34 +71,38 @@ export default function TutorQuizInterface(props) {
       ) : (
         <Button onClick={handleStartQuiz}>Start quiz</Button>
       )}
-      {offline ? (
-        <Button onClick={toggleSetOffline}>Remove from offline quizzes</Button>
-      ) : (
-        <Button onClick={toggleSetOffline}>Make available offline</Button>
-      )}
+      {!live &&
+        (revision ? (
+          <Button onClick={toggleSetRevision}>
+            Remove from revision quizzes
+          </Button>
+        ) : (
+          <Button onClick={toggleSetRevision}>Make available for revision</Button>
+        ))}
+      {!live && <Button onClick={handleDeleteQuiz}>Delete quiz</Button>}
       <div>
         {live && (
-          <div className="slate-600 p-4" style={{ margin: "16px" }}>
+          <div className="slate-600 p-4 rounded" style={{ margin: "16px" }}>
             <div>
               <h3 className="p-3" style={{ margin: "8px" }}>
                 Question {currentQuestion + 1}
               </h3>
-              <h4 className="slate-800 p-4" style={{ margin: "8px" }}>
+              <h4 className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                 {questions[currentQuestion].question}
               </h4>
             </div>
             <div>
               <span className="d-flex justify-content-between">
-                <div className="slate-800 p-4" style={{ margin: "8px" }}>
+                <div className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                   Option A: {questions[currentQuestion].A}
                 </div>
-                <div className="slate-800 p-4" style={{ margin: "8px" }}>
+                <div className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                   Option B: {questions[currentQuestion].B}
                 </div>
                 <div className="slate-800 p-4" style={{ margin: "8px" }}>
                   Option C: {questions[currentQuestion].C}
                 </div>
-                <div className="slate-800 p-4" style={{ margin: "8px" }}>
+                <div className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
                   Option D: {questions[currentQuestion].D}
                 </div>
               </span>
