@@ -44,7 +44,7 @@ export default function AddClass() {
         formRef.current.reset();
         setMessage('Class successfully created!');
       }).catch((err) => {
-        console.log(err)
+        // console.log(err)
         setError('Failed to create class, try again later!');
       })
     }

@@ -66,14 +66,14 @@ export default function Settings() {
             })
           }
         </SideBar>
-        <div className="w-100 p-4 d-flex flex-column gap-4">
+        <div className="w-100 p-4 d-flex flex-column gap-4 rounded">
           <Header
             headerText={settingsCategory +" Settings"}
             buttonText="Back to class dashboard"
             linkTo="/class-dashboard"
             buttonClass="light-button"
           />
-          <div className="rounded p-4 d-flex flex-column gap-4">
+          <div className="rounded p-4 d-flex flex-column gap-4 rounded">
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
             {

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Button from "../components/Button";
-import { query, collection, where, getDocs, orderBy } from "firebase/firestore";
-import { firestore } from "../firebase";
+import firestore from "../firestore";
 import { useClass } from "../contexts/ClassContext";
 import RevisionQuiz from "../components/RevisionQuiz";
 
-export default function OfflineQuizzes() {
+export default function RevisionQuizzes() {
   const { currentClass } = useClass();
+  const { pullRevisionQuizList } = firestore;
   const [quizList, setQuizList] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
 
@@ -18,39 +18,7 @@ export default function OfflineQuizzes() {
   };
 
   useEffect(() => {
-    const q = query(
-      collection(firestore, "classes", currentClass.id, "quizzes"),
-      where("offline", "==", true)
-    );
-
-    getDocs(q).then(async (snapshot) => {
-      return Promise.all(
-        snapshot.docs.map(async (document) => {
-          const q = query(
-            collection(
-              firestore,
-              "classes",
-              currentClass.id,
-              "quizzes",
-              document.id,
-              "questions"
-            ),
-            orderBy("id")
-          );
-          return await getDocs(q);
-        })
-      ).then(async (promises) => {
-        return setQuizList(
-          promises.map((questions) => {
-            console.log(questions);
-            return {
-              id: questions.query._query.path.segments[3], // get quiz name from path
-              data: questions.docs,
-            };
-          })
-        );
-      });
-    });
+    pullRevisionQuizList(currentClass.id, setQuizList)
   }, []);
 
   return (
