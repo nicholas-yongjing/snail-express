@@ -280,8 +280,11 @@ service cloud.firestore {
 
       // added
       match /feedback/{individualFeedback} {
-        allow read, create, update: if isInClass() 
+        allow read: if isInClass();
+        allow create: if isInClass() 
           && isValidFeedbackDocument();
+        allow update: if isInClass() 
+          && isValidFeedbackUpdate();
         allow delete: if isHeadTutor();
       }
 

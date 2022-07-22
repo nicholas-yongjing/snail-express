@@ -889,6 +889,14 @@ export default function getDatabase(firestore) {
     });
   }
 
+  async function updateLectureFeedback(classId, user, reaction) {
+    const feedbackRef = collection(firestore, "classes", classId, "feedback");
+    return updateDoc(doc(feedbackRef, user.uid), {
+      name: user.displayName,
+      reaction: reaction,
+    });
+  }
+
   async function resetLectureFeedbacks(classId) {
     const feedbackRef = collection(firestore, "classes", classId, "feedback");
     return getDocs(feedbackRef).then((snapshot) => {
@@ -897,6 +905,11 @@ export default function getDatabase(firestore) {
         return deleteDoc(docRef);
       });
     });
+  }
+
+  async function fetchLectureFeedback(classId, user) {
+    const feedbackRef = collection(firestore, "classes", classId, "feedback");
+    return getDoc(doc(feedbackRef, user.uid));
   }
 
   return {
@@ -940,6 +953,8 @@ export default function getDatabase(firestore) {
     createInvalidQuiz,
     invalidQuizUpdate,
     invalidQuestionUpdate,
-    deleteQuestion
+    deleteQuestion, 
+    updateLectureFeedback,
+    fetchLectureFeedback
   };
 }
