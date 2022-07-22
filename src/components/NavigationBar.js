@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import Button from "../components/Button";
 import { useClass } from "../contexts/ClassContext";
 import SnailLogo from "../images/snail-logo.png";
 
@@ -68,10 +69,10 @@ export default function NavigationBar() {
     return currentUser ? (
       <div className="d-flex gap-2">
         <Link
-          className="d-flex align-self-center nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
+          className="nav-link rounded"
           to="/profile"
         >
-          Profile
+          <button className="btn slate-900 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5">Profile</button>
         </Link>
         <button
           className="btn bg-secondary text-white fs-5"
