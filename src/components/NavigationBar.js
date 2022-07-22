@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import Button from "../components/Button";
 import { useClass } from "../contexts/ClassContext";
 import SnailLogo from "../images/snail-logo.png";
 
