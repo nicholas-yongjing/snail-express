@@ -55,6 +55,34 @@ beforeEach(async () => {
   return await testEnv.clearFirestore();
 });
 
+function readQuiz(firestore, className, quizName) {
+  return getDoc(doc(firestore, "classes", className, "quizzes", quizName));
+}
+
+async function createInvalidQuiz(firestore, className, quizName) {
+  return setDoc(
+    doc(firestore, "classes", className, "quizzes", `${quizName}`),
+    {
+      live: false,
+      revision: false,
+      currentQuestion: 0,
+      extrafield: true,
+    }
+  );
+}
+
+async function invalidQuizUpdate(firestore, className, quizName) {
+  return updateDoc(
+    doc(firestore, "classes", className, "quizzes", `${quizName}`),
+    {
+      live: false,
+      revision: false,
+      currentQuestion: 0,
+      anotherextrafield: true,
+    }
+  );
+}
+
 describe("Quiz", () => {
   it("should only allow head tutors and tutors to create quiz", async () => {
     const headTutorFirestore = testEnv
@@ -327,9 +355,13 @@ describe("Quiz", () => {
       .then(async (classes) => {
         return headTutorDB.createQuiz(classes[0].id, "quizname").then(() => {
           return Promise.all([
-            assertSucceeds(headTutorDB.readQuiz(classes[0].id, "quizname")),
-            assertSucceeds(tutorDB.readQuiz(classes[0].id, "quizname")),
-            assertSucceeds(studentDB.readQuiz(classes[0].id, "quizname")),
+            assertSucceeds(
+              readQuiz(headTutorFirestore, classes[0].id, "quizname")
+            ),
+            assertSucceeds(readQuiz(tutorFirestore, classes[0].id, "quizname")),
+            assertSucceeds(
+              readQuiz(studentFirestore, classes[0].id, "quizname")
+            ),
           ]);
         });
       });
@@ -390,12 +422,16 @@ describe("Quiz", () => {
         headTutorDB
           .getClasses("head-tutor-name", "head tutor")
           .then((classes) => {
-            return headTutorDB.createInvalidQuiz(classes[0].id, "quiz1");
+            return createInvalidQuiz(
+              headTutorFirestore,
+              classes[0].id,
+              "quiz1"
+            );
           })
       ),
       assertFails(
         tutorDB.getClasses("tutor-name", "tutor").then((classes) => {
-          return tutorDB.createInvalidQuiz(classes[0].id, "quiz2");
+          return createInvalidQuiz(tutorFirestore, classes[0].id, "quiz2");
         })
       ),
     ]);
@@ -457,13 +493,17 @@ describe("Quiz", () => {
           .getClasses("head-tutor-name", "head tutor")
           .then((classes) => {
             headTutorDB.createQuiz(classes[0].id, "quiz1");
-            return headTutorDB.invalidQuizUpdate(classes[0].id, "quiz1");
+            return invalidQuizUpdate(
+              headTutorFirestore,
+              classes[0].id,
+              "quiz1"
+            );
           })
       ),
       assertFails(
         tutorDB.getClasses("tutor-name", "tutor").then((classes) => {
           tutorDB.createQuiz(classes[0].id, "quiz2");
-          return tutorDB.invalidQuizUpdate(classes[0].id, "quiz2");
+          return invalidQuizUpdate(tutorFirestore, classes[0].id, "quiz2");
         })
       ),
     ]);
