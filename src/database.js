@@ -65,17 +65,17 @@ export default function getDatabase(firestore) {
       `${currentQuestion + 1}`
     );
 
-    if (response == "A") {
+    if (response === "A") {
       return updateDoc(questionRef, {
         "responses.A": increment(1),
         "responses.total": increment(1),
       });
-    } else if (response == "B") {
+    } else if (response === "B") {
       return updateDoc(questionRef, {
         "responses.B": increment(1),
         "responses.total": increment(1),
       });
-    } else if (response == "C") {
+    } else if (response === "C") {
       return updateDoc(questionRef, {
         "responses.C": increment(1),
         "responses.total": increment(1),
@@ -135,7 +135,7 @@ export default function getDatabase(firestore) {
       )
     ).then((snapshot) => {
       snapshot.docs.map((question) => {
-        updateDoc(doc(firestore, question.ref.path), {
+        return updateDoc(doc(firestore, question.ref.path), {
           responses: {
             A: 0,
             B: 0,
@@ -164,7 +164,7 @@ export default function getDatabase(firestore) {
       )
     ).then((snapshot) => {
       snapshot.docs.map((question) => {
-        updateDoc(doc(firestore, question.ref.path), {
+        return updateDoc(doc(firestore, question.ref.path), {
           responses: {
             A: 0,
             B: 0,

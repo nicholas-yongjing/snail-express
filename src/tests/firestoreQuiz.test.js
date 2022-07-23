@@ -11,8 +11,7 @@ const {
   setLogLevel,
   doc,
   setDoc,
-  getDoc,
-  serverTimestamp,
+  getDoc
 } = require("firebase/firestore");
 const getDatabase = require("../database").default;
 
