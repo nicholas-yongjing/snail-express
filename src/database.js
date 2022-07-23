@@ -17,7 +17,7 @@ import {
 } from "firebase/firestore";
 
 export default function getDatabase(firestore) {
-  const LOG = true;
+  const LOG = false;
 
   function readQuiz(className, quizName) {
     return getDoc(doc(firestore, "classes", className, "quizzes", quizName));
@@ -555,6 +555,7 @@ export default function getDatabase(firestore) {
   }
 
   async function changeLevellingSettings(classId, newSettings) {
+    console.log(newSettings)
     const settingsRef = doc(
       firestore,
       "classes",
@@ -702,7 +703,6 @@ export default function getDatabase(firestore) {
   }
 
   async function editForumPost(classId, threadId, postId, postTitle, postBody) {
-    console.log(classId, threadId, postId, postTitle, postBody);
     const post = {
       title: postTitle,
       body: postBody,
