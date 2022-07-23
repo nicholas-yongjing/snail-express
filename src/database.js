@@ -17,7 +17,7 @@ import {
 } from "firebase/firestore";
 
 export default function getDatabase(firestore) {
-  const LOG = true;
+  const LOG = false;
 
   async function pullRevisionQuizList(className, setter) {
     const q = query(
