@@ -17,7 +17,7 @@ import Header from "../components/Header";
 
 export default function LiveFeedback() {
   const { currentUser } = useAuth();
-  const { currentClass, isTutor } = useClass();
+  const { currentClass, isHeadTutor } = useClass();
   const { resetLectureFeedbacks, setLectureFeedback } = firestore;
   const [results, setResults] = useState([0, 0, 0, 0]);
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,6 @@ export default function LiveFeedback() {
   };
  
   useEffect(() => {
-    console.log('using effect')
     const unsubscribe = onSnapshot(feedbackRef, (snapshot) => {
       const arr = [0, 0, 0, 0];
       snapshot.docs.forEach((doc) => {
@@ -62,7 +61,7 @@ export default function LiveFeedback() {
       <WebPage>
         <Container fluid='xl'>
           <Container
-            className="d-flex flex-column gap-4 align-items-center mt-5 p-4 slate-600 "
+            className="d-flex flex-column gap-4 align-items-center mt-5 p-4 slate-600 rounded"
             style={{ margin: "auto", maxWidth: "900px", minHeight: "350px" }}
           >
             <Header
@@ -72,7 +71,7 @@ export default function LiveFeedback() {
             />
             <DropdownButton
               title="Submit feedback"
-              className="slate-800 btn-secondary"
+              className="slate-600 btn-secondary"
             >
               {reactions.map((reaction) => {
                 return (
@@ -125,7 +124,7 @@ export default function LiveFeedback() {
               )}
             </div>
             <div className="mt-3 d-flex align-items-center">
-              {isTutor() ? (
+              {isHeadTutor() ? (
                 <Button
                   className="generic-button"
                   onClick={handleReset}

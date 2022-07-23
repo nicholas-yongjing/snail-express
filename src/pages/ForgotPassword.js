@@ -3,51 +3,58 @@ import { Container, Form, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
-import Header from "../components/Header";
+import { useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
   const { resetPassword } = useAuth();
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [sent, setSent] = useState(false);
   const emailRef = useRef();
+  const navigate = useNavigate();
 
-  async function handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
-
     try {
       setMessage("");
       setError("");
-      setLoading(true);
-      await resetPassword(emailRef.current.value);
+      console.log(emailRef.current.value);
+      resetPassword(emailRef.current.value);
       setMessage("Check your inbox for the link to reset your password");
-    } catch {
-      setError("Failed to reset password");
+      setSent(true);
+    } catch (err) {
+      console.log(err);
     }
-    setLoading(false);
+  }
+
+  function handleNavigate() {
+    navigate("/login", { replace: true });
   }
 
   return (
     <WebPage>
-      <Container fluid='xl' className="p-5 d-flex flex-column gap-5">
+      <Container fluid="xl" className="p-5 d-flex flex-column gap-5">
         <Form onSubmit={handleSubmit} className="slate-700 p-4">
-          <Header
-            headerText="Reset Password"
-            buttonText="Return to login"
-            linkTo="/login"
-          />
+          <h1 className="p-1 mt-3 mb-3">Reset Password</h1>
           {error && <Alert variant="danger">{error}</Alert>}
           {message && <Alert variant="success">{message}</Alert>}
           <Form.Group id="email">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label className="p-1">Email address</Form.Label>
             <Form.Control size="lg" type="email" ref={emailRef} required />
           </Form.Group>
           <br></br>
-          <Button disabled={loading} className="w-100" type="submit">
-            Reset password
-          </Button>
+          {sent ? (
+            <Button className="w-100" onClick={handleNavigate}>
+              Back to login
+            </Button>
+          ) : (
+            <Button className="w-100" type="submit">
+              Reset password
+            </Button>
+          )}
         </Form>
       </Container>
+      
     </WebPage>
   );
 }

@@ -21,6 +21,10 @@ export function ClassProvider({ children }) {
     );
   }
 
+  function isHeadTutor() {
+    return currentClass && (currentClass.headTutor.id === currentUser.uid);
+  }
+
   async function changeClassName(className) {
     if (currentClass) {
       const classRef = doc(getFirestore(app), "classes", currentClass.id);
@@ -34,7 +38,7 @@ export function ClassProvider({ children }) {
         })
     }
   }
-  const value = { currentClass, setCurrentClass, isTutor, changeClassName };
+  const value = { currentClass, setCurrentClass, isTutor, changeClassName, isHeadTutor };
   return (
     <ClassContext.Provider value={value}>
       {children}

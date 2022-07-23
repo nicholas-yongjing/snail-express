@@ -27,10 +27,7 @@ export default function AddPost(props) {
       currentThread.id,
       postTitleRef.current.value,
       postBodyRef.current.value,
-      {
-        id: currentUser.uid,
-        email: currentUser.email
-      }
+      currentUser.uid
     ).then(() => {
       formRef.current.reset();
       setMessage('Post successfully created!')

@@ -21,7 +21,7 @@ const Students = () => {
           }));
         })
     }
-  }, [currentUser, currentClass]);
+  }, [currentUser, currentClass, getStudents]);
 
   useEffect(() => {
     populateStudents();

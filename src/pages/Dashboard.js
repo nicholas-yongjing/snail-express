@@ -26,7 +26,7 @@ export default function Dashboard() {
         }
       })
     }
-  }, [currentUser.uid, currentUser.email]);
+  }, [currentUser.uid, currentUser.email, getClasses]);
 
   const populateInvites = useCallback(() => {
     if (currentUser.email) {
@@ -41,7 +41,7 @@ export default function Dashboard() {
         })
       }
     }
-  }, [currentUser.email]);
+  }, [currentUser.email, getInvites]);
 
   useEffect(() => {
     populateClasses('head tutor', setCreatedClasses);

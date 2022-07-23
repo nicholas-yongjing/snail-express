@@ -39,13 +39,13 @@ export function AuthProvider({ children }) {
 
   function updateUserEmail(email) {
     return updateEmail(currentUser, email).then(() => {
-      console.log("Successfully updated email");
+      // console.log("Successfully updated email");
     });
   }
 
   function updateUserPassword(password) {
     return updatePassword(currentUser, password).then(() => {
-      console.log("Successfully updated password");
+      // console.log("Successfully updated password");
     });;
   }
 
@@ -54,7 +54,9 @@ export function AuthProvider({ children }) {
     return updateProfile(user, {
       ...user,
       displayName: name
-    }).then(() => console.log("Successfully updated user name!"));
+    }).then(() => {
+      // console.log("Successfully updated user name!")
+    });
   }
 
   function setProfile(link) {
@@ -62,7 +64,9 @@ export function AuthProvider({ children }) {
     return updateProfile(user, {
       ...user, 
       photoURL: link
-    }).then(() => console.log("Successfully updated profile picture!"));
+    }).then(() => {
+      // console.log("Successfully updated profile picture!")
+    });
   }
 
   useEffect(() => {

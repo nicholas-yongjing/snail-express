@@ -27,10 +27,7 @@ export default function AddReply(props) {
       currentThread.id,
       currentPost.id,
       postBodyRef.current.value,
-      {
-        id: currentUser.uid,
-        email: currentUser.email
-      }
+      currentUser.uid
     ).then(() => {
       formRef.current.reset();
       setMessage('Reply successfully posted!')

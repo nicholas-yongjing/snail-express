@@ -40,7 +40,7 @@ export default function SettingsLevelling(props) {
         }
       })
     }
-  }, [limits, expGains, currentClass]);
+  }, [limits, expGains, currentClass, getLevellingSettings]);
 
   useEffect(() => {
     populateSettings();
@@ -49,7 +49,6 @@ export default function SettingsLevelling(props) {
   function validatePostiveIntegers(obj) {
     for (const value of Object.values(obj)) {
       if ((isNaN(value)) || value <= 0) {
-        console.log(value)
         return false;
       }
     }
