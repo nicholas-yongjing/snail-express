@@ -100,8 +100,8 @@ export default function SettingsLevelling(props) {
       ).then(() => {
         populateSettings();
         setMessage('Settings updated')
-      }).catch(() => {
-        setError('Error updating settings. Please try again later');
+      }).catch((err) => {
+        setError(`Error updating settings. Please try again later ${err}`);
       }).finally(() => setLoading(false));
     }
   }
