@@ -111,6 +111,9 @@ export default function SettingsLevelling(props) {
       <div className="fs-5 m-4">
         * When EXP requirements change, students' level will only update after gaining EXP. Students' level does not decrease.
       </div>
+      <div className="fs-5 m-4">
+        * Daily limits represents the maximum number of times a student is awarded EXP per day.
+      </div>
       <Form className="p-4 d-flex flex-column gap-4"
         onSubmit={handleSubmit}
       >
@@ -127,7 +130,7 @@ export default function SettingsLevelling(props) {
               return (
                 <Form.Group key={limit.key}>
                   <Form.Label>
-                    Daily {limit.label} limit awarding EXP
+                    Daily {limit.label} limit that awards EXP
                   </Form.Label>
                   <Form.Control
                     className="generic-field"
