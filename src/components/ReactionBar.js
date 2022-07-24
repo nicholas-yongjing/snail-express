@@ -117,7 +117,11 @@ export default function ReactionBar(props) {
                 className="fs-6"
                 onClick={(e) => handleEndorse(e)}
               >
-                Endorse
+                {
+                  endorsed
+                  ? "Unendorse"
+                  : "Endorse"
+                }
               </Button>
               : <></>
           }
