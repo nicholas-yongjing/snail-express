@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import SideBar from "../components/SideBar";
 
 import { useClass } from "../contexts/ClassContext";
+import { useAuth } from "../contexts/AuthContext";
 import firestore from "../firestore";
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
@@ -18,8 +19,9 @@ import {
 
 export default function LiveQuiz() {
   const { currentClass } = useClass();
+  const { currentUser } = useAuth();
   const [name, setName] = useState("");
-  const { submitAnswer } = firestore;
+  const { submitAnswer, _incrementActivityCount } = firestore;
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [submitted, setSubmitted] = useState(false);
@@ -37,10 +39,7 @@ export default function LiveQuiz() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docs.map((d) => {
         setCurrentQuestion(d.data().currentQuestion);
-        const q = query(
-          collection(db, d.ref.path, "questions"),
-          orderBy("id")
-        );
+        const q = query(collection(db, d.ref.path, "questions"), orderBy("id"));
         getDocs(q).then((questions) => {
           setSubmitted(false);
           setQuestions(questions.docs.map((doc) => doc.data()));
@@ -54,6 +53,20 @@ export default function LiveQuiz() {
 
   const handleSubmit = (response) => {
     setSubmitted(true);
+    if (response === questions[currentQuestion].answer) {
+      _incrementActivityCount(
+        currentClass.id,
+        currentUser.uid,
+        "quizCorrectAnswers"
+      );
+    }
+    // if (currentQuestion == questions.length - 1) {
+    //   _incrementActivityCount(
+    //     currentClass.id,
+    //     currentUser.uid,
+    //     "quizzesAttended"
+    //   );
+    // }
     submitAnswer(currentClass.id, name, currentQuestion, response);
   };
 
@@ -84,11 +97,17 @@ export default function LiveQuiz() {
                   <h3 className="p-3" style={{ margin: "8px" }}>
                     Question {currentQuestion + 1}
                   </h3>
-                  <h4 className="slate-800 p-4 rounded" style={{ margin: "8px" }}>
+                  <h4
+                    className="slate-800 p-4 rounded"
+                    style={{ margin: "8px" }}
+                  >
                     {questions[currentQuestion].question}
                   </h4>
                 </div>
-                <span className="d-flex justify-content-between" style={{marginBottom: "16px"}}>
+                <span
+                  className="d-flex justify-content-between"
+                  style={{ marginBottom: "16px" }}
+                >
                   <Button
                     className="slate-800 p-3"
                     style={{ margin: "8px" }}
@@ -115,7 +134,7 @@ export default function LiveQuiz() {
                   </Button>
                   <Button
                     className="slate-800 p-3"
-                    style={{ margin: "8px"}}
+                    style={{ margin: "8px" }}
                     onClick={() => handleSubmit("D")}
                     disabled={submitted}
                   >
@@ -125,8 +144,7 @@ export default function LiveQuiz() {
               </div>
             ) : (
               <h4>
-                No quiz available... please wait for your tutor to start a
-                quiz!
+                No quiz available... please wait for your tutor to start a quiz!
               </h4>
             )}
           </div>

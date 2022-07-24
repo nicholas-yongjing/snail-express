@@ -18,29 +18,34 @@ import Header from "../components/Header";
 export default function LiveFeedback() {
   const { currentUser } = useAuth();
   const { currentClass, isHeadTutor } = useClass();
-  const { resetLectureFeedbacks, setLectureFeedback } = firestore;
+  const { _incrementActivityCount, resetLectureFeedbacks, setLectureFeedback } =
+    firestore;
   const [results, setResults] = useState([0, 0, 0, 0]);
   const [loading, setLoading] = useState(false);
   const variants = ["danger", "info", "warning", "success"];
   const reactions = useMemo(() => ["fast", "slow", "confusing", "good"], []);
-  const feedbackRef = useMemo(() => collection(getFirestore(app), "classes",
-    currentClass.id, "feedback"), [currentClass.id]);
+  const feedbackRef = useMemo(
+    () => collection(getFirestore(app), "classes", currentClass.id, "feedback"),
+    [currentClass.id]
+  );
 
   const handleSubmit = (reaction) => {
     setLoading(true);
-    setLectureFeedback(currentClass.id, currentUser, reaction)
-      .then(() => setLoading(false));
+    _incrementActivityCount(currentClass.id, currentUser.uid, "feedbacks");
+    setLectureFeedback(currentClass.id, currentUser, reaction).then(() =>
+      setLoading(false)
+    );
   };
 
   const handleReset = () => {
     setLoading(true);
     resetLectureFeedbacks(currentClass.id)
       .then(() => {
-        setResults([0, 0, 0, 0])
+        setResults([0, 0, 0, 0]);
       })
       .then(() => setLoading(false));
   };
- 
+
   useEffect(() => {
     const unsubscribe = onSnapshot(feedbackRef, (snapshot) => {
       const arr = [0, 0, 0, 0];
@@ -53,13 +58,12 @@ export default function LiveFeedback() {
     return unsubscribe;
   }, [feedbackRef, reactions]);
 
-
   const sum = (arr) => arr.reduce((x, y) => x + y, 0);
 
   return (
     <>
       <WebPage>
-        <Container fluid='xl'>
+        <Container fluid="xl">
           <Container
             className="d-flex flex-column gap-4 align-items-center mt-5 p-4 slate-600 rounded"
             style={{ margin: "auto", maxWidth: "900px", minHeight: "350px" }}
@@ -91,9 +95,10 @@ export default function LiveFeedback() {
                     sum(results) === 0
                       ? 0
                       : Math.round(
-                        (results[reactions.indexOf(reaction)] / sum(results)) *
-                        100
-                      );
+                          (results[reactions.indexOf(reaction)] /
+                            sum(results)) *
+                            100
+                        );
                   return (
                     <div key={reaction}>
                       <ProgressBar
@@ -138,8 +143,7 @@ export default function LiveFeedback() {
             </div>
           </Container>
         </Container>
-
       </WebPage>
     </>
   );
-};
+}

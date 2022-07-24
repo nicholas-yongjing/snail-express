@@ -72,9 +72,9 @@ export default function User(props) {
         <div>
           {user.overallCounts !== undefined ? `Total feedbacks given: ${user.overallCounts.feedbacks}` : ''}
         </div>
-        <div>
+        {/* <div>
           {user.overallCounts !== undefined ? `Total quizzes attended: ${user.overallCounts.quizzesAttended}` : ''}
-        </div>
+        </div> */}
         <div>
           {user.overallCounts !== undefined ? `Total correct quiz answers: ${user.overallCounts.quizCorrectAnswers}` : ''}
         </div>

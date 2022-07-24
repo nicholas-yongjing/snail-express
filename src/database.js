@@ -896,5 +896,6 @@ export default function getDatabase(firestore) {
     toggleRevision,
     submitAnswer,
     pullRevisionQuizList,
+    _incrementActivityCount,
   };
 }
