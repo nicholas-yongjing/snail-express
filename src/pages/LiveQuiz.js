@@ -53,8 +53,6 @@ export default function LiveQuiz() {
 
   const handleSubmit = (response) => {
     setSubmitted(true);
-    console.log(response + "response");
-    console.log(questions[currentQuestion].answer + "answer");
     if (response === questions[currentQuestion].answer) {
       _incrementActivityCount(
         currentClass.id,
