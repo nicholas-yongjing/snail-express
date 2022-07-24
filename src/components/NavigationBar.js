@@ -50,7 +50,7 @@ export default function NavigationBar() {
       );
     } else if (!currentUser) {
       return (
-        <div className="navbar-nav fs-5">
+        <div className="navbar-nav fs-5" style={{margin: "12px"}}>
           <Link
             className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
             to="/"

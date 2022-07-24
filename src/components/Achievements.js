@@ -48,16 +48,21 @@ export default function Achievements(props) {
     10000: { title: "Autoclicker", description: "Clicked the vote button 10000 times", rarity: 'legendary' },
   }
   const quizAchievements = {
-    1: {title: "", description: "", rarity: "common"},
-    3: {title: "", description: "", rarity: "common"},
-    5: {title: "", description: "", rarity: "uncommon"},
-    7: {title: "", description: "", rarity: "uncommon"},
-    9: {title: "", description: "", rarity: "rare"},
-    13: {title: "", description: "", rarity: "epic"},
-    17: {title: "", description: "", rarity: "legendary"},
+    1: {title: "One Times Good One", description: "Attended a live quiz once", rarity: "common"},
+    3: {title: "Three's a Crowd", description: "Attended a live quiz 3 times", rarity: "common"},
+    5: {title: "Fifth Sith", description: "Attended a live quiz 5 times", rarity: "uncommon"},
+    7: {title: "Seven Iterations", description: "Attended a live quiz 7 times", rarity: "uncommon"},
+    9: {title: "Cloud Nine", description: "Attended a live quiz 9 times", rarity: "rare"},
+    13: {title: "Quiz Number Thirteen", description: "Attended a live quiz 13 times", rarity: "epic"},
+    17: {title: "InQUIZitive", description: "Attended a live quiz 17 times", rarity: "legendary"},
   }
   const feedbackAchievements = {
-
+    1: { title: "Once in a Blue Moon", description: "Submitted lecture feedback once", rarity: 'common' },
+    50: { title: "Low Maintenance", description: "Submitted lecture feedback 50 times", rarity: 'uncommon' },
+    100: { title: "Jitter Clicker", description: "Submitted lecture feedback 100 times", rarity: 'rare' },
+    500: { title: "High Maintenance", description: "Submitted lecture feedback 500 times", rarity: 'rare' },
+    1000: { title: "Candle in the Wind", description: "Submitted lecture feedback 1000 times", rarity: 'epic' },
+    10000: { title: "Infinite Renders", description: "Submitted lecture feedback 10000 times", rarity: 'legendary' },
   }
 
   if (user && user.level && user.overallCounts) {
@@ -65,7 +70,9 @@ export default function Achievements(props) {
       [[user.level, levelAchievements],
       [user.overallCounts.posts, postAchievements],
       [user.overallCounts.replies, replyAchievements],
-      [user.overallCounts.votes, voteAchievements]]) {
+      [user.overallCounts.votes, voteAchievements], 
+      [user.overallCounts.quizzes, quizAchievements], 
+      [user.overallCounts.feedback, feedbackAchievements]]) {
       for (const [requirement, achievement] of Object.entries(achievements)) {
         if (userStats >= requirement) {
           userAchievements[achievement.rarity].push(achievement);

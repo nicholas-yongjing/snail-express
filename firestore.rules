@@ -153,6 +153,46 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(keys);
       }
 
+      // added
+      function isValidFeedbackDocument() {
+        let keys = ["name", "reaction"];
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys);
+      }
+
+      // added
+      function isValidQuizDocument() {
+        let keys = ["live", "revision", "currentQuestion"];
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys);
+      }
+      
+      // added
+      function isValidQuestionDocument() {
+        let keys = ["id", "question", "A", "B", "C", "D", "answer", "responses"];
+        let responsesKeys = ["A", "B", "C", "D", "total"];
+        return request.resource.data.keys().hasAll(keys)
+          && request.resource.data.keys().hasOnly(keys)
+          && request.resource.data.responses.keys().hasAll(responsesKeys)
+          && request.resource.data.responses.keys().hasOnly(responsesKeys);
+      }
+
+      // added
+      function isValidQuizUpdate() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["live", "revision", "currentQuestion"]);
+      }
+
+      // added
+      function isValidQuestionUpdate() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["responses"])
+          && request.resource.data.responses.diff(resource.data.responses).affectedKeys().hasOnly(["A", "B", "C", "D", "total"]);
+      }
+
+      // added 
+      function isValidFeedbackUpdate() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["reaction"]);
+      }
+
       function isValidStudentUpdate() {
         return (isStudent() || isInvited())
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["studentInvites", "studentIds"]);
@@ -161,7 +201,7 @@ service cloud.firestore {
       function isValidTutorUpdate() {
         return (isHeadTutor() || isTutor()) 
           || (isInvited()
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["tutorInvites", "tutorIds"]));
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["studentInvites", "tutorInvites", "studentIds", "tutorIds"]));
       }
 
       function isValidPostUpdate() {
@@ -238,17 +278,37 @@ service cloud.firestore {
           && isValidReplyUpdate()
       }
 
-     match /feedback/{individualFeedback} {
-      allow read, write: if isInClass();
-     }
+      // added
+      match /feedback/{individualFeedback} {
+        allow read: if isInClass();
+        allow create: if isInClass() 
+          && isValidFeedbackDocument();
+        allow update: if isInClass() 
+          && isValidFeedbackUpdate();
+        allow delete: if isHeadTutor();
+      }
 
-     match /quizzes/{quiz} {
-      allow read, write: if isInClass();
-     }
+      // added
+      match /quizzes/{quiz} {
+        allow read: if isInClass();
+        allow create: if (isTutor() 
+          || isHeadTutor())
+          && isValidQuizDocument();
+        allow update: if (isTutor()
+          || isHeadTutor())
+          && isValidQuizUpdate();
+        allow delete: if isTutor()
+          || isHeadTutor();
+      }
 
-     match /quizzes/{quiz}/questions/{questionNo} {
-      allow read, write: if isInClass();
-     }
+      // added
+      match /quizzes/{quiz}/questions/{questionID} {
+        allow read: if isInClass();
+        allow create: if (isTutor() || isHeadTutor())  
+          && isValidQuestionDocument();
+        allow update: if isInClass()
+          && isValidQuestionUpdate();
+      }
     }
   }
 }

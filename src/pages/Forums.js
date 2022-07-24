@@ -4,12 +4,15 @@ import firestore from '../firestore';
 import SideBar from "../components/SideBar";
 import ForumPosts from "../components/ForumPosts";
 import WebPage from '../components/WebPage';
+import AddThread from './AddThread';
+import Button from '../components/Button';
 
 export default function Forums() {
   const { currentClass } = useClass();
   const { getForumThreads } = firestore;
   const [threads, setThreads] = useState([]);
   const [currentThread, setCurrentThread] = useState(null);
+  const [addingThread, setAddingThread] = useState(false);
 
   const populateThreads = useCallback(() => {
     if (currentClass.id) {
@@ -25,8 +28,13 @@ export default function Forums() {
     populateThreads()
   }, [populateThreads]);
 
-  function handleClick(newThread) {
-    setCurrentThread(newThread)
+  function handleSelectThread(newThread) {
+    setCurrentThread(newThread);
+    setAddingThread(false);
+  }
+
+  function handleSelectForm() {
+    setAddingThread(true);
   }
 
   return (
@@ -42,7 +50,7 @@ export default function Forums() {
                 return (
                   <div
                     key={thread.id}
-                    onClick={() => handleClick(thread)}
+                    onClick={() => handleSelectThread(thread)}
                     style={{ cursor: 'pointer' }}
                     className={currentThread && thread.id === currentThread.id
                       ? 'text-info'
@@ -54,8 +62,19 @@ export default function Forums() {
               })
               : <div className="text-white d-flex justify-content-center">No threads found</div>
           }
+          {
+            <Button className="create-button" onClick={handleSelectForm}>
+              +
+            </Button>
+          }
         </SideBar>
-        <ForumPosts currentThread={currentThread}/>
+        {
+          addingThread
+          ? <div className='p-4 slate-800 w-100'>
+              <AddThread populateThreads={populateThreads} />
+            </div>
+          : <ForumPosts currentThread={currentThread} />
+        }
       </div>
     </WebPage>
 
