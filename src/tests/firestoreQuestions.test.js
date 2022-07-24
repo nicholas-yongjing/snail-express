@@ -51,6 +51,37 @@ afterAll(async () => {
   });
 });
 
+async function invalidQuestionUpdate(firestore, className, quizName, count) {
+  return updateDoc(
+    doc(
+      firestore,
+      "classes",
+      className,
+      "quizzes",
+      `${quizName}`,
+      "questions",
+      `${count}`
+    ),
+    {
+      newfield: "should not be allowed",
+    }
+  );
+}
+
+async function deleteQuestion(firestore, className, quizName, count) {
+  return deleteDoc(
+    doc(
+      firestore,
+      "classes",
+      className,
+      "quizzes",
+      `${quizName}`,
+      "questions",
+      `${count}`
+    )
+  );
+}
+
 beforeEach(async () => {
   return await testEnv.clearFirestore();
 });
@@ -570,7 +601,8 @@ describe("Questions", () => {
         headTutorDB
           .getClasses("head-tutor-name", "head tutor")
           .then((classes) => {
-            return headTutorDB.invalidQuestionUpdate(
+            return invalidQuestionUpdate(
+              headTutorFirestore,
               classes[0].id,
               "quizname",
               1
@@ -579,14 +611,20 @@ describe("Questions", () => {
       ),
       assertFails(
         tutorDB.getClasses("tutor-name", "tutor").then((classes) => {
-          return tutorDB.invalidQuestionUpdate(classes[0].id, "quizname", 1);
+          return invalidQuestionUpdate(
+            tutorFirestore,
+            classes[0].id,
+            "quizname",
+            1
+          );
         })
       ),
       assertFails(
         studentDB
           .getClasses("head-tutor-name", "head tutor")
           .then((classes) => {
-            return studentDB.invalidQuestionUpdate(
+            return invalidQuestionUpdate(
+              studentFirestore,
               classes[0].id,
               "quizname",
               1
@@ -699,19 +737,29 @@ describe("Questions", () => {
         headTutorDB
           .getClasses("head-tutor-name", "head tutor")
           .then((classes) => {
-            return headTutorDB.deleteQuestion(classes[0].id, "quizname", 1);
+            return deleteQuestion(
+              headTutorFirestore,
+              classes[0].id,
+              "quizname",
+              1
+            );
           })
       ),
       assertFails(
         tutorDB.getClasses("tutor-name", "tutor").then((classes) => {
-          return tutorDB.deleteQuestion(classes[0].id, "quizname", 2);
+          return deleteQuestion(tutorFirestore, classes[0].id, "quizname", 2);
         })
       ),
       assertFails(
         studentDB
           .getClasses("head-tutor-name", "head tutor")
           .then((classes) => {
-            return studentDB.deleteQuestion(classes[0].id, "quizname", 3);
+            return deleteQuestion(
+              studentFirestore,
+              classes[0].id,
+              "quizname",
+              3
+            );
           })
       ),
     ]);

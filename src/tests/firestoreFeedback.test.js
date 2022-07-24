@@ -55,6 +55,19 @@ beforeEach(async () => {
   return await testEnv.clearFirestore();
 });
 
+async function updateLectureFeedback(firestore, classId, user, reaction) {
+  const feedbackRef = collection(firestore, "classes", classId, "feedback");
+  return updateDoc(doc(feedbackRef, user.uid), {
+    name: user.displayName,
+    reaction: reaction,
+  });
+}
+
+async function fetchLectureFeedback(firestore, classId, user) {
+  const feedbackRef = collection(firestore, "classes", classId, "feedback");
+  return getDoc(doc(feedbackRef, user.uid));
+}
+
 describe("Feedback", () => {
   it("should allow all users to update entries", async () => {
     const headTutorFirestore = testEnv
@@ -118,7 +131,8 @@ describe("Feedback", () => {
                 "angry"
               )
               .then(() => {
-                return headTutorDB.updateLectureFeedback(
+                return updateLectureFeedback(
+                  headTutorFirestore,
                   classes[0].id,
                   { uid: "some-name", displayName: "name1" },
                   "more-angry"
@@ -135,7 +149,8 @@ describe("Feedback", () => {
               "happy"
             )
             .then(() => {
-              return headTutorDB.updateLectureFeedback(
+              return updateLectureFeedback(
+                tutorFirestore,
                 classes[0].id,
                 { uid: "another-name", displayName: "name2" },
                 "more-happy"
@@ -154,7 +169,8 @@ describe("Feedback", () => {
                 "sad"
               )
               .then(() => {
-                return headTutorDB.updateLectureFeedback(
+                return updateLectureFeedback(
+                  studentFirestore,
                   classes[0].id,
                   { uid: "random-name", displayName: "name3" },
                   "more-sad"
@@ -310,7 +326,7 @@ describe("Feedback", () => {
                 "angry"
               )
               .then(() => {
-                return headTutorDB.fetchLectureFeedback(classes[0].id, {
+                return fetchLectureFeedback(headTutorFirestore, classes[0].id, {
                   uid: "some-name",
                   displayName: "name1",
                 });
@@ -326,7 +342,7 @@ describe("Feedback", () => {
               "happy"
             )
             .then(() => {
-              return tutorDB.fetchLectureFeedback(classes[0].id, {
+              return fetchLectureFeedback(tutorFirestore, classes[0].id, {
                 uid: "another-name",
                 displayName: "name2",
               });
@@ -344,7 +360,7 @@ describe("Feedback", () => {
                 "sad"
               )
               .then(() => {
-                return studentDB.fetchLectureFeedback(classes[0].id, {
+                return fetchLectureFeedback(studentFirestore, classes[0].id, {
                   uid: "random-name",
                   displayName: "name3",
                 });
@@ -354,100 +370,94 @@ describe("Feedback", () => {
     ]);
   });
 
-//   it("should only allow the head tutor to delete (reset) entries", async () => {
-//     const headTutorFirestore = testEnv
-//       .authenticatedContext("head-tutor-name")
-//       .firestore();
-//     const headTutorDB = getDatabase(headTutorFirestore);
-//     const studentFirestore = testEnv
-//       .authenticatedContext("student-name", { email: "student@email.com" })
-//       .firestore();
-//     const studentDB = getDatabase(studentFirestore);
-//     const tutorFirestore = testEnv
-//       .authenticatedContext("tutor-name", { email: "tutor@email.com" })
-//       .firestore();
-//     const tutorDB = getDatabase(tutorFirestore);
+  it("should only allow the head tutor to delete (reset) entries", async () => {
+    const headTutorFirestore = testEnv
+      .authenticatedContext("head-tutor-name")
+      .firestore();
+    const headTutorDB = getDatabase(headTutorFirestore);
+    const studentFirestore = testEnv
+      .authenticatedContext("student-name", { email: "student@email.com" })
+      .firestore();
+    const studentDB = getDatabase(studentFirestore);
+    const tutorFirestore = testEnv
+      .authenticatedContext("tutor-name", { email: "tutor@email.com" })
+      .firestore();
+    const tutorDB = getDatabase(tutorFirestore);
 
-//     await headTutorDB
-//       .createClass(
-//         "classname",
-//         {
-//           name: "Head Tutor",
-//           id: "head-tutor-name",
-//           email: "head-tutor@email.com",
-//         },
-//         ["student@email.com"],
-//         ["tutor@email.com"]
-//       )
-//       .then(() => {
-//         return Promise.all([
-//           studentDB
-//             .getInvites("student@email.com", "student")
-//             .then((invites) => {
-//               return studentDB.acceptInvite(
-//                 invites[0].id,
-//                 "student-name",
-//                 "student",
-//                 "student@email.com",
-//                 "Student"
-//               );
-//             }),
-//           tutorDB.getInvites("tutor@email.com", "tutor").then((invites) => {
-//             return tutorDB.acceptInvite(
-//               invites[0].id,
-//               "tutor-name",
-//               "tutor",
-//               "tutor@email.com",
-//               "Tutor"
-//             );
-//           }),
-//         ]);
-//       });
+    await headTutorDB
+      .createClass(
+        "classname",
+        {
+          name: "Head Tutor",
+          id: "head-tutor-name",
+          email: "head-tutor@email.com",
+        },
+        ["student@email.com"],
+        ["tutor@email.com"]
+      )
+      .then(() => {
+        return Promise.all([
+          studentDB
+            .getInvites("student@email.com", "student")
+            .then((invites) => {
+              return studentDB.acceptInvite(
+                invites[0].id,
+                "student-name",
+                "student",
+                "student@email.com",
+                "Student"
+              );
+            }),
+          tutorDB.getInvites("tutor@email.com", "tutor").then((invites) => {
+            return tutorDB.acceptInvite(
+              invites[0].id,
+              "tutor-name",
+              "tutor",
+              "tutor@email.com",
+              "Tutor"
+            );
+          }),
+        ]);
+      });
 
-//     return Promise.all([
-//       assertSucceeds(
-//         headTutorDB
-//           .getClasses("head-tutor-name", "head tutor")
-//           .then(async (classes) => {
-//             return headTutorDB
-//               .setLectureFeedback(
-//                 classes[0].id,
-//                 { uid: "some-name", displayName: "name1" },
-//                 "angry"
-//               )
-//               .then(() => {
-//                 return headTutorDB.resetLectureFeedbacks(classes[0].id);
-//               });
-//           })
-//       ),
-//       assertFails(
-//         tutorDB.getClasses("tutor-name", "tutor").then(async (classes) => {
-//           return tutorDB
-//             .setLectureFeedback(
-//               classes[0].id,
-//               { uid: "another-name", displayName: "name2" },
-//               "happy"
-//             )
-//             .then(() => {
-//               return tutorDB.resetLectureFeedbacks(classes[0].id);
-//             });
-//         })
-//       ),
-//       assertFails(
-//         studentDB
-//           .getClasses("student-name", "student")
-//           .then(async (classes) => {
-//             return studentDB
-//               .setLectureFeedback(
-//                 classes[0].id,
-//                 { uid: "random-name", displayName: "name3" },
-//                 "sad"
-//               )
-//               .then(() => {
-//                 return studentDB.resetLectureFeedbacks(classes[0].id);
-//               });
-//           })
-//       ),
-//     ]);
-//   });
+    return Promise.all([
+      headTutorDB
+        .getClasses("head-tutor-name", "head tutor")
+        .then(async (classes) => {
+          return headTutorDB
+            .setLectureFeedback(
+              classes[0].id,
+              { uid: "some-name", displayName: "name1" },
+              "angry"
+            )
+            .then(() => {
+              return assertSucceeds(
+                headTutorDB.resetLectureFeedbacks(classes[0].id)
+              );
+            });
+        }),
+      tutorDB.getClasses("tutor-name", "tutor").then(async (classes) => {
+        return tutorDB
+          .setLectureFeedback(
+            classes[0].id,
+            { uid: "another-name", displayName: "name2" },
+            "happy"
+          )
+          .then(() => {
+            return assertFails(tutorDB.resetLectureFeedbacks(classes[0].id));
+          });
+      }),
+      studentDB.getClasses("student-name", "student").then(async (classes) => {
+        return studentDB
+          .setLectureFeedback(
+            classes[0].id,
+            { uid: "random-name", displayName: "name3" },
+            "sad"
+          )
+          .then(() => {
+            return assertFails(studentDB.resetLectureFeedbacks(classes[0].id));
+          });
+      }),
+    ]);
+  });
 });

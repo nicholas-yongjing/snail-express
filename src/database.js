@@ -19,10 +19,6 @@ import {
 export default function getDatabase(firestore) {
   const LOG = true;
 
-  function readQuiz(className, quizName) {
-    return getDoc(doc(firestore, "classes", className, "quizzes", quizName));
-  }
-
   async function pullRevisionQuizList(className, setter) {
     const q = query(
       collection(firestore, "classes", className, "quizzes"),
@@ -58,18 +54,6 @@ export default function getDatabase(firestore) {
     });
   }
 
-  function createInvalidQuiz(className, quizName) {
-    setDoc(
-      doc(firestore, "classes", className, "quizzes", `${quizName}`),
-      {
-        live: false,
-        revision: false,
-        currentQuestion: 0,
-        extrafield: true
-      }
-    );
-  }
-
   function submitAnswer(className, quizName, currentQuestion, response) {
     const questionRef = doc(
       firestore,
@@ -81,17 +65,17 @@ export default function getDatabase(firestore) {
       `${currentQuestion + 1}`
     );
 
-    if (response == "A") {
+    if (response === "A") {
       return updateDoc(questionRef, {
         "responses.A": increment(1),
         "responses.total": increment(1),
       });
-    } else if (response == "B") {
+    } else if (response === "B") {
       return updateDoc(questionRef, {
         "responses.B": increment(1),
         "responses.total": increment(1),
       });
-    } else if (response == "C") {
+    } else if (response === "C") {
       return updateDoc(questionRef, {
         "responses.C": increment(1),
         "responses.total": increment(1),
@@ -105,9 +89,12 @@ export default function getDatabase(firestore) {
   }
 
   function toggleRevision(className, quizName, revision) {
-    return updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
-      revision: !revision,
-    });
+    return updateDoc(
+      doc(firestore, "classes", className, "quizzes", quizName),
+      {
+        revision: !revision,
+      }
+    );
   }
 
   function deleteQuiz(className, quizName) {
@@ -115,15 +102,21 @@ export default function getDatabase(firestore) {
   }
 
   function showPreviousQuestion(className, quizName, currentQuestion) {
-    return updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
-      currentQuestion: currentQuestion - 1,
-    });
+    return updateDoc(
+      doc(firestore, "classes", className, "quizzes", quizName),
+      {
+        currentQuestion: currentQuestion - 1,
+      }
+    );
   }
 
   function showNextQuestion(className, quizName, currentQuestion) {
-    return updateDoc(doc(firestore, "classes", className, "quizzes", quizName), {
-      currentQuestion: currentQuestion + 1,
-    });
+    return updateDoc(
+      doc(firestore, "classes", className, "quizzes", quizName),
+      {
+        currentQuestion: currentQuestion + 1,
+      }
+    );
   }
 
   async function activateQuiz(className, quizName) {
@@ -142,7 +135,7 @@ export default function getDatabase(firestore) {
       )
     ).then((snapshot) => {
       snapshot.docs.map((question) => {
-        updateDoc(doc(firestore, question.ref.path), {
+        return updateDoc(doc(firestore, question.ref.path), {
           responses: {
             A: 0,
             B: 0,
@@ -171,7 +164,7 @@ export default function getDatabase(firestore) {
       )
     ).then((snapshot) => {
       snapshot.docs.map((question) => {
-        updateDoc(doc(firestore, question.ref.path), {
+        return updateDoc(doc(firestore, question.ref.path), {
           responses: {
             A: 0,
             B: 0,
@@ -240,18 +233,6 @@ export default function getDatabase(firestore) {
     );
   }
 
-  async function createInvalidQuiz(className, quizName) {
-    return setDoc(doc(firestore, "classes", className, "quizzes", `${quizName}`), {
-      live: false, revision: false, currentQuestion: 0, extrafield: true
-    })
-  }
-
-  async function invalidQuizUpdate(className, quizName) {
-    return updateDoc(doc(firestore, "classes", className, "quizzes", `${quizName}`), {
-      live: false, revision: false, currentQuestion: 0, anotherextrafield: true
-    })
-  }
-
   async function createQuestion(className, quizName, count, questionObj) {
     return setDoc(
       doc(
@@ -265,16 +246,6 @@ export default function getDatabase(firestore) {
       ),
       questionObj
     );
-  }
-
-  async function invalidQuestionUpdate(className, quizName, count) {
-    return updateDoc(doc(firestore, "classes", className, "quizzes", `${quizName}`, "questions", `${count}`), {
-      newfield: "should not be allowed"
-    })
-  }
-
-  async function deleteQuestion(className, quizName, count) {
-    return deleteDoc(doc(firestore, "classes", className, "quizzes", `${quizName}`, "questions", `${count}`));
   }
 
   function _removeDuplicates(arr) {
@@ -879,14 +850,6 @@ export default function getDatabase(firestore) {
     });
   }
 
-  async function updateLectureFeedback(classId, user, reaction) {
-    const feedbackRef = collection(firestore, "classes", classId, "feedback");
-    return updateDoc(doc(feedbackRef, user.uid), {
-      name: user.displayName,
-      reaction: reaction,
-    });
-  }
-
   async function resetLectureFeedbacks(classId) {
     const feedbackRef = collection(firestore, "classes", classId, "feedback");
     return getDocs(feedbackRef).then((snapshot) => {
@@ -895,11 +858,6 @@ export default function getDatabase(firestore) {
         return deleteDoc(docRef);
       });
     });
-  }
-
-  async function fetchLectureFeedback(classId, user) {
-    const feedbackRef = collection(firestore, "classes", classId, "feedback");
-    return getDoc(doc(feedbackRef, user.uid));
   }
 
   return {
@@ -938,12 +896,5 @@ export default function getDatabase(firestore) {
     toggleRevision,
     submitAnswer,
     pullRevisionQuizList,
-    readQuiz,
-    createInvalidQuiz,
-    invalidQuizUpdate,
-    invalidQuestionUpdate,
-    deleteQuestion, 
-    updateLectureFeedback,
-    fetchLectureFeedback
   };
 }
