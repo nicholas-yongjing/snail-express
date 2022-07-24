@@ -128,9 +128,9 @@ service cloud.firestore {
         return request.resource.data.keys().hasAll(keys)
           && request.resource.data.keys().hasOnly(keys)
           && request.resource.data.limits.keys().hasOnly(expCategories)
-          //&& request.resource.data.limits.keys().hasAll(expCategories)
+          && request.resource.data.limits.keys().hasAll(expCategories)
           && request.resource.data.expGain.keys().hasOnly(expCategories)
-          //&& request.resource.data.expGain.keys().hasAll(expCategories);
+          && request.resource.data.expGain.keys().hasAll(expCategories);
       }
 
       function isValidThreadDocument() {
@@ -201,7 +201,7 @@ service cloud.firestore {
       function isValidTutorUpdate() {
         return (isHeadTutor() || isTutor()) 
           || (isInvited()
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["tutorInvites", "tutorIds"]));
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["studentInvites", "tutorInvites", "studentIds", "tutorIds"]));
       }
 
       function isValidPostUpdate() {

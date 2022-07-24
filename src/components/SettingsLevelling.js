@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useClass } from "../contexts/ClassContext";
 import firestore from "../firestore";
 import { Form } from "react-bootstrap";
@@ -7,30 +7,30 @@ import Button from "./Button";
 export default function SettingsLevelling(props) {
   const { currentClass } = useClass();
   const { changeLevellingSettings, getLevellingSettings } = firestore;
+  const [settings, setSettings] = useState(null);
   const postLimitRef = useRef();
   const voteLimitRef = useRef();
   const postExpRef = useRef();
   const voteExpRef = useRef();
+  const expRequirementsRef = useRef();
   const limits = useMemo(() => {
     return (
       [{ key: 'posts', label: 'post', ref: postLimitRef },
       { key: 'votes', label: 'vote', ref: voteLimitRef }]
     );
   }, []);
-
   const expGains = useMemo(() => {
     return (
       [{ key: 'posts', label: 'post', ref: postExpRef },
       { key: 'votes', label: 'vote', ref: voteExpRef }]
     );
   }, []);
-
-  const expRequirementsRef = useRef();
   const { setMessage, setError, loading, setLoading } = props;
 
   const populateSettings = useCallback(() => {
     if (currentClass) {
       getLevellingSettings(currentClass.id).then((requestedSettings) => {
+        setSettings(requestedSettings);
         expRequirementsRef.current.value = requestedSettings.expRequirements.join("\n");
         for (const limit of limits) {
           limit.ref.current.value = requestedSettings.limits[limit.key];
@@ -93,8 +93,8 @@ export default function SettingsLevelling(props) {
       changeLevellingSettings(
         currentClass.id,
         {
-          limits: newLimits,
-          expGain: newExpGains,
+          limits: {...settings.limits, ...newLimits},
+          expGain: {...settings.expGain, ...newExpGains},
           expRequirements: newExpRequirements
         }
       ).then(() => {
@@ -110,6 +110,9 @@ export default function SettingsLevelling(props) {
     <div className="rounded slate-700">
       <div className="fs-5 m-4">
         * When EXP requirements change, students' level will only update after gaining EXP. Students' level does not decrease.
+      </div>
+      <div className="fs-5 m-4">
+        * Daily limits represents the maximum number of times a student is awarded EXP per day.
       </div>
       <Form className="p-4 d-flex flex-column gap-4"
         onSubmit={handleSubmit}
@@ -127,7 +130,7 @@ export default function SettingsLevelling(props) {
               return (
                 <Form.Group key={limit.key}>
                   <Form.Label>
-                    Daily {limit.label} limit awarding EXP
+                    Daily {limit.label} limit that awards EXP
                   </Form.Label>
                   <Form.Control
                     className="generic-field"
