@@ -5,8 +5,8 @@ import { Form } from "react-bootstrap";
 import Button from "../components/Button";
 
 export default function SettingsGeneral(props) {
-  const { currentClass, changeClassName } = useClass();
-  const { addInvites, getStudents, getTutors, validateEmails } = firestore;
+  const { currentClass, changeClassName, addInvites } = useClass();
+  const { getStudents, getTutors, validateEmails } = firestore;
   const { setMessage, setError, loading, setLoading, role } = props;
   const classNameRef = useRef();
   const studentFormRef = useRef();
@@ -63,15 +63,16 @@ export default function SettingsGeneral(props) {
             setError('The following email(s) already belong to existing users in the class: '
               + existingEmails.join(', '));
           } else {
-            addInvites(currentClass.id, emails, 'student')
+            addInvites(emails, 'student')
               .then(() => {
                 studentFormRef.current.reset();
-                setMessage("Students invited")
+                setMessage("Students invited");
               })
           }
         }).catch(() => {
           setError("Failed to invite students, please try again later");
         }).finally(() => {
+          
           setLoading(false);
         });
     }
@@ -79,7 +80,7 @@ export default function SettingsGeneral(props) {
 
   return (
     role === 'student'
-      ? "No settings available"  
+      ? "No settings available"
       : <>
         <Form
           className="p-4 fs-4 d-flex align-items-end gap-2 slate-700"
@@ -109,7 +110,7 @@ export default function SettingsGeneral(props) {
           ref={studentFormRef}
         >
           <Form.Group>
-            <Form.Label>Students</Form.Label>
+            <Form.Label>Invite Students</Form.Label>
             <Form.Control
               as="textarea"
               rows={5}
@@ -127,6 +128,24 @@ export default function SettingsGeneral(props) {
             Invite students
           </Button>
         </Form>
+          <div className="slate-700 p-4">
+            <h2>
+              Pending Student Invites
+            </h2>
+            <div>
+              {
+                currentClass && currentClass.studentInvites.length == 0
+                ? "No students invited"
+                : currentClass.studentInvites.map((email) => {
+                  return (
+                    <div key={email}>
+                      {email}  
+                    </div>
+                  );
+                })
+              }
+            </div>
+          </div>
       </>
   );
 }

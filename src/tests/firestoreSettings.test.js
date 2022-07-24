@@ -145,12 +145,6 @@ describe.only("Class settings", () => {
     ).then((snapshot) => {
       return Promise.all([
         assertSucceeds(barryDb.changeLevellingSettings(snapshot.id, newSettings)),
-        assertSucceeds(barryDb.changeLevellingSettings(snapshot.id,
-          {
-            expGain: {posts: 50, votes: 10},
-            limits: {posts: 3, votes: 1}
-          }
-        )),
         dennyDb.getInvites("denny@email.com", "student")
           .then((invites) => {
             return dennyDb.acceptInvite(invites[0].id, "denny", "student", "denny@email.com", "denny tan");
