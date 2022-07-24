@@ -118,7 +118,7 @@ service cloud.firestore {
       function isValidTutorDocument() {
         let keys = ["name", "id", "email"];     
         return request.resource.data.keys().hasAll(keys)
-          && request.reso...urce.data.keys().hasOnly(keys); 
+          && request.resource.data.keys().hasOnly(keys); 
       }
 
       function isValidSettingsDocument() {
@@ -201,7 +201,7 @@ service cloud.firestore {
       function isValidTutorUpdate() {
         return (isHeadTutor() || isTutor()) 
           || (isInvited()
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["tutorInvites", "tutorIds"]));
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["studentInvites", "tutorInvites", "studentIds", "tutorIds"]));
       }
 
       function isValidPostUpdate() {

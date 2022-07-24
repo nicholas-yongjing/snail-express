@@ -335,27 +335,6 @@ export default function getDatabase(firestore) {
     });
   }
 
-  async function addInvites(classId, emails, role) {
-    let field;
-    if (role === "student") {
-      field = "studentInvites";
-    } else if (role === "tutor") {
-      field = "tutorInvites";
-    } else {
-      throw new Error(`Unknown role: ${role}`);
-    }
-
-    const classRef = doc(firestore, "classes", classId);
-    return getDoc(classRef).then((snapshot) => {
-      const newInvites = _removeDuplicates(
-        snapshot.data()[field].concat(emails)
-      );
-      const newData = { ...snapshot.data() };
-      newData[field] = newInvites;
-      return setDoc(classRef, newData);
-    });
-  }
-
   async function _addUserToClass(classId, user, role) {
     async function addUserToArray() {
       const classDocRef = doc(firestore, "classes", classId);
@@ -926,7 +905,6 @@ export default function getDatabase(firestore) {
   return {
     validateEmails,
     createClass,
-    addInvites,
     getInvites,
     acceptInvite,
     deleteInvite,
