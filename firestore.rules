@@ -118,7 +118,7 @@ service cloud.firestore {
       function isValidTutorDocument() {
         let keys = ["name", "id", "email"];     
         return request.resource.data.keys().hasAll(keys)
-          && request.resource.data.keys().hasOnly(keys); 
+          && request.reso...urce.data.keys().hasOnly(keys); 
       }
 
       function isValidSettingsDocument() {
@@ -128,9 +128,9 @@ service cloud.firestore {
         return request.resource.data.keys().hasAll(keys)
           && request.resource.data.keys().hasOnly(keys)
           && request.resource.data.limits.keys().hasOnly(expCategories)
-          //&& request.resource.data.limits.keys().hasAll(expCategories)
+          && request.resource.data.limits.keys().hasAll(expCategories)
           && request.resource.data.expGain.keys().hasOnly(expCategories)
-          //&& request.resource.data.expGain.keys().hasAll(expCategories);
+          && request.resource.data.expGain.keys().hasAll(expCategories);
       }
 
       function isValidThreadDocument() {
