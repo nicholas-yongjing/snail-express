@@ -548,6 +548,7 @@ export default function getDatabase(firestore) {
   }
 
   async function _incrementActivityCount(classId, userId, field) {
+    console.log(field);
     function resetDailyCounts(dailyCounts) {
       for (const field of dailyCounts.keys()) {
         dailyCounts[field] = 0;
@@ -566,6 +567,8 @@ export default function getDatabase(firestore) {
 
       const newOverallCounts = { ...userData.overallCounts };
       newOverallCounts[field] += 1;
+
+      console.log(newOverallCounts);
 
       return {
         ...userData,
@@ -896,5 +899,6 @@ export default function getDatabase(firestore) {
     toggleRevision,
     submitAnswer,
     pullRevisionQuizList,
+    _incrementActivityCount,
   };
 }
