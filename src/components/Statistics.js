@@ -40,6 +40,7 @@ export default function Statistics(props) {
           {studentResponses.A} out of {studentResponses.total} selected option A
         </div>
         <ProgressBar
+                data-testid="optionA"
           style={{ margin: "16px", minHeight: "25px" }}
           animated
           striped
@@ -54,6 +55,7 @@ export default function Statistics(props) {
           {studentResponses.B} out of {studentResponses.total} selected option B
         </div>
         <ProgressBar
+        data-testid="optionB"
           style={{ margin: "16px", minHeight: "25px" }}
           animated
           striped
@@ -68,6 +70,7 @@ export default function Statistics(props) {
           {studentResponses.C} out of {studentResponses.total} selected option C
         </div>
         <ProgressBar
+                data-testid="optionC"
           style={{ margin: "16px", minHeight: "25px" }}
           animated
           striped
@@ -82,6 +85,7 @@ export default function Statistics(props) {
           {studentResponses.D} out of {studentResponses.total} selected option D
         </div>
         <ProgressBar
+                data-testid="optionD"
           style={{ margin: "16px", minHeight: "25px" }}
           animated
           striped

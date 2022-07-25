@@ -36,7 +36,7 @@ export default function RevisionQuiz(props) {
         <div>
           <h3>{currentQuiz.id}</h3>
           <div className="slate-600">
-            <h3 className="p-4">Question {currentQuestion + 1}</h3>
+            <h3 data-testid="question" className="p-4">Question {currentQuestion + 1}</h3>
             <div className="slate-800 p-4" style={{ margin: "12px" }}>
               {questions[currentQuestion].question}
             </div>

@@ -42,7 +42,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="text-center text-slate-200 fs-2">
+        <div className="text-center text-slate-200 fs-2" data-testid="tagline">
           <div>
             Looking for an interactive classroom application for online
             learning?

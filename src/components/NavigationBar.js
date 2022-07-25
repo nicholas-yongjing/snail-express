@@ -21,7 +21,7 @@ export default function NavigationBar() {
   function getLinks() {
     if (currentUser && currentClass) {
       return (
-        <div className="navbar-nav fs-5" style={{margin: "12px"}}>
+        <div className="navbar-nav fs-5" style={{ margin: "12px" }}>
           <Link
             className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
             to="/class-dashboard"
@@ -50,7 +50,7 @@ export default function NavigationBar() {
       );
     } else if (!currentUser) {
       return (
-        <div className="navbar-nav fs-5" style={{margin: "12px"}}>
+        <div className="navbar-nav fs-5" style={{ margin: "12px" }}>
           <Link
             className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
             to="/"
@@ -67,11 +67,10 @@ export default function NavigationBar() {
   function getButtons() {
     return currentUser ? (
       <div className="d-flex gap-2">
-        <Link
-          className="nav-link rounded"
-          to="/profile"
-        >
-          <button className="btn slate-900 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5">Profile</button>
+        <Link className="nav-link rounded" to="/profile">
+          <button className="btn slate-900 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5">
+            Profile
+          </button>
         </Link>
         <button
           className="btn bg-secondary text-white fs-5"
@@ -83,6 +82,7 @@ export default function NavigationBar() {
     ) : (
       <div className="d-flex gap-3">
         <Link
+          data-testid="login"
           to="/login"
           className="btn border-slate-200 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
           role="button"
@@ -90,6 +90,7 @@ export default function NavigationBar() {
           Login
         </Link>
         <Link
+          data-testid="signup"
           to="/signup"
           className="btn border-slate-200 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5"
           role="button"
@@ -101,9 +102,13 @@ export default function NavigationBar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg p-3 justify-content-between slate-900">
+    <nav
+      data-testid="navbar"
+      className="navbar navbar-expand-lg p-3 justify-content-between slate-900"
+    >
       <div className="d-flex align-items-center">
         <Link
+          data-testid="link"
           className="d-flex gap-4 align-items-center nav-link text-slate-200 text-slate-200 hover-text-slate-200 fs-3"
           to="/dashboard"
         >
