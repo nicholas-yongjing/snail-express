@@ -1,13 +1,16 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useClass } from "../contexts/ClassContext";
 import firestore from "../firestore";
-import { Form } from "react-bootstrap";
+import { Alert, Form } from "react-bootstrap";
 import Button from "../components/Button";
 
 export default function InviteUser(props) {
   const { currentClass, addInvites } = useClass();
   const { getStudents, getTutors, validateEmails } = firestore;
-  const { setMessage, setError, loading, setLoading, role, invitationType } = props;
+  const { role, invitationType } = props;
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState('');
   const formRef = useRef();
   const usersRef = useRef();
 
@@ -87,6 +90,8 @@ export default function InviteUser(props) {
         >
           <Form.Group>
             <Form.Label>{`Invite ${invitationType}s`}</Form.Label>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {message && <Alert variant="success">{message}</Alert>}
             <Form.Control
               as="textarea"
               rows={5}

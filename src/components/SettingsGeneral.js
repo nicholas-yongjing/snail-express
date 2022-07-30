@@ -7,7 +7,6 @@ import Button from "../components/Button";
 export default function SettingsGeneral(props) {
   const { currentClass, changeClassName } = useClass();
   const { setMessage, setError, loading, setLoading, role } = props;
-  const componentProps = { setMessage, setError, loading, setLoading, role };
   const classNameRef = useRef();
 
   function handleUpdateClassName(event) {
@@ -49,8 +48,12 @@ export default function SettingsGeneral(props) {
           </Button>
         </Form>
         <InviteUser
-          {...componentProps}
+          role={role}
           invitationType="student"
+        />
+        <InviteUser
+          role={role}
+          invitationType="tutor"
         /> 
       </>
   );
