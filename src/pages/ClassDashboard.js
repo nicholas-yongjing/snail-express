@@ -9,9 +9,13 @@ import User from '../components/User';
 export default function ClassDashBoard() {
   const { currentUser } = useAuth();
   const { currentClass, setCurrentClass } = useClass();
-  const sidebarLinks = [['/students', 'Students'],
-  ['/tutors', 'Tutors'],
-  ['/settings', 'Settings']];
+  const sidebarLinks = [
+    ['/forums', 'Forums'],
+    ['/quiz-dashboard', 'Quizzes'],
+    ['/live-feedback', 'Live Feedback'],
+    ['/students', 'Students'],
+    ['/tutors', 'Tutors'],
+    ['/settings', 'Settings']];
 
   function handleClick() {
     setCurrentClass(null);

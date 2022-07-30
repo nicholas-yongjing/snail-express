@@ -5,7 +5,7 @@ import SnailLogo from "../images/snail-logo.png";
 
 export default function NavigationBar() {
   const { currentUser, logout } = useAuth();
-  const { currentClass, setCurrentClass } = useClass();
+  const { setCurrentClass } = useClass();
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -19,49 +19,16 @@ export default function NavigationBar() {
   }
 
   function getLinks() {
-    if (currentUser && currentClass) {
-      return (
-        <div className="navbar-nav fs-5" style={{ margin: "12px" }}>
-          <Link
-            className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
-            to="/class-dashboard"
-          >
-            Dashboard
-          </Link>
-          <Link
-            className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
-            to="/forums"
-          >
-            Forums
-          </Link>
-          <Link
-            className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
-            to="/quiz-dashboard"
-          >
-            Quiz
-          </Link>
-          <Link
-            className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
-            to="/live-feedback"
-          >
-            Lecture Feedback
-          </Link>
-        </div>
-      );
-    } else if (!currentUser) {
-      return (
-        <div className="navbar-nav fs-5" style={{ margin: "12px" }}>
-          <Link
-            className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
-            to="/"
-          >
-            Home
-          </Link>
-        </div>
-      );
-    } else {
-      return <></>;
-    }
+    return (
+      <div className="navbar-nav fs-5" style={{ margin: "12px" }}>
+        <Link
+          className="nav-link rounded text-slate-200 hover-slate-200 hover-text-slate-700"
+          to="/"
+        >
+          Home
+        </Link>
+      </div>
+    );
   }
 
   function getButtons() {
