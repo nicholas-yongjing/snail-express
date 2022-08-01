@@ -5,7 +5,6 @@ import SideBar from "../components/SideBar"
 import WebPage from '../components/WebPage';
 import Header from '../components/Header';
 import User from '../components/User';
-
 import ForumsImg from '../images/forums.svg';
 import QuizImg from '../images/quiz.svg';
 import FeedbackImg from '../images/feedback.svg';

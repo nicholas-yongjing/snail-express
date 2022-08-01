@@ -304,3 +304,6 @@
 .filter-slate-200 {
   filter: invert(96%) sepia(2%) saturate(1085%) hue-rotate(182deg) brightness(99%) contrast(89%);
 }
+.filter-slate-500 {
+  filter: invert(47%) sepia(7%) saturate(1323%) hue-rotate(176deg) brightness(92%) contrast(87%);
+}
