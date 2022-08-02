@@ -10,6 +10,7 @@ import InstantFeedback from "../images/instant-feedback.jpg";
 import LiveQuiz from "../images/live-quiz.jpg";
 import Revise from "../images/revise-quizzes.jpg";
 import LearnByHelping from "../images/learn-by-helping-others.jpg";
+import Gallery from "../components/Gallery";
 
 export default function LandingPage() {
   const { currentUser } = useAuth();
@@ -23,7 +24,7 @@ export default function LandingPage() {
   });
 
   const toggleFeatures = (useCase) => {
-    if (useCase == "students") {
+    if (useCase === "students") {
       setShowStudent(true);
     } else {
       setShowStudent(false);
@@ -51,69 +52,75 @@ export default function LandingPage() {
             Try <strong>snail-express!</strong>
           </div>
         </div>
-        <div>
-          <span className="d-flex justify-content-center">
-            <Button
-              style={{ margin: "4px" }}
-              onClick={() => toggleFeatures("students")}
-              disabled={showStudents}
-            >
-              Students
-            </Button>
-            <Button
-              style={{ margin: "4px" }}
-              onClick={() => toggleFeatures("tutors")}
-              disabled={!showStudents}
-            >
-              Tutors
-            </Button>
-          </span>
-          <div className="d-flex justify-content-center">
-            {showStudents ? (
-              <div className="d-flex justify-content-center">
-                <div className="slate-600 p-3">
+      </div>
+      <div className="m-4 d-flex flex-column justify-content-center align-items-center slate-700">
+        <span className="p-2 align-self-stretch d-flex justify-content-center slate-600">
+          <Button
+            className="m-2"
+            onClick={() => toggleFeatures("students")}
+            disabled={showStudents}
+          >
+            Students
+          </Button>
+          <Button
+            className="m-2"
+            onClick={() => toggleFeatures("tutors")}
+            disabled={!showStudents}
+          >
+            Tutors
+          </Button>
+        </span>
+        {showStudents
+          ? (
+            <Gallery items={
+              [
+                <>
                   <h2 className="text-slate-100 p-3">
                     Ask questions and learn by helping others out
                   </h2>
                   <img src={LearnByHelping} alt="" style={{ width: "800px" }} />
+                </>,
+                <>
                   <h2 className="text-slate-100 p-3 mt-5">
                     Gain XP, level up and earn achievements!
                   </h2>
                   <img src={Achievements} alt="" style={{ width: "800px" }} />
+                </>,
+                <>
                   <h2 className="text-slate-100 p-3 mt-5">
                     Revise your quizzes
                   </h2>
                   <img src={Revise} alt="" style={{ width: "800px" }} />
-                </div>
-              </div>
-            ) : (
-              <div className="d-flex justify-content-center">
-                <div className="slate-600 p-3">
-                  <h2 className="text-slate-100 p-3">
-                    Conduct live quizzes to test content
-                  </h2>
-                  <img src={LiveQuiz} alt="" style={{ width: "800px" }} />
-                  <h2 className="text-slate-100 p-3 mt-5">
-                    Incentivise student participation
-                  </h2>
-                  <img src={Achievements} alt="" style={{ width: "800px" }} />
-                  <h2 className="text-slate-100 p-3 mt-5">
-                    Empower students to foster rich forum discussions
-                  </h2>
-                  <img src={Endorse} alt="" style={{ width: "800px" }} />
-                  <h2 className="text-slate-100 p-3 mt-5">
-                    Get instant feedback on lecture pacing
-                  </h2>
-                  <img
-                    src={InstantFeedback}
-                    alt=""
-                    style={{ width: "800px" }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+                </>
+              ]
+            } />
+          ) : (
+            <Gallery items={[
+              <>
+                <h2 className="text-slate-100 p-3">
+                  Conduct live quizzes to test content
+                </h2>
+                <img src={LiveQuiz} alt="" style={{ width: "800px" }} />
+              </>,
+              <>
+                <h2 className="text-slate-100 p-3 mt-5">
+                  Incentivise student participation
+                </h2>
+                <img src={Achievements} alt="" style={{ width: "800px" }} />
+              </>,
+              <>
+                <h2 className="text-slate-100 p-3 mt-5">
+                  Empower students to foster rich forum discussions
+                </h2>
+                <img src={Endorse} alt="" style={{ width: "800px" }} />
+              </>,
+              <>
+                <h2 className="text-slate-100 p-3 mt-5">
+                  Get instant feedback on lecture pacing
+                </h2>
+                <img src={InstantFeedback} alt="" style={{ width: "800px" }} />              </>
+            ]} />
+          )}
       </div>
     </WebPage>
   );
