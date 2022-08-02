@@ -9,6 +9,9 @@ import SettingsGeneral from "../components/SettingsGeneral";
 import SettingsLevelling from "../components/SettingsLevelling";
 import SettingsForums from "../components/SettingsForums";
 import Button from "../components/Button";
+import GeneralImg from "../images/general.svg"
+import LevellingImg from "../images/levelling.svg"
+import ForumsImg from "../images/forums.svg"
 
 export default function Settings() {
   const { currentUser } = useAuth();
@@ -19,13 +22,20 @@ export default function Settings() {
   const [loading, setLoading] = useState('');
   const componentProps =
     { setMessage, setError, loading, setLoading, role };
-  const settingCategories = 
-    {
-      'General': <SettingsGeneral {...componentProps} />,
-      'Levelling': <SettingsLevelling {...componentProps} />,
-      'Forums': <SettingsForums {...componentProps} />
-    };
+  const settingCategories =
+  {
+    'General': <SettingsGeneral {...componentProps} />,
+    'Levelling': <SettingsLevelling {...componentProps} />,
+    'Forums': <SettingsForums {...componentProps} />
+  };
   const [settingsCategory, setSettingsCategory] = useState('General');
+  const settingLogos =
+  {
+    'General': GeneralImg,
+    'Levelling': LevellingImg,
+    'Forums': ForumsImg
+  };
+
 
   const populateRole = useCallback(() => {
     if (currentUser && currentClass) {
@@ -56,19 +66,32 @@ export default function Settings() {
           {
             Object.keys(settingCategories).map((category) => {
               return (
-                <Button
+                <div
+                  className="align-self-stretch d-flex gap-4"
                   key={category}
-                  onClick={() => handleChangeCategory(category)}
                 >
-                  {category}
-                </Button>
+                  <img
+                    src={settingLogos[category]}
+                    alt={category}
+                    className="filter-slate-200"
+                    style={{ width: '40px' }}
+                  />
+                  <Button
+
+                    onClick={() => handleChangeCategory(category)}
+                    className="flex-grow-1"
+                  >
+                    {category}
+                  </Button>
+
+                </div>
               );
             })
           }
         </SideBar>
         <div className="w-100 p-4 d-flex flex-column gap-4 rounded">
           <Header
-            headerText={settingsCategory +" Settings"}
+            headerText={settingsCategory + " Settings"}
             buttonText="Back to class dashboard"
             linkTo="/class-dashboard"
             buttonClass="light-button"

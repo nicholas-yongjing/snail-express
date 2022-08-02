@@ -47,11 +47,11 @@ export default function TutorQuizInterface(props) {
   };
 
   const handlePrevious = () => {
-    showPreviousQuestion(currentClass.id, name, currentQuestion);
+    showPreviousQuestion(currentClass.id, name);
   };
 
   const handleNext = () => {
-    showNextQuestion(currentClass.id, name, currentQuestion);
+    showNextQuestion(currentClass.id, name);
   };
 
   const toggleSetRevision = () => {
