@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Gallery(props) {
   const items = props.items;
@@ -7,6 +7,7 @@ export default function Gallery(props) {
   const nextItem = () => {
     setCurrentItem((currentItem + 1) % items.length) 
   }
+
   const prevItem = () => {
     if (currentItem === 0) {
       setCurrentItem(items.length - 1);
@@ -14,6 +15,14 @@ export default function Gallery(props) {
       setCurrentItem(currentItem - 1); 
     }
   }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextItem();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  })
 
   return (
     <div className="rounded d-flex justify-content-between">
