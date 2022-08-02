@@ -1,39 +1,13 @@
 import { useRef } from "react";
 import { useClass } from "../contexts/ClassContext";
-import firestore from "../firestore";
 import { Form } from "react-bootstrap";
+import InviteUser from "./InviteUser";
 import Button from "../components/Button";
 
 export default function SettingsGeneral(props) {
-  const { currentClass, changeClassName, addInvites } = useClass();
-  const { getStudents, getTutors, validateEmails } = firestore;
+  const { currentClass, changeClassName } = useClass();
   const { setMessage, setError, loading, setLoading, role } = props;
   const classNameRef = useRef();
-  const studentFormRef = useRef();
-  const studentsRef = useRef()
-
-  async function getStudentEmails() {
-    return getStudents(currentClass.id)
-      .then((students) => students.map(student => student.email));
-  }
-
-  async function getTutorEmails() {
-    return getTutors(currentClass.id)
-      .then((tutors) => tutors.map(tutor => tutor.email));
-  }
-
-  async function getExistingUsers(emails) {
-    return Promise.all([getStudentEmails(), getTutorEmails()])
-      .then(([studentEmails, tutorEmails]) => {
-        return emails.filter((email) => {
-          return (
-            email === currentClass.headTutor.email
-            || (studentEmails.includes(email))
-            || (tutorEmails.includes(email))
-          );
-        });
-      })
-  }
 
   function handleUpdateClassName(event) {
     event.preventDefault();
@@ -45,37 +19,6 @@ export default function SettingsGeneral(props) {
       .catch(() => {
         setError('Error updating class name. Please try again later');
       }).finally(() => setLoading(false));
-  }
-
-  function handleInviteStudents(event) {
-    event.preventDefault();
-    setMessage('');
-    setError('');
-    setLoading(true);
-    const emails = studentsRef.current.value.trim().split(/\s+/);
-    if (!validateEmails(emails)) {
-      setError('Invalid student emails! Please enter valid emails separated by whitespace');
-      setLoading(false);
-    } else {
-      getExistingUsers(emails)
-        .then((existingEmails) => {
-          if (existingEmails.length > 0) {
-            setError('The following email(s) already belong to existing users in the class: '
-              + existingEmails.join(', '));
-          } else {
-            addInvites(emails, 'student')
-              .then(() => {
-                studentFormRef.current.reset();
-                setMessage("Students invited");
-              })
-          }
-        }).catch(() => {
-          setError("Failed to invite students, please try again later");
-        }).finally(() => {
-          
-          setLoading(false);
-        });
-    }
   }
 
   return (
@@ -104,48 +47,14 @@ export default function SettingsGeneral(props) {
             Update
           </Button>
         </Form>
-        <Form
-          className="p-4 fs-4 d-flex flex-column gap-4 slate-700"
-          onSubmit={handleInviteStudents}
-          ref={studentFormRef}
-        >
-          <Form.Group>
-            <Form.Label>Invite Students</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={5}
-              ref={studentsRef}
-              required
-              placeholder="Enter students email separated by whitespace"
-              className="generic-field"
-            />
-          </Form.Group>
-          <Button
-            className="create-button align-self-center"
-            disabled={loading}
-            type="submit"
-          >
-            Invite students
-          </Button>
-        </Form>
-          <div className="slate-700 p-4">
-            <h2>
-              Pending Student Invites
-            </h2>
-            <div>
-              {
-                currentClass && currentClass.studentInvites.length == 0
-                ? "No students invited"
-                : currentClass.studentInvites.map((email) => {
-                  return (
-                    <div key={email}>
-                      {email}  
-                    </div>
-                  );
-                })
-              }
-            </div>
-          </div>
+        <InviteUser
+          role={role}
+          invitationType="student"
+        />
+        <InviteUser
+          role={role}
+          invitationType="tutor"
+        /> 
       </>
   );
 }
