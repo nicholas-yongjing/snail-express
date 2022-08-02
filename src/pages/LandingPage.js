@@ -33,7 +33,7 @@ export default function LandingPage() {
 
   return (
     <WebPage>
-      <div className="w-50 align-self-center flex-grow-1 d-flex flex-column justify-content-center gap-4 p-4">
+      <div className="m-5 w-50 align-self-center d-flex flex-column justify-content-center gap-4 p-4">
         <div className="d-flex gap-4 align-items-center justify-content-center">
           <img src={SnailLogo} alt="snail express" style={{ width: "80px" }} />
           <div>
@@ -53,8 +53,8 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-      <div className="m-4 d-flex flex-column justify-content-center align-items-center slate-700">
-        <span className="p-2 align-self-stretch d-flex justify-content-center slate-600">
+      <div className="m-4 p-4 d-flex flex-column justify-content-center align-items-stretch slate-700">
+        <span className="d-flex justify-content-center">
           <Button
             className="m-2"
             onClick={() => toggleFeatures("students")}
@@ -74,51 +74,52 @@ export default function LandingPage() {
           ? (
             <Gallery items={
               [
-                <>
+                <div>
                   <h2 className="text-slate-100 p-3">
                     Ask questions and learn by helping others out
                   </h2>
-                  <img src={LearnByHelping} alt="" style={{ width: "800px" }} />
-                </>,
-                <>
+                  <img src={LearnByHelping} alt="" className="w-100"/>
+                </div>,
+                <div>
                   <h2 className="text-slate-100 p-3 mt-5">
                     Gain XP, level up and earn achievements!
                   </h2>
-                  <img src={Achievements} alt="" style={{ width: "800px" }} />
-                </>,
-                <>
+                  <img src={Achievements} alt="" className="w-100" />
+                </div>,
+                <div>
                   <h2 className="text-slate-100 p-3 mt-5">
                     Revise your quizzes
                   </h2>
-                  <img src={Revise} alt="" style={{ width: "800px" }} />
-                </>
+                  <img src={Revise} alt="" className="w-100" />
+                </div>
               ]
             } />
           ) : (
             <Gallery items={[
-              <>
+              <div>
                 <h2 className="text-slate-100 p-3">
                   Conduct live quizzes to test content
                 </h2>
-                <img src={LiveQuiz} alt="" style={{ width: "800px" }} />
-              </>,
-              <>
+                <img src={LiveQuiz} alt="" className="w-100" />
+              </div>,
+              <div>
                 <h2 className="text-slate-100 p-3 mt-5">
                   Incentivise student participation
                 </h2>
-                <img src={Achievements} alt="" style={{ width: "800px" }} />
-              </>,
-              <>
+                <img src={Achievements} alt="" className="w-100"/>
+              </div>,
+              <div>
                 <h2 className="text-slate-100 p-3 mt-5">
                   Empower students to foster rich forum discussions
                 </h2>
-                <img src={Endorse} alt="" style={{ width: "800px" }} />
-              </>,
-              <>
+                <img src={Endorse} alt="" className="w-100" />
+              </div>,
+              <div>
                 <h2 className="text-slate-100 p-3 mt-5">
                   Get instant feedback on lecture pacing
                 </h2>
-                <img src={InstantFeedback} alt="" style={{ width: "800px" }} />              </>
+                <img src={InstantFeedback} alt="" className="w-100" /> 
+              </div>
             ]} />
           )}
       </div>
