@@ -40,7 +40,7 @@ export default function LiveQuiz() {
       snapshot.docs.map((d) => {
         setCurrentQuestion(d.data().currentQuestion);
         const q = query(collection(db, d.ref.path, "questions"), orderBy("id"));
-        getDocs(q).then((questions) => {
+        return getDocs(q).then((questions) => {
           setSubmitted(false);
           setQuestions(questions.docs.map((doc) => doc.data()));
           const hoops = d.ref.path.split("/");
@@ -49,7 +49,7 @@ export default function LiveQuiz() {
       });
     });
     return unsubscribe;
-  }, []);
+  }, [currentClass.id]);
 
   const handleSubmit = (response) => {
     setSubmitted(true);
@@ -60,13 +60,6 @@ export default function LiveQuiz() {
         "quizCorrectAnswers"
       );
     }
-    // if (currentQuestion == questions.length - 1) {
-    //   _incrementActivityCount(
-    //     currentClass.id,
-    //     currentUser.uid,
-    //     "quizzesAttended"
-    //   );
-    // }
     submitAnswer(currentClass.id, name, currentQuestion, response);
   };
 

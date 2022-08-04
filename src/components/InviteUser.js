@@ -68,7 +68,7 @@ export default function InviteUser(props) {
 
   function currentInvites() {
     const field = invitationType === 'student' ? "studentInvites" : "tutorInvites";
-    return currentClass && currentClass[field].length == 0
+    return currentClass && currentClass[field].length === 0
       ? `No ${invitationType}s invited`
       : currentClass[field].map((email) => {
         return (

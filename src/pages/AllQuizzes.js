@@ -19,7 +19,7 @@ export default function AllQuizzes(props) {
 
   useEffect(() => {
     resetQuiz(currentClass.id);
-  }, []);
+  }, [currentClass.id, resetQuiz]);
 
   return (
     <div className="p-4">
@@ -45,7 +45,7 @@ export default function AllQuizzes(props) {
               <div>Back to class dashboard</div>
             </Button>
           </Link>
-          <h1 className="mt-3">View all quizzes</h1>
+          <h1 className="mt-4">View all quizzes</h1>
         </div>
       )}
       {quizList.length > 0 ? (

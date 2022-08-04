@@ -23,7 +23,7 @@ export default function LandingPage() {
   });
 
   const toggleFeatures = (useCase) => {
-    if (useCase == "students") {
+    if (useCase === "students") {
       setShowStudent(true);
     } else {
       setShowStudent(false);
