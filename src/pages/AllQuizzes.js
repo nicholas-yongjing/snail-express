@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import { Spinner } from "react-bootstrap";
 import { useClass } from "../contexts/ClassContext";
 import firestore from "../firestore";
+import { Link } from "react-router-dom";
 
 export default function AllQuizzes(props) {
   const { showQuiz, setShowQuiz, quizList } = props;
@@ -38,7 +39,14 @@ export default function AllQuizzes(props) {
           </div>
         </div>
       ) : (
-        <h3>View all quizzes</h3>
+        <div>
+          <Link to="/class-dashboard">
+            <Button className="light-button">
+              <div>Back to class dashboard</div>
+            </Button>
+          </Link>
+          <h1 className="mt-3">View all quizzes</h1>
+        </div>
       )}
       {quizList.length > 0 ? (
         quizList.map((quiz, index) => {

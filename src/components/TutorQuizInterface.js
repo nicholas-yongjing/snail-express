@@ -65,7 +65,7 @@ export default function TutorQuizInterface(props) {
 
   return (
     <div>
-      <h3>{name}</h3>
+      <h1 className="p-2">{name}</h1>
       {live ? (
         <Button onClick={handleEndQuiz}>End quiz</Button>
       ) : (

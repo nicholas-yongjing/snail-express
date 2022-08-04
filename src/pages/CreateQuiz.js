@@ -6,6 +6,7 @@ import AddQuestions from "../components/AddQuestions";
 import { useClass } from "../contexts/ClassContext";
 import { Card, Container, Form, FormControl } from "react-bootstrap";
 import firestore from "../firestore";
+import { Link } from "react-router-dom";
 
 export default function CreateQuiz() {
   const { currentClass } = useClass();
@@ -68,6 +69,13 @@ export default function CreateQuiz() {
               </div>
             </div>
           </Card>
+          <div className="d-flex justify-content-center">
+            <Link to="/quiz-dashboard">
+              <Button className="mt-3 light-button" style={{minWidth: "330px"}}>
+                Back to quiz dashboard
+              </Button>
+            </Link>
+          </div>
         </Container>
       )}
     </WebPage>
