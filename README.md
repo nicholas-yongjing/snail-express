@@ -160,7 +160,7 @@ ReactJS is a framework to structure web pages using reusable components such as 
 
 **Activity Diagram**
 
-![React component tree](images/activityDiagram.svg)
+![Activity diagram](images/activityDiagram.svg)
 
 If a user attempts to visit a page without meeting the necessary requirements, they get redirected to their proper webpages. This is done using React’s context providers, which allows every single webpage to see and change the authentication and class context as necessary.
 

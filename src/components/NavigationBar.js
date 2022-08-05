@@ -45,7 +45,7 @@ export default function NavigationBar() {
     return currentUser ? (
       <div className="d-flex gap-2">
         <Link className="nav-link rounded" to="/profile">
-          <button className="d-flex align-items-center gap-1 btn slate-900 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5">
+          <Button className="d-flex align-items-center gap-2 btn slate-900 text-slate-200 hover-slate-200 hover-text-slate-700 fs-5">
             <img
               src={ProfileImg}
               alt="profile"
@@ -55,7 +55,7 @@ export default function NavigationBar() {
             <div>
               Profile
             </div>
-          </button>
+          </Button>
         </Link>
         <Button
           className="fs-5 d-flex align-items-center gap-2"

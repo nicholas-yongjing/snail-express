@@ -19,7 +19,7 @@ export default function RevisionQuizzes() {
 
   useEffect(() => {
     pullRevisionQuizList(currentClass.id, setQuizList)
-  }, []);
+  }, [currentClass.id, pullRevisionQuizList]);
 
   return (
     <div className="p-4">

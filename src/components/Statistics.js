@@ -30,7 +30,7 @@ export default function Statistics(props) {
       }
     );
     return unsubscribe;
-  }, [currentQuestion]);
+  }, [currentQuestion, currentClass.id, name]);
 
   return (
     <div className="slate-600 p-4 rounded" style={{ margin: "16px" }}>
@@ -46,7 +46,7 @@ export default function Statistics(props) {
           striped
           variant="success"
           now={
-            studentResponses.total == 0
+            studentResponses.total === 0
               ? 0
               : (studentResponses.A / studentResponses.total) * 100
           }
@@ -61,7 +61,7 @@ export default function Statistics(props) {
           striped
           variant="info"
           now={
-            studentResponses.total == 0
+            studentResponses.total === 0
               ? 0
               : (studentResponses.B / studentResponses.total) * 100
           }
@@ -76,7 +76,7 @@ export default function Statistics(props) {
           striped
           variant="warning"
           now={
-            studentResponses.total == 0
+            studentResponses.total === 0
               ? 0
               : (studentResponses.C / studentResponses.total) * 100
           }
@@ -91,7 +91,7 @@ export default function Statistics(props) {
           striped
           variant="danger"
           now={
-            studentResponses.total == 0
+            studentResponses.total === 0
               ? 0
               : (studentResponses.D / studentResponses.total) * 100
           }

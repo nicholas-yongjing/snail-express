@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import WebPage from "../components/WebPage";
 import Button from "../components/Button";
 import AddQuestions from "../components/AddQuestions";
@@ -6,6 +6,7 @@ import AddQuestions from "../components/AddQuestions";
 import { useClass } from "../contexts/ClassContext";
 import { Card, Container, Form, FormControl } from "react-bootstrap";
 import firestore from "../firestore";
+import { Link } from "react-router-dom";
 
 export default function CreateQuiz() {
   const { currentClass } = useClass();
@@ -13,13 +14,13 @@ export default function CreateQuiz() {
   const [addingQuestions, setAddingQuestions] = useState(false);
   const nameRef = useRef();
 
-  const handleCreateQuiz = () => {
+  const handleCreateQuiz = useCallback(() => {
     if (nameRef.current.value === "") {
       return;
     }
     createQuiz(currentClass.id, nameRef.current.value);
     setAddingQuestions(true);
-  };
+  }, [currentClass.id, createQuiz]);
 
   useEffect(() => {
     // Form submits when enter is pressed
@@ -34,7 +35,7 @@ export default function CreateQuiz() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [handleCreateQuiz]);
 
   return (
     <WebPage>
@@ -68,6 +69,16 @@ export default function CreateQuiz() {
               </div>
             </div>
           </Card>
+          <div className="d-flex justify-content-center">
+            <Link to="/quiz-dashboard">
+              <Button
+                className="mt-3 light-button"
+                style={{ minWidth: "330px" }}
+              >
+                Back to quiz dashboard
+              </Button>
+            </Link>
+          </div>
         </Container>
       )}
     </WebPage>
