@@ -37,10 +37,10 @@ export default function LiveQuiz() {
       where("live", "==", true)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      snapshot.docs.map((d) => {
+      snapshot.docs.forEach((d) => {
         setCurrentQuestion(d.data().currentQuestion);
         const q = query(collection(db, d.ref.path, "questions"), orderBy("id"));
-        return getDocs(q).then((questions) => {
+        getDocs(q).then((questions) => {
           setSubmitted(false);
           setQuestions(questions.docs.map((doc) => doc.data()));
           const hoops = d.ref.path.split("/");
