@@ -4,10 +4,7 @@ import Statistics from "./Statistics";
 import { useClass } from "../contexts/ClassContext";
 import firestore from "../firestore";
 import { db } from "../firebase";
-import {
-  doc,
-  onSnapshot,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 
 export default function TutorQuizInterface(props) {
   const { setShowQuiz, currentQuiz } = props;
@@ -23,6 +20,8 @@ export default function TutorQuizInterface(props) {
   const [controls, setControls] = useState({});
 
   const { revision, live, currentQuestion } = controls;
+  const name = currentQuiz.id;
+  const questions = currentQuiz.data.map((doc) => doc.data());
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -33,10 +32,7 @@ export default function TutorQuizInterface(props) {
     );
 
     return unsubscribe;
-  }, []);
-
-  const name = currentQuiz.id;
-  const questions = currentQuiz.data.map((doc) => doc.data());
+  }, [currentClass.id, name]);
 
   const handleStartQuiz = () => {
     activateQuiz(currentClass.id, name);
@@ -65,7 +61,7 @@ export default function TutorQuizInterface(props) {
 
   return (
     <div>
-      <h3>{name}</h3>
+      <h1 className="p-2">{name}</h1>
       {live ? (
         <Button onClick={handleEndQuiz}>End quiz</Button>
       ) : (
@@ -77,7 +73,9 @@ export default function TutorQuizInterface(props) {
             Remove from revision quizzes
           </Button>
         ) : (
-          <Button onClick={toggleSetRevision}>Make available for revision</Button>
+          <Button onClick={toggleSetRevision}>
+            Make available for revision
+          </Button>
         ))}
       {!live && <Button onClick={handleDeleteQuiz}>Delete quiz</Button>}
       <div>

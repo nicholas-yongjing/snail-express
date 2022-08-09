@@ -27,7 +27,7 @@ export default function QuizDashboard() {
 
   useEffect(() => {
     pullQuizList(currentClass.id, setQuizList);
-  }, [showQuiz]);
+  }, [currentClass.id, pullQuizList, showQuiz]);
 
   return (
     <>
@@ -47,13 +47,17 @@ export default function QuizDashboard() {
             })}
           </SideBar>
           {tutor ? (
-            <AllQuizzes
-              showQuiz={showQuiz}
-              setShowQuiz={setShowQuiz}
-              quizList={quizList}
-            />
+            <div className="d-flex flex-grow-1">
+              <AllQuizzes
+                showQuiz={showQuiz}
+                setShowQuiz={setShowQuiz}
+                quizList={quizList}
+              />
+            </div>
           ) : (
-            <RevisionQuizzes quizList={quizList} />
+            <div>
+              <RevisionQuizzes quizList={quizList} />
+            </div>
           )}
         </div>
       </WebPage>

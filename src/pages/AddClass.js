@@ -54,7 +54,7 @@ export default function AddClass() {
   return (
     <WebPage>
         <Container fluid="md">
-          <Form
+          <Form 
             ref={formRef}
             onSubmit={handleSubmit}
             className='rounded fs-4 d-grid m-5 p-4 gap-3 text-slate-200 slate-700 d-flex flex-column'
