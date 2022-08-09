@@ -30,7 +30,7 @@ export default function Statistics(props) {
       }
     );
     return unsubscribe;
-  }, [currentQuestion]);
+  }, [currentQuestion, currentClass.id, name]);
 
   return (
     <div className="slate-600 p-4 rounded" style={{ margin: "16px" }}>
@@ -40,12 +40,13 @@ export default function Statistics(props) {
           {studentResponses.A} out of {studentResponses.total} selected option A
         </div>
         <ProgressBar
+                data-testid="optionA"
           style={{ margin: "16px", minHeight: "25px" }}
           animated
           striped
           variant="success"
           now={
-            studentResponses.total == 0
+            studentResponses.total === 0
               ? 0
               : (studentResponses.A / studentResponses.total) * 100
           }
@@ -54,12 +55,13 @@ export default function Statistics(props) {
           {studentResponses.B} out of {studentResponses.total} selected option B
         </div>
         <ProgressBar
+        data-testid="optionB"
           style={{ margin: "16px", minHeight: "25px" }}
           animated
           striped
           variant="info"
           now={
-            studentResponses.total == 0
+            studentResponses.total === 0
               ? 0
               : (studentResponses.B / studentResponses.total) * 100
           }
@@ -68,12 +70,13 @@ export default function Statistics(props) {
           {studentResponses.C} out of {studentResponses.total} selected option C
         </div>
         <ProgressBar
+                data-testid="optionC"
           style={{ margin: "16px", minHeight: "25px" }}
           animated
           striped
           variant="warning"
           now={
-            studentResponses.total == 0
+            studentResponses.total === 0
               ? 0
               : (studentResponses.C / studentResponses.total) * 100
           }
@@ -82,12 +85,13 @@ export default function Statistics(props) {
           {studentResponses.D} out of {studentResponses.total} selected option D
         </div>
         <ProgressBar
+                data-testid="optionD"
           style={{ margin: "16px", minHeight: "25px" }}
           animated
           striped
           variant="danger"
           now={
-            studentResponses.total == 0
+            studentResponses.total === 0
               ? 0
               : (studentResponses.D / studentResponses.total) * 100
           }

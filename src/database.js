@@ -101,20 +101,20 @@ export default function getDatabase(firestore) {
     return deleteDoc(doc(firestore, "classes", className, "quizzes", quizName));
   }
 
-  function showPreviousQuestion(className, quizName, currentQuestion) {
+  function showPreviousQuestion(className, quizName) {
     return updateDoc(
       doc(firestore, "classes", className, "quizzes", quizName),
       {
-        currentQuestion: currentQuestion - 1,
+        currentQuestion: increment(-1),
       }
     );
   }
 
-  function showNextQuestion(className, quizName, currentQuestion) {
+  function showNextQuestion(className, quizName) {
     return updateDoc(
       doc(firestore, "classes", className, "quizzes", quizName),
       {
-        currentQuestion: currentQuestion + 1,
+        currentQuestion: increment(1),
       }
     );
   }
@@ -561,11 +561,11 @@ export default function getDatabase(firestore) {
       ) {
         resetDailyCounts(newDailyCounts);
       }
-      newDailyCounts[field] += 1;
+      newDailyCounts[field] = increment(1);
       newDailyCounts.lastUpdated = serverTimestamp();
 
       const newOverallCounts = { ...userData.overallCounts };
-      newOverallCounts[field] += 1;
+      newOverallCounts[field] = increment(1);
 
       return {
         ...userData,
@@ -890,8 +890,8 @@ export default function getDatabase(firestore) {
     pullQuizList,
     activateQuiz,
     deactivateQuiz,
-    showNextQuestion,
     showPreviousQuestion,
+    showNextQuestion,
     deleteQuiz,
     toggleRevision,
     submitAnswer,

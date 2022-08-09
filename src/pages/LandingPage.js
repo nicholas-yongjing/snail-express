@@ -10,6 +10,7 @@ import InstantFeedback from "../images/instant-feedback.jpg";
 import LiveQuiz from "../images/live-quiz.jpg";
 import Revise from "../images/revise-quizzes.jpg";
 import LearnByHelping from "../images/learn-by-helping-others.jpg";
+import Gallery from "../components/Gallery";
 
 export default function LandingPage() {
   const { currentUser } = useAuth();
@@ -23,7 +24,7 @@ export default function LandingPage() {
   });
 
   const toggleFeatures = (useCase) => {
-    if (useCase == "students") {
+    if (useCase === "students") {
       setShowStudent(true);
     } else {
       setShowStudent(false);
@@ -32,7 +33,7 @@ export default function LandingPage() {
 
   return (
     <WebPage>
-      <div className="w-50 align-self-center flex-grow-1 d-flex flex-column justify-content-center gap-4 p-4">
+      <div className="m-5 w-50 align-self-center d-flex flex-column justify-content-center gap-4 p-4">
         <div className="d-flex gap-4 align-items-center justify-content-center">
           <img src={SnailLogo} alt="snail express" style={{ width: "80px" }} />
           <div>
@@ -42,7 +43,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="text-center text-slate-200 fs-2">
+        <div className="text-center text-slate-200 fs-2" data-testid="tagline">
           <div>
             Looking for an interactive classroom application for online
             learning?
@@ -51,69 +52,76 @@ export default function LandingPage() {
             Try <strong>snail-express!</strong>
           </div>
         </div>
-        <div>
-          <span className="d-flex justify-content-center">
-            <Button
-              style={{ margin: "4px" }}
-              onClick={() => toggleFeatures("students")}
-              disabled={showStudents}
-            >
-              Students
-            </Button>
-            <Button
-              style={{ margin: "4px" }}
-              onClick={() => toggleFeatures("tutors")}
-              disabled={!showStudents}
-            >
-              Tutors
-            </Button>
-          </span>
-          <div className="d-flex justify-content-center">
-            {showStudents ? (
-              <div className="d-flex justify-content-center">
-                <div className="slate-600 p-3">
+      </div>
+      <div className="m-4 p-4 d-flex flex-column justify-content-center align-items-stretch slate-700">
+        <span className="d-flex justify-content-center">
+          <Button
+            className="m-2"
+            onClick={() => toggleFeatures("students")}
+            disabled={showStudents}
+          >
+            Students
+          </Button>
+          <Button
+            className="m-2"
+            onClick={() => toggleFeatures("tutors")}
+            disabled={!showStudents}
+          >
+            Tutors
+          </Button>
+        </span>
+        {showStudents
+          ? (
+            <Gallery items={
+              [
+                <div>
                   <h2 className="text-slate-100 p-3">
                     Ask questions and learn by helping others out
                   </h2>
-                  <img src={LearnByHelping} alt="" style={{ width: "800px" }} />
+                  <img src={LearnByHelping} alt="" className="w-100"/>
+                </div>,
+                <div>
                   <h2 className="text-slate-100 p-3 mt-5">
                     Gain XP, level up and earn achievements!
                   </h2>
-                  <img src={Achievements} alt="" style={{ width: "800px" }} />
+                  <img src={Achievements} alt="" className="w-100" />
+                </div>,
+                <div>
                   <h2 className="text-slate-100 p-3 mt-5">
                     Revise your quizzes
                   </h2>
-                  <img src={Revise} alt="" style={{ width: "800px" }} />
+                  <img src={Revise} alt="" className="w-100" />
                 </div>
+              ]
+            } />
+          ) : (
+            <Gallery items={[
+              <div>
+                <h2 className="text-slate-100 p-3">
+                  Conduct live quizzes to test content
+                </h2>
+                <img src={LiveQuiz} alt="" className="w-100" />
+              </div>,
+              <div>
+                <h2 className="text-slate-100 p-3 mt-5">
+                  Incentivise student participation
+                </h2>
+                <img src={Achievements} alt="" className="w-100"/>
+              </div>,
+              <div>
+                <h2 className="text-slate-100 p-3 mt-5">
+                  Empower students to foster rich forum discussions
+                </h2>
+                <img src={Endorse} alt="" className="w-100" />
+              </div>,
+              <div>
+                <h2 className="text-slate-100 p-3 mt-5">
+                  Get instant feedback on lecture pacing
+                </h2>
+                <img src={InstantFeedback} alt="" className="w-100" /> 
               </div>
-            ) : (
-              <div className="d-flex justify-content-center">
-                <div className="slate-600 p-3">
-                  <h2 className="text-slate-100 p-3">
-                    Conduct live quizzes to test content
-                  </h2>
-                  <img src={LiveQuiz} alt="" style={{ width: "800px" }} />
-                  <h2 className="text-slate-100 p-3 mt-5">
-                    Incentivise student participation
-                  </h2>
-                  <img src={Achievements} alt="" style={{ width: "800px" }} />
-                  <h2 className="text-slate-100 p-3 mt-5">
-                    Empower students to foster rich forum discussions
-                  </h2>
-                  <img src={Endorse} alt="" style={{ width: "800px" }} />
-                  <h2 className="text-slate-100 p-3 mt-5">
-                    Get instant feedback on lecture pacing
-                  </h2>
-                  <img
-                    src={InstantFeedback}
-                    alt=""
-                    style={{ width: "800px" }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+            ]} />
+          )}
       </div>
     </WebPage>
   );

@@ -3,13 +3,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_PRODUCTION_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_PRODUCTION_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PRODUCTION_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_PRODUCTION_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_PRODUCTION_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_PRODUCTION_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_PRODUCTION_MEASUREMENT_ID
+    apiKey: "AIzaSyCIZsydh3K7j9-ghH4fF_Ki8qL3tik5548",
+    authDomain: "snail-development.firebaseapp.com",
+    projectId: "snail-development",
+    storageBucket: "snail-development.appspot.com",
+    messagingSenderId: "1061120922219",
+    appId: "1:1061120922219:web:b1d63dec95afa53537d72e"
 }
 
 const app = initializeApp(firebaseConfig);

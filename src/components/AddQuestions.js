@@ -78,7 +78,7 @@ export default function AddQuestions(props) {
             Please fill in all fields!
           </Alert>
         )}
-        <div variant="info" className="fs-5 mt-2">
+        <div data-testid="count" variant="info" className="fs-5 mt-2">
           {count - 1 + "/10 questions added so far"}
         </div>
       </div>
