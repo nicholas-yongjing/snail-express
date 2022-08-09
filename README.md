@@ -9,7 +9,7 @@ Post your train of thought
 
 **Team Name:** Team Snail
 
-**Proposed** Level of Achievement: Gemini
+**Proposed** Level of Achievement: Apollo 11
 
 **Adviser:** Yap Dian Hao
 
@@ -256,10 +256,10 @@ Our application definitely has much room for improvement, as there were some bug
 ## Links
 
 **Snail Express**
-https://snail-development.firebaseapp.com
+https://snail-express.firebaseapp.com
 
 **Github Repository**
-https://github.com/gohyongjing/snail-express 
+https://github.com/nicholas-yongjing/snail-express
 
 **Project Poster**
 https://drive.google.com/file/d/1xuJKjne-r_cwYtZWXec5YW2JHnFFBK2B/view?usp=sharing
