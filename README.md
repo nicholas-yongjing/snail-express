@@ -1,4 +1,4 @@
-# NUS Orbital AY21/22 Milestone 2
+# NUS Orbital AY21/22
 
 ### Snail Express
 Post your train of thought
