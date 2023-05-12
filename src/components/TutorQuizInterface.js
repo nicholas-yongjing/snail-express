@@ -119,7 +119,7 @@ export default function TutorQuizInterface(props) {
                     className="slate-800"
                     style={{ margin: "8px" }}
                     onClick={handleNext}
-                    disabled={currentQuestion == questions.length - 1}
+                    disabled={currentQuestion === questions.length - 1}
                   >
                     Show next
                   </Button>
