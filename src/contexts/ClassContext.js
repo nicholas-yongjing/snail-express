@@ -1,6 +1,6 @@
-import { getFirestore, doc, getDoc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
 import { createContext, useContext, useState } from "react";
-import app from "../firebase";
+import { useFirebase } from "./FirebaseContext";
 import { useAuth } from "./AuthContext";
 
 const ClassContext = createContext();
@@ -10,8 +10,9 @@ export function useClass() {
 }
 
 export function ClassProvider({ children }) {
-  const [currentClass, setCurrentClass] = useState(null);
+  const { firestore } = useFirebase();
   const { currentUser } = useAuth();
+  const [currentClass, setCurrentClass] = useState(null);
 
   function _removeDuplicates(arr) {
     return [...new Set(arr)];
@@ -31,7 +32,7 @@ export function ClassProvider({ children }) {
 
   async function changeClassName(className) {
     if (currentClass) {
-      const classRef = doc(getFirestore(app), "classes", currentClass.id);
+      const classRef = doc(firestore, "classes", currentClass.id);
       return getDoc(classRef)
         .then((snapshot) => {
           return setDoc(classRef, { ...snapshot.data(), className: className });
@@ -53,7 +54,7 @@ export function ClassProvider({ children }) {
       throw new Error(`Unknown role: ${role}`);
     }
 
-    const classRef = doc(getFirestore(app), "classes", currentClass.id);
+    const classRef = doc(firestore, "classes", currentClass.id);
     const newData = {};
     newData[field] = arrayUnion(...emails);
     return updateDoc(classRef, newData).then(() => {

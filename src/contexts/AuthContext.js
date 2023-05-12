@@ -9,7 +9,7 @@ import {
   updatePassword,
   updateProfile
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { useFirebase } from "./FirebaseContext";
 
 const AuthContext = createContext();
 
@@ -18,6 +18,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
+  const { auth } = useFirebase();
   const [currentUser, setCurrentUser] = useState({});
 
   function signup(email, password) {
@@ -74,7 +75,7 @@ export function AuthProvider({ children }) {
       setCurrentUser(user);
     });
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
 
   const value = {
     currentUser,
@@ -87,7 +88,6 @@ export function AuthProvider({ children }) {
     updateUserEmail,
     updateUserPassword,
   };
-
 
   return (
     <AuthContext.Provider value={value}>

@@ -1,13 +1,16 @@
 import { AuthProvider} from "./AuthContext";
 import { ClassProvider } from "./ClassContext";
+import { FirebaseProvider } from "./FirebaseContext";
 
-export function AppContextProvider({ children }) {
+export function AppContext({ children }) {
 
   return (
-    <AuthProvider>
-      <ClassProvider>
-        {children}
-      </ClassProvider>
-    </AuthProvider>
+    <FirebaseProvider>
+      <AuthProvider>
+        <ClassProvider>
+          {children}
+        </ClassProvider>
+      </AuthProvider>
+    </FirebaseProvider>
   )
 }
