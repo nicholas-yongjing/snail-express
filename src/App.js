@@ -1,14 +1,14 @@
 import { BrowserRouter } from "react-router-dom";
 
-import { AppContext } from "./contexts/AppContext";
 import AllRoutes from "./app/AllRoutes";
+import Firebase from "./app/Firebase";
 
 function App() {
   return (
     <BrowserRouter>
-      <AppContext>
+      <Firebase>
         <AllRoutes />
-      </AppContext>
+      </Firebase>
     </BrowserRouter>
   );
 }

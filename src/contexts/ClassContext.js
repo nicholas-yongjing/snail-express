@@ -1,7 +1,7 @@
 import { doc, getDoc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
 import { createContext, useContext, useState } from "react";
-import { useFirebase } from "./FirebaseContext";
 import { useAuth } from "./AuthContext";
+import { useFirestore } from "./FirestoreContext";
 
 const ClassContext = createContext();
 
@@ -10,9 +10,9 @@ export function useClass() {
 }
 
 export function ClassProvider({ children }) {
-  const { firestore } = useFirebase();
   const { currentUser } = useAuth();
   const [currentClass, setCurrentClass] = useState(null);
+  const {firestore} = useFirestore();
 
   function _removeDuplicates(arr) {
     return [...new Set(arr)];
