@@ -21,7 +21,7 @@ export function ClassProvider({ children }) {
   function isTutor() {
     return (
       currentClass &&
-      (currentClass.headTutor.id === currentUser.uid ||
+      (isHeadTutor() ||
         currentClass.tutorIds.includes(currentUser.uid))
     );
   }
